@@ -9,6 +9,7 @@ import Html.Attributes as Attribute exposing (class, classList)
 import Html.Events as Event
 import Json.Decode as Decode
 import Position exposing (Position)
+import Window exposing(Window)
 
 
 name : String
@@ -145,13 +146,17 @@ lineNumber number =
         , captureOnMouseDown (MouseDown { line = number, column = 0 })
         , captureOnMouseOver (MouseOver { line = number, column = 0 })
         ]
-        [ text <| String.fromInt (number + 1) ]
+        [ text <| String.fromInt (number + 0) ]
 
 
-gutter : Int -> Html Msg
-gutter lineCount =
+gutter : Position -> Window -> Html Msg
+gutter cursor window =
+    let
+        first = max 0 (cursor.line - window.last )
+        last = first + (window.last - window.first)
+    in
     div [ class <| name ++ "-gutter" ] <|
-        List.map lineNumber (List.range 0 (lineCount - 1))
+        List.map lineNumber (List.range first last)
 
 
 linesContainer : List (Html Msg) -> Html Msg
@@ -171,7 +176,7 @@ view lines state =
         , onTripleClick SelectLine
         , Attribute.tabindex 0
         ]
-        [ gutter <| List.length lines
+        [ gutter state.cursor state.window -- List.length lines
         , linesContainer <|
-            List.indexedMap (line state.cursor state.selection) lines
+            List.indexedMap (line state.cursor state.selection) (Window.select state.cursor state.window lines)
         ]

@@ -1,4 +1,4 @@
-module Editor exposing (Msg, State, init, update, view)
+module Editor exposing (Msg, State, init, update, view, internal)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -16,12 +16,17 @@ type alias Msg =
 type State
     = State InternalState
 
+-- TEMPORARY:
+
+internal : State -> InternalState
+internal (State internalState) = internalState
 
 init : State
 init =
     State
-        { scrolledLine = 0
+        { scrolledLine = 5
         , cursor = Position 0 0
+        , window = {first = 0, last = 5}
         , selection = Nothing
         , dragging = False
         , history = Editor.History.empty

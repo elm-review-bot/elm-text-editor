@@ -6,6 +6,7 @@ import Editor
 import Editor.Styles
 import Html exposing (details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
+import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
 
 
@@ -100,15 +101,20 @@ view model =
         , model.editor
             |> Editor.view model.content
             |> Html.map EditorMsg
-        , details []
+        , details [HA.style "margin-top" "20px"]
             [ summary []
                 [ text "Debug" ]
-            , div [] [ text <| Debug.toString model.editor ]
+
+            , div [HA.style "margin-top" "20px"] [text <| "window: " ++ Debug.toString (Editor.internal model.editor).window]
+            , div [] [text <| "cursor: " ++ Debug.toString (Editor.internal model.editor).cursor]
+
             , case model.lastKeyPress of
                 Just key ->
-                    div [] [ text <| "Last key press: " ++ key ]
+                    div [HA.style "margin-top" "20px"] [ text <| "Last key press: " ++ key ]
 
                 Nothing ->
                     text ""
+
+            , div [HA.style "margin-top" "20px"] [ text <| Debug.toString model.editor ]
             ]
         ]

@@ -3,6 +3,7 @@ module Editor.Model exposing (InternalState, Snapshot)
 import Buffer exposing (Buffer)
 import Editor.History exposing (History)
 import Position exposing (Position)
+import Window exposing (Window)
 
 
 type alias Snapshot =
@@ -14,6 +15,7 @@ type alias Snapshot =
 
 type alias InternalState =
     { scrolledLine : Int
+    , window : Window
     , cursor : Position
     , selection : Maybe Position
     , dragging : Bool

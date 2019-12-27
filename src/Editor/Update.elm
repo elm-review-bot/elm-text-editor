@@ -5,6 +5,7 @@ import Dict exposing (Dict)
 import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
 import Position exposing (Position)
+import Window
 
 
 type Msg
@@ -83,8 +84,13 @@ update : Buffer -> Msg -> InternalState -> ( InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
         MouseDown position ->
+            let
+                _ = Debug.log "XX state.cursor.line" state.cursor.line
+                offset = Debug.log "XX offset" (Window.getOffset state.window state.cursor.line)
+
+            in
             ( { state
-                | cursor = position
+                | cursor = Debug.log "XX MouseDown" {position | line = position.line - offset}
                 , dragging = True
                 , selection = Nothing
               }
@@ -110,7 +116,7 @@ update buffer msg state =
 
                                 else
                                     Just state.cursor
-                    , cursor = position
+                    , cursor = Debug.log "XX MouseOver" position
                   }
                 , buffer
                 , Cmd.none
@@ -166,8 +172,8 @@ update buffer msg state =
 
         CursorUp ->
             ( { state
-                | cursor =
-                    let
+                | cursor = Debug.log "XX CursorUp"
+                    (let
                         moveFrom =
                             case state.selection of
                                 Just selection ->
@@ -178,7 +184,7 @@ update buffer msg state =
                                     state.cursor
                     in
                     Position.previousLine moveFrom
-                        |> Buffer.clampPosition Buffer.Backward buffer
+                        |> Buffer.clampPosition Buffer.Backward buffer)
                 , selection = Nothing
               }
             , buffer
@@ -187,8 +193,8 @@ update buffer msg state =
 
         CursorDown ->
             ( { state
-                | cursor =
-                    let
+                | cursor = Debug.log "XX CursorDown"
+                    (let
                         moveFrom =
                             case state.selection of
                                 Just selection ->
@@ -199,7 +205,7 @@ update buffer msg state =
                                     state.cursor
                     in
                     Position.nextLine moveFrom
-                        |> Buffer.clampPosition Buffer.Backward buffer
+                        |> Buffer.clampPosition Buffer.Backward buffer)
                 , selection = Nothing
               }
             , buffer

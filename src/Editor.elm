@@ -24,9 +24,9 @@ internal (State internalState) = internalState
 init : State
 init =
     State
-        { scrolledLine = 5
+        { scrolledLine = 0
         , cursor = Position 0 0
-        , window = {first = 0, last = 5}
+        , window = {first = 0, last = 9}
         , selection = Nothing
         , dragging = False
         , history = Editor.History.empty

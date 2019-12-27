@@ -82,14 +82,15 @@ character cursor selection position char =
         ]
 
 
-line : Position -> Maybe Position -> Int -> String -> Html Msg
-line cursor selection number content =
+line : Window -> Position -> Maybe Position -> Int -> String -> Html Msg
+line window cursor selection number content =
     let
         length =
             String.length content
 
         endPosition =
-            { line = number, column = length }
+            { line = number , column = length }
+
     in
     div
         [ class <| name ++ "-line"
@@ -106,7 +107,8 @@ line cursor selection number content =
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                (Position number >> character cursor selection)
+                -- (Position number >> Position.offset offset >> character cursor selection)
+                (Position number >>  character cursor selection)
                 (String.toList content)
             , if cursor.line == number && cursor.column >= length then
                 [ span
@@ -178,5 +180,5 @@ view lines state =
         ]
         [ gutter state.cursor state.window -- List.length lines
         , linesContainer <|
-            List.indexedMap (line state.cursor state.selection) (Window.select state.cursor state.window lines)
+            List.indexedMap (line state.window state.cursor state.selection) (Window.select state.cursor state.window lines)
         ]

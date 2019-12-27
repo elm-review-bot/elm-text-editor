@@ -12,6 +12,7 @@ module Position exposing
     )
 
 
+
 type alias Position =
     { line : Int, column : Int }
 

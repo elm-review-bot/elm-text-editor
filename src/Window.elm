@@ -1,4 +1,4 @@
-module Window exposing (Window, select,size,  pad)
+module Window exposing (Window, select,size, getOffset)
 
 import Position exposing(Position)
 
@@ -8,12 +8,10 @@ type alias Window = {first : Int, last : Int}
 select : Position -> Window -> List String -> List String
 select cursor window strings =
   let
-      offset = max 0 (cursor.line - size window + 1)
+      offset_ = max 0 (cursor.line - size window + 1)
   in
       strings
-        |> indexedFilterMap (\i x -> i >= window.first + offset  && i <= window.last + offset )
-        --|> pad window
-
+        |> indexedFilterMap (\i x -> i >= window.first + offset_  && i <= window.last + offset_ )
 
 {-|
     indexedFilterMap (\i x -> i >= 1 && i <= 3) [0,1,2,3,4,5,6]
@@ -30,8 +28,7 @@ size : Window -> Int
 size window =
     window.last - window.first + 1
 
-pad : Window -> List String -> List String
-pad window strings =
-  case List.length strings >= size window of
-      True -> strings
-      False -> strings ++ List.repeat (size window) "\n"
+
+getOffset : Window -> Int -> Int
+getOffset window lineNumber_ =
+    min (window.last - window.first - lineNumber_) 0

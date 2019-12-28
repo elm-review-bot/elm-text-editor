@@ -173,8 +173,12 @@ update buffer msg state =
             )
 
         CursorUp ->
+            let
+               _ = Debug.log "CU, cursor (1)"  state.cursor
+               _ = Debug.log "CU, selection" state.selection
+            in
              ( { state
-                 | cursor = Debug.log "CU, cursor"
+                 | cursor = Debug.log "CU, cursor (2)"
                      (let
                          moveFrom =
                              case state.selection of
@@ -195,8 +199,13 @@ update buffer msg state =
              )
 
         CursorDown ->
+            let
+               _ = Debug.log "CD, cursor (1)"  state.cursor
+               _ = Debug.log "CD, selection" state.selection
+
+            in
              ( { state
-                 | cursor = Debug.log "CD, cursor"
+                 | cursor = Debug.log "CD, cursor (2)"
                      (let
                          moveFrom =
                              case state.selection of

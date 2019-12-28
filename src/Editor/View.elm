@@ -91,6 +91,9 @@ line window cursor selection number content =
         endPosition =
             { line = number , column = length }
 
+        _ = Debug.log "number" number
+        offset = Debug.log "XX (2) offset" (Window.getOffset window cursor.line)
+
     in
     div
         [ class <| name ++ "-line"
@@ -107,10 +110,9 @@ line window cursor selection number content =
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                -- (Position number >> Position.offset offset >> character cursor selection)
-                (Position number >>  character cursor selection)
+                (Position (number - offset) >>  character cursor selection)
                 (String.toList content)
-            , if cursor.line == number && cursor.column >= length then
+            , if cursor.line == (number - offset) && cursor.column >= length then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"
@@ -178,7 +180,7 @@ view lines state =
         , onTripleClick SelectLine
         , Attribute.tabindex 0
         ]
-        [ gutter state.cursor state.window -- List.length lines
+        [ gutter state.cursor state.window
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.cursor state.window lines)
         ]

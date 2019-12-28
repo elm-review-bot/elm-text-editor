@@ -69,7 +69,7 @@ styleText =
 
 .elm-editor-container:focus .elm-editor-cursor {
   animation: 1s blink step-start infinite;
-  border-left: 2px solid #333333;
+  border-left: 4px solid #333333;
 }
 
 @keyframes blink {

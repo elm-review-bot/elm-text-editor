@@ -8,6 +8,7 @@ import Html exposing (details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
+import Window
 
 
 main : Program () Model Msg
@@ -112,7 +113,8 @@ view model =
                 [ text "Debug" ]
 
             , div [HA.style "margin-top" "20px"] [text <| "window: " ++ Debug.toString (Editor.internal model.editor).window]
-            , div [] [text <| "cursor: " ++ Debug.toString (Editor.internal model.editor).cursor]
+            , div [] [text <| "cursor:  " ++ Debug.toString (Editor.internal model.editor).cursor]
+            , div [] [text <| "shifted: " ++ shiftedCursorDisplay model]
 
             , case model.lastKeyPress of
                 Just key ->
@@ -121,6 +123,17 @@ view model =
                 Nothing ->
                     text ""
 
-            , div [HA.style "margin-top" "20px"] [ text <| Debug.toString model.editor ]
+            , model.editor |> Editor.view2 model.content |>  Html.map EditorMsg
+            --, div [HA.style "margin-top" "20px"] [ text <| Debug.toString model.editor ]
             ]
+
         ]
+
+
+shiftedCursorDisplay : Model -> String
+shiftedCursorDisplay model =
+    let
+        w = (Editor.internal model.editor).window
+        c = (Editor.internal model.editor).cursor
+    in
+      Debug.toString (Window.shift w c)

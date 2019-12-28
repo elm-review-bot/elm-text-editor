@@ -88,7 +88,7 @@ update buffer msg state =
         MouseDown position ->
             let
                 _ = Debug.log "XX state.cursor.line" state.cursor.line
-                offset = Debug.log "XX offset" (Window.getOffset state.window state.cursor.line)
+                offset = Debug.log "XX offset" 0 --(Window.getOffset state.window state.cursor.line)
 
             in
             ( { state
@@ -173,54 +173,49 @@ update buffer msg state =
             )
 
         CursorUp ->
-            let
-               newCursor =  Debug.log "CursorUp"
-                    (let
-                        moveFrom =
-                            case state.selection of
-                                Just selection ->
-                                    Position.order selection state.cursor
-                                        |> Tuple.first
+             ( { state
+                 | cursor = Debug.log "CU, cursor"
+                     (let
+                         moveFrom =
+                             case state.selection of
+                                 Just selection ->
+                                     Position.order selection state.cursor
+                                         |> Tuple.first
 
-                                Nothing ->
-                                    state.cursor
-                    in
-                    Position.previousLine moveFrom
-                        |> Buffer.clampPosition Buffer.Backward buffer)
-            in
-            ( { state
-                | cursor = newCursor
-                , window = Window.scrollToIncludeLine newCursor.line state.window
-                , selection = Nothing
-              }
-            , buffer
-            , Cmd.none
-            )
+                                 Nothing ->
+                                     state.cursor
+                     in
+                     Position.previousLine moveFrom
+                         |> Buffer.clampPosition Buffer.Backward buffer)
+                 , window = Window.scrollToIncludeLine state.cursor.line state.window
+                 , selection = Nothing
+               }
+             , buffer
+             , Cmd.none
+             )
 
         CursorDown ->
-            let
-                newCursor = Debug.log "CursorDown"
-                  (let
-                      moveFrom =
-                          case state.selection of
-                              Just selection ->
-                                  Position.order selection state.cursor
-                                      |> Tuple.second
+             ( { state
+                 | cursor = Debug.log "CD, cursor"
+                     (let
+                         moveFrom =
+                             case state.selection of
+                                 Just selection ->
+                                     Position.order selection state.cursor
+                                         |> Tuple.second
 
-                              Nothing ->
-                                  state.cursor
-                  in
-                  Position.nextLine moveFrom
-                      |> Buffer.clampPosition Buffer.Backward buffer)
-            in
-            ( { state
-                | cursor = newCursor
-                , window = Window.scrollToIncludeLine newCursor.line state.window
-                , selection = Nothing
-              }
-            , buffer
-            , Cmd.none
-            )
+                                 Nothing ->
+                                     state.cursor
+                     in
+                     Position.nextLine moveFrom
+                         |> Buffer.clampPosition Buffer.Backward buffer)
+                 , window = Window.scrollToIncludeLine state.cursor.line state.window
+                 , selection = Nothing
+               }
+             , buffer
+             , Cmd.none
+             )
+
 
         CursorToLineEnd ->
             ( { state
@@ -355,12 +350,12 @@ update buffer msg state =
                                 string
                     in
                       let
-                          cursor2 = Window.shiftPosition state.window state.cursor
+                          cursor2 = Debug.log "Shifted cursor" <| Window.shift state.window state.cursor
                       in
                         ( { state
                             | cursor = Debug.log "INSERTION AT" <|
                                 if string == "\n" then
-                                    { line = cursor2.line + 1, column = 0 }
+                                    { line = state.cursor.line + 1, column = 0 }
 
                                 else
                                     Position.nextColumn state.cursor

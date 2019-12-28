@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, State, internal)
+module Editor exposing (Msg, init, update, view, view2, State, internal)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -46,3 +46,8 @@ update buffer msg (State state) =
 view : Buffer -> State -> Html Msg
 view buffer (State state) =
     Editor.View.view (Buffer.lines buffer) state
+
+
+view2 : Buffer -> State -> Html Msg
+view2 buffer (State state) =
+    Editor.View.view2 (Buffer.lines buffer) state

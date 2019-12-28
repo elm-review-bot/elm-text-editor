@@ -1,4 +1,4 @@
-module Editor.View exposing (view)
+module Editor.View exposing (view,view2)
 
 import Char
 import Editor.Keymap
@@ -91,7 +91,7 @@ line window cursor selection number content =
         endPosition =
             { line = number , column = length }
 
-        offset = 0 --Window.getOffset window cursor.line
+        offset = Window.getOffset window cursor.line
 
     in
     div
@@ -156,7 +156,7 @@ lineNumber2 : Int -> Int -> Html Msg
 lineNumber2 i j =
     span
         [ class <| name ++ "-line-number"
-        , Attribute.style "width" "36px"
+        , Attribute.style "width" "48px"
         , captureOnMouseDown (MouseDown { line = i, column = 0 })
         , captureOnMouseOver (MouseOver { line = i, column = 0 })
         ]
@@ -190,6 +190,14 @@ view lines state =
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
         , div [] [ upButton, downButton  ]
+        ]
+
+view2 : List String -> InternalState -> Html Msg
+view2 lines state =
+    div
+        [ class <| name ++ "-container" ]
+        [ linesContainer <|
+            List.indexedMap (line state.window state.cursor state.selection) lines
         ]
 
 upButton  =

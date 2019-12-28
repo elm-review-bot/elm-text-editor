@@ -173,8 +173,8 @@ update buffer msg state =
             )
 
         CursorUp ->
-            ( { state
-                | cursor = Debug.log "XX CursorUp"
+            let
+               newCursor =  Debug.log "XX CursorUp"
                     (let
                         moveFrom =
                             case state.selection of
@@ -187,6 +187,10 @@ update buffer msg state =
                     in
                     Position.previousLine moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer)
+            in
+            ( { state
+                | cursor = newCursor
+                , window = Window.scrollToIncludeLine newCursor.line state.window
                 , selection = Nothing
               }
             , buffer
@@ -194,20 +198,24 @@ update buffer msg state =
             )
 
         CursorDown ->
-            ( { state
-                | cursor = Debug.log "XX CursorDown"
-                    (let
-                        moveFrom =
-                            case state.selection of
-                                Just selection ->
-                                    Position.order selection state.cursor
-                                        |> Tuple.second
+            let
+                newCursor = Debug.log "XX CursorDown"
+                  (let
+                      moveFrom =
+                          case state.selection of
+                              Just selection ->
+                                  Position.order selection state.cursor
+                                      |> Tuple.second
 
-                                Nothing ->
-                                    state.cursor
-                    in
-                    Position.nextLine moveFrom
-                        |> Buffer.clampPosition Buffer.Backward buffer)
+                              Nothing ->
+                                  state.cursor
+                  in
+                  Position.nextLine moveFrom
+                      |> Buffer.clampPosition Buffer.Backward buffer)
+            in
+            ( { state
+                | cursor = newCursor
+                , window = Window.scrollToIncludeLine newCursor.line state.window
                 , selection = Nothing
               }
             , buffer

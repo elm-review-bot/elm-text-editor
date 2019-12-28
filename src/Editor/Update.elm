@@ -107,7 +107,7 @@ update buffer msg state =
                                 if selection == position then
                                     Nothing
 
-                                else
+                                else 
                                     Just selection
 
                             Nothing ->

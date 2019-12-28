@@ -91,8 +91,7 @@ line window cursor selection number content =
         endPosition =
             { line = number , column = length }
 
-        _ = Debug.log "number" number
-        offset = Debug.log "XX (2) offset" (Window.getOffset window cursor.line)
+        offset = Window.getOffset window cursor.line
 
     in
     div

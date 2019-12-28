@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Buffer exposing (Buffer)
-import Editor
+import Editor exposing(State)
 import Editor.Styles
 import Html exposing (details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
@@ -26,7 +26,7 @@ main =
 
 type alias Model =
     { content : Buffer
-    , editor : Editor.State
+    , editor : State
     , lastKeyPress : Maybe String
     }
 
@@ -37,7 +37,13 @@ init () =
 listMapAt fn index list =
   List.Extra.getAt index list
     |> Maybe.map (\\a -> List.Extra.setAt index (fn a) list)
-    |> Maybe.withDefault list"""
+    |> Maybe.withDefault list
+5
+6
+8
+8
+9
+c"""
       , editor = Editor.init
       , lastKeyPress = Nothing
       }

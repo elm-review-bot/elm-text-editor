@@ -1,4 +1,4 @@
-module Window exposing (Window, select,size, getOffset)
+module Window exposing (Window, select,size, getOffset, scroll, scrollToIncludeLine)
 
 import Position exposing(Position)
 
@@ -28,7 +28,31 @@ size : Window -> Int
 size window =
     window.last - window.first + 1
 
-
+{-|
+    Offset is <= 0
+-}
 getOffset : Window -> Int -> Int
 getOffset window lineNumber_ =
     min (window.last - window.first - lineNumber_) 0
+
+
+scroll : Int -> Window -> Window
+scroll k window =
+   case window.first + k >= 0 of
+       True -> {window | first = window.first + k, last = window.last + k}
+       False -> window
+
+
+scrollToIncludeLine : Int -> Window -> Window
+scrollToIncludeLine line window =
+  let
+    offset = if line > window.last then
+               line - window.last
+             else if line < window.first then
+               line - window.first
+             else
+               0
+  in
+    {window | first = window.first + offset, last = window.last + offset}
+
+

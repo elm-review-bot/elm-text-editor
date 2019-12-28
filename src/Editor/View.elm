@@ -4,9 +4,9 @@ import Char
 import Editor.Keymap
 import Editor.Model exposing (InternalState)
 import Editor.Update exposing (Msg(..))
-import Html exposing (Attribute, Html, div, span, text)
+import Html exposing (Attribute, Html, div, span, text, button)
 import Html.Attributes as Attribute exposing (class, classList)
-import Html.Events as Event
+import Html.Events as Event exposing(onClick)
 import Json.Decode as Decode
 import Position exposing (Position)
 import Window exposing(Window)
@@ -154,12 +154,13 @@ lineNumber number =
 
 gutter : Position -> Window -> Html Msg
 gutter cursor window =
-    let
-        first = max 0 (cursor.line - window.last )
-        last = first + (window.last - window.first)
-    in
+--    let
+--        offset = Window.getOffset window cursor.line
+--        first = window.first - offset
+--        last = window.last - offset
+--    in
     div [ class <| name ++ "-gutter" ] <|
-        List.map lineNumber (List.range first last)
+        List.map lineNumber (List.range window.first window.last)
 
 
 linesContainer : List (Html Msg) -> Html Msg
@@ -182,4 +183,13 @@ view lines state =
         [ gutter state.cursor state.window
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.cursor state.window lines)
+        , div [] [ upButton, downButton  ]
         ]
+
+upButton  =
+    div [ Attribute.style "margin-right" "10px",  Attribute.style "font-size" "18px"  ]
+        [ button [ onClick ScrollUp ] [ text "Up" ] ]
+
+downButton  =
+    div [ Attribute.style "margin-right" "10px", Attribute.style "font-size" "18px" ]
+        [ button [ onClick ScrollDown ] [ text "Down" ] ]

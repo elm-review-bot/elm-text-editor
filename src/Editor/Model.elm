@@ -21,3 +21,4 @@ type alias InternalState =
     , dragging : Bool
     , history : History Snapshot
     }
+

@@ -40,6 +40,8 @@ type Msg
     | SelectLine
     | Undo
     | Redo
+    | ScrollUp
+    | ScrollDown
 
 
 autoclose : Dict String String
@@ -801,3 +803,8 @@ update buffer msg state =
 
                 Nothing ->
                     ( state, buffer, Cmd.none )
+        ScrollUp ->
+            ({state  | window = Window.scroll -1 state.window}, buffer, Cmd.none)
+
+        ScrollDown ->
+            ({state  | window = Window.scroll 1 state.window}, buffer, Cmd.none)

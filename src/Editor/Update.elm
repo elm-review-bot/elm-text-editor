@@ -174,7 +174,7 @@ update buffer msg state =
 
         CursorUp ->
             let
-               newCursor =  Debug.log "XX CursorUp"
+               newCursor =  Debug.log "CursorUp"
                     (let
                         moveFrom =
                             case state.selection of
@@ -199,7 +199,7 @@ update buffer msg state =
 
         CursorDown ->
             let
-                newCursor = Debug.log "XX CursorDown"
+                newCursor = Debug.log "CursorDown"
                   (let
                       moveFrom =
                           case state.selection of
@@ -354,18 +354,21 @@ update buffer msg state =
                             else
                                 string
                     in
-                    ( { state
-                        | cursor =
-                            if string == "\n" then
-                                { line = state.cursor.line + 1, column = 0 }
+                      let
+                          cursor2 = Window.shiftPosition state.window state.cursor
+                      in
+                        ( { state
+                            | cursor = Debug.log "INSERTION AT" <|
+                                if string == "\n" then
+                                    { line = cursor2.line + 1, column = 0 }
 
-                            else
-                                Position.nextColumn state.cursor
-                      }
-                    , Buffer.insert state.cursor insertString buffer
-                    , Cmd.none
-                    )
-                        |> recordHistory state buffer
+                                else
+                                    Position.nextColumn state.cursor
+                          }
+                        , Buffer.insert cursor2 insertString buffer
+                        , Cmd.none
+                        )
+                            |> recordHistory state buffer
 
         RemoveCharAfter ->
             case state.selection of

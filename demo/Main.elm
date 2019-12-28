@@ -33,17 +33,17 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { content = Buffer.init """listMapAt : (a -> a) -> Int -> List a -> List a
-listMapAt fn index list =
-  List.Extra.getAt index list
-    |> Maybe.map (\\a -> List.Extra.setAt index (fn a) list)
-    |> Maybe.withDefault list
-5
-6
-8
-8
-9
-c"""
+    ( { content = Buffer.init """0 aaa
+1 bbb
+2 ccc
+3 ddd
+4 eee
+5 fff
+6 ggg
+7 hhh
+8 iii
+9 jjj
+"""
       , editor = Editor.init
       , lastKeyPress = Nothing
       }

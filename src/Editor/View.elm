@@ -91,7 +91,7 @@ line window cursor selection number content =
         endPosition =
             { line = number , column = length }
 
-        offset = Window.getOffset window cursor.line
+        offset = 0 --Window.getOffset window cursor.line
 
     in
     div
@@ -152,15 +152,21 @@ lineNumber number =
         [ text <| String.fromInt (number + 0) ]
 
 
+lineNumber2 : Int -> Int -> Html Msg
+lineNumber2 i j =
+    span
+        [ class <| name ++ "-line-number"
+        , Attribute.style "width" "36px"
+        , captureOnMouseDown (MouseDown { line = i, column = 0 })
+        , captureOnMouseOver (MouseOver { line = i, column = 0 })
+        ]
+        [ text <| String.fromInt j ++ ", " ++ String.fromInt i  ]
+
+
 gutter : Position -> Window -> Html Msg
 gutter cursor window =
---    let
---        offset = Window.getOffset window cursor.line
---        first = window.first - offset
---        last = window.last - offset
---    in
     div [ class <| name ++ "-gutter" ] <|
-        List.map lineNumber (List.range window.first window.last)
+        List.map2 lineNumber2 (List.range window.first window.last) (List.range 0 (window.last - window.first))
 
 
 linesContainer : List (Html Msg) -> Html Msg
@@ -182,7 +188,7 @@ view lines state =
         ]
         [ gutter state.cursor state.window
         , linesContainer <|
-            List.indexedMap (line state.window state.cursor state.selection) (Window.select state.cursor state.window lines)
+            List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
         , div [] [ upButton, downButton  ]
         ]
 

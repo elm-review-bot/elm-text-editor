@@ -1,17 +1,14 @@
-module Window exposing (Window, select,size, getOffset, scroll, scrollToIncludeLine)
+module Window exposing (Window, select, getOffset, scroll, scrollToIncludeLine, shiftPosition)
 
 import Position exposing(Position)
 
 type alias Window = {first : Int, last : Int}
 
 
-select : Position -> Window -> List String -> List String
-select cursor window strings =
-  let
-      offset_ = max 0 (cursor.line - size window + 1)
-  in
-      strings
-        |> indexedFilterMap (\i x -> i >= window.first + offset_  && i <= window.last + offset_ )
+select : Window -> List String -> List String
+select window strings =
+   strings
+      |> indexedFilterMap (\i x -> i >= window.first  && i <= window.last )
 
 {-|
     indexedFilterMap (\i x -> i >= 1 && i <= 3) [0,1,2,3,4,5,6]
@@ -24,16 +21,18 @@ indexedFilterMap filter list =
       |> List.filter (\(i, item) -> filter i item)
       |> List.map Tuple.second
 
-size : Window -> Int
-size window =
-    window.last - window.first + 1
-
 {-|
     Offset is <= 0
 -}
 getOffset : Window -> Int -> Int
 getOffset window lineNumber_ =
     min (window.last - window.first - lineNumber_) 0
+
+
+shiftPosition  : Window -> Position -> Position
+shiftPosition window position =
+   { position | line = position.line + window.first }
+
 
 
 scroll : Int -> Window -> Window
@@ -46,7 +45,7 @@ scroll k window =
 scrollToIncludeLine : Int -> Window -> Window
 scrollToIncludeLine line window =
   let
-    offset = if line > window.last then
+    offset = Debug.log "OFFST" <| if line > window.last then
                line - window.last
              else if line < window.first then
                line - window.first

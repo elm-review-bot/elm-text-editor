@@ -9,6 +9,7 @@ module Position exposing
     , previousColumn
     , previousLine
     , setColumn
+    , shift
     )
 
 
@@ -90,3 +91,7 @@ nextLine =
 previousLine : Position -> Position
 previousLine =
     addLine -1
+
+shift : Int -> Position -> Position
+shift k position =
+    {position | line = position.line + k}

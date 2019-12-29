@@ -13,6 +13,8 @@ type Msg
     =  MouseDown Position
     | MouseOver Position
     | MouseUp
+    | CopyGroupBefore
+    | CutGroupBefore
     | CursorLeft
     | CursorRight
     | CursorUp
@@ -22,6 +24,7 @@ type Msg
     | CursorToGroupEnd
     | CursorToGroupStart
     | Insert String
+    | PasteSelection
     | RemoveCharAfter
     | RemoveCharBefore
     | RemoveGroupAfter
@@ -305,6 +308,33 @@ update buffer msg state =
             , Cmd.none
             )
 
+
+        PasteSelection ->
+            case state.selection of
+                 Just selection ->
+                     let
+                         ( start, end ) =
+                             Position.order selection state.cursor
+                     in
+                     ( { state
+                         | cursor = start
+                         , selection = Nothing
+                       }
+                     , Buffer.replace start end "" buffer
+                     , Cmd.none
+                     )
+                         |> recordHistory state buffer
+
+                 Nothing ->
+                     let
+                         start =
+                             Buffer.groupStart state.cursor buffer
+                     in
+                     ( { state | cursor = start }
+                     , Buffer.replace start state.cursor "" buffer
+                     , Cmd.none
+                     )
+                         |> recordHistory state buffer
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of
                 ( Just selection, Just closing ) ->
@@ -474,6 +504,8 @@ update buffer msg state =
                     )
                         |> recordHistory state buffer
 
+                        
+
         RemoveGroupBefore ->
             case state.selection of
                 Just selection ->
@@ -497,6 +529,58 @@ update buffer msg state =
                     in
                     ( { state | cursor = start }
                     , Buffer.replace start state.cursor "" buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
+
+        CutGroupBefore ->
+            case state.selection of
+                Just selection ->
+                    let
+                        ( start, end ) =
+                            Position.order selection state.cursor
+                    in
+                    ( { state
+                        | cursor = start
+                      }
+                    , Buffer.replace start end "" buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
+
+                Nothing ->
+                    let
+                        start =
+                            Buffer.groupStart state.cursor buffer
+                    in
+                    ( { state | cursor = start }
+                    , Buffer.replace start state.cursor "" buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
+
+        CopyGroupBefore ->
+            case state.selection of
+                Just selection ->
+                    let
+                        ( start, end ) =
+                            Position.order selection state.cursor
+                    in
+                    ( { state
+                        | cursor = start
+                      }
+                    , buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
+
+                Nothing ->
+                    let
+                        start =
+                            Buffer.groupStart state.cursor buffer
+                    in
+                    ( { state | cursor = start }
+                    , buffer
                     , Cmd.none
                     )
                         |> recordHistory state buffer

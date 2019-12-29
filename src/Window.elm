@@ -1,4 +1,4 @@
-module Window exposing (Window, select, getOffset, scroll, identity, scrollToIncludeCursor, shift)
+module Window exposing (Window, select, getOffset, scroll, scrollToIncludeCursor, shift)
 
 import Position exposing(Position)
 
@@ -33,9 +33,6 @@ shift  : Window -> Position -> Position
 shift window position =
    { position | line = position.line + window.first }
 
-identity  : Window -> Position -> Position
-identity window position =
-   position
 
 scroll : Int -> Window -> Window
 scroll k window =

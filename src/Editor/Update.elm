@@ -15,6 +15,8 @@ type Msg
     | MouseUp
     | CopyGroupBefore
     | CutGroupBefore
+    | CopyGroupAfter
+    | CutGroupAfter
     | CursorLeft
     | CursorRight
     | CursorUp
@@ -504,7 +506,58 @@ update buffer msg state =
                     )
                         |> recordHistory state buffer
 
+        CutGroupAfter ->
+            case state.selection of
+                Just selection ->
+                    let
+                        ( start, end ) =
+                            Position.order selection state.cursor
+                    in
+                    ( { state
+                        | cursor = start
+                      }
+                    , Buffer.replace start end "" buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
 
+                Nothing ->
+                    let
+                        end =
+                            Buffer.groupEnd state.cursor buffer
+                    in
+                    ( state
+                    , Buffer.replace state.cursor end "" buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
+
+        CopyGroupAfter ->
+            case state.selection of
+                Just selection ->
+                    let
+                        ( start, end ) =
+                            Position.order selection state.cursor
+                    in
+                    ( { state
+                        | cursor = start
+                        , selection = Nothing
+                      }
+                    , buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
+
+                Nothing ->
+                    let
+                        end =
+                            Buffer.groupEnd state.cursor buffer
+                    in
+                    ( state
+                    , buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
 
         RemoveGroupBefore ->
             case state.selection of

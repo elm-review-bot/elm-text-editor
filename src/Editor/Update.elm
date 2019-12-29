@@ -504,7 +504,7 @@ update buffer msg state =
                     )
                         |> recordHistory state buffer
 
-                        
+
 
         RemoveGroupBefore ->
             case state.selection of

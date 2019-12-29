@@ -6,10 +6,11 @@ import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
 import Position exposing (Position)
 import Window
+import TextExample
 
 
 type Msg
-    = MouseDown Position
+    =  MouseDown Position
     | MouseOver Position
     | MouseUp
     | CursorLeft
@@ -42,6 +43,7 @@ type Msg
     | Redo
     | ScrollUp
     | ScrollDown
+    | Reset
 
 
 autoclose : Dict String String
@@ -368,7 +370,7 @@ update buffer msg state =
                                 string
                     in
                       let
-                          cursor2 = Debug.log "Shifted cursor" <| Window.shift state.window state.cursor
+                          cursor2 = state.cursor -- Debug.log "Shifted cursor" <| Window.shift state.window state.cursor
                       in
                         ( { state
                             | cursor = Debug.log "INSERTION AT" <|
@@ -846,3 +848,15 @@ update buffer msg state =
             ({state  |  cursor = newCursor
                      , window = Window.scrollToIncludeCursor newCursor state.window
                }, buffer, Cmd.none)
+
+
+        Reset ->
+             ( initialState,  Buffer.init TextExample.text2, Cmd.none)
+
+initialState = { scrolledLine = 0
+        , cursor = Position 0 0
+        , window = {first = 0, last = 9}
+        , selection = Nothing
+        , dragging = False
+        , history = Editor.History.empty
+        }

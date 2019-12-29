@@ -92,6 +92,7 @@ line window cursor selection number content =
             { line = number , column = length }
 
         {- Used below to correctly position and display the cursor -}
+        _ = Debug.log "(C), cursor.line, offset" (cursor.line, Window.getOffset window cursor.line)
         offset = Debug.log "(C) offset" (Window.getOffset window cursor.line)
 
     in
@@ -179,7 +180,7 @@ view lines state =
         [ gutter state.cursor state.window
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
-        , div [Attribute.style "width" "100px"] [ upButton, downButton, lineCount lines  ]
+        , div [Attribute.style "width" "100px"] [ upButton, downButton, lineCount lines , resetButton ]
         ]
 
 
@@ -217,3 +218,5 @@ myButton msg str =
 upButton = myButton ScrollUp "Up"
 
 downButton = myButton ScrollDown "Down"
+
+resetButton = myButton Reset "Reset"

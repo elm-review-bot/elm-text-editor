@@ -86,13 +86,11 @@ update : Buffer -> Msg -> InternalState -> (  InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
         MouseDown position ->
-            let
-                _ = Debug.log "XX state.cursor.line" state.cursor.line
-                offset = Debug.log "XX offset" 0 --(Window.getOffset state.window state.cursor.line)
-
-            in
+          let
+                newCursor = Debug.log "Shift on MouseDown" (Window.shift state.window (Debug.log "POS"position))
+          in
             ( { state
-                | cursor = Debug.log "XX MouseDown" {position | line = position.line - offset}
+                | cursor = newCursor --  Debug.log "XX MouseDown" (Window.identity state.window state.cursor)
                 , dragging = True
                 , selection = Nothing
               }
@@ -379,7 +377,7 @@ update buffer msg state =
                                 else
                                     Position.nextColumn state.cursor
                           }
-                        , Buffer.insert cursor2 insertString buffer
+                        , Buffer.insert state.cursor insertString buffer
                         , Cmd.none
                         )
                             |> recordHistory state buffer

@@ -89,7 +89,9 @@ update buffer msg state =
     case msg of
         MouseDown position ->
           let
-                newCursor = Debug.log "Shift on MouseDown" (Window.shift state.window (Debug.log "POS"position))
+                -- newCursor = Debug.log "Shift on MouseDown" (Window.shift state.window (Debug.log "POS"position))
+                newCursor1 =  Debug.log "POS" position
+                newCursor =  Debug.log "POS-Shifted" (Window.shiftPosition state.window position)
           in
             ( { state
                 | cursor = newCursor --  Debug.log "XX MouseDown" (Window.identity state.window state.cursor)
@@ -838,15 +840,15 @@ update buffer msg state =
                  newCursor = Position.shift -1 state.cursor
              in
                 ({state  |  cursor = newCursor
-                         , window = Window.scrollToIncludeCursor newCursor state.window
+                         ,  window = Window.shift -1 state.window
                    }, buffer, Cmd.none)
 
         ScrollDown ->
           let
              newCursor = Position.shift 1 state.cursor
           in
-            ({state  |  cursor = newCursor
-                     , window = Window.scrollToIncludeCursor newCursor state.window
+            ({state  | cursor = newCursor
+                         ,  window = Window.shift 1 state.window
                }, buffer, Cmd.none)
 
 

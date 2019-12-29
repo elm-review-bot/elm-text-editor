@@ -92,8 +92,9 @@ line window cursor selection number content =
             { line = number , column = length }
 
         {- Used below to correctly position and display the cursor -}
-        _ = Debug.log "(C), cursor.line, offset" (cursor.line, Window.getOffset window cursor.line)
-        offset = Debug.log "(C) offset" (Window.getOffset window cursor.line)
+        -- _ = Debug.log "(C), cursor.line, offset" (cursor.line, Window.getOffset window cursor.line)
+        -- offset = Debug.log "(C) offset" (Window.getOffset window cursor.line)
+        offset = (Window.getOffset window cursor.line)
 
     in
     div
@@ -111,7 +112,9 @@ line window cursor selection number content =
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                (Position (number - offset) >>  character cursor selection)
+                (Window.shiftPosition_ window number  >>  character cursor selection)
+                -- (Position (number - offset) >>  character cursor selection)
+                -- (Position number  >>  character cursor selection)
                 (String.toList content)
             , if cursor.line == (number - offset) && cursor.column >= length then
                 [ span

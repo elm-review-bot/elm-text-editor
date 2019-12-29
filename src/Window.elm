@@ -1,4 +1,7 @@
-module Window exposing (Window, select, getOffset, scroll, scrollToIncludeCursor, shift)
+module Window exposing (Window, select, getOffset
+  , scroll, scrollToIncludeCursor, scrollToIncludeCursor2
+  , shiftPosition, shiftPosition_
+  , shift)
 
 import Position exposing(Position)
 
@@ -29,16 +32,30 @@ getOffset window lineNumber_ =
     min (window.last - window.first - lineNumber_) 0
 
 
-shift  : Window -> Position -> Position
-shift window position =
-   { position | line = position.line + window.first }
+shiftPosition  : Window -> Position -> Position
+shiftPosition window position =
+    let
+        line = position.line
+    in
+      if line < window.last then
+         { position | line = position.line + window.first}
+      else
+         position
+
+shiftPosition_ : Window -> Int -> Int -> Position
+shiftPosition_ window  line column =
+    shiftPosition window (Position line column)
+
+shift : Int -> Window -> Window
+shift k w =
+    {w | first = w.first + k, last = w.last + k}
 
 
 scroll : Int -> Window -> Window
 scroll k window =
    case window.first + k >= 0 of
-       True -> {window | first = window.first + k, last = window.last + k}
        False -> window
+       True -> {window | first = window.first + k, last = window.last + k}
 
 
 scrollToIncludeCursor : Position -> Window -> Window
@@ -50,6 +67,20 @@ scrollToIncludeCursor cursor window =
                 line - window.last
              else if line <= window.first then
                 line - window.first
+             else
+                 0
+  in
+    {window | first = window.first + offset, last = window.last + offset}
+
+scrollToIncludeCursor2 : Position -> Window -> Window
+scrollToIncludeCursor2 cursor window =
+  let
+    line = cursor.line
+    _ = Debug.log "stic" (line, window)
+    offset = Debug.log "OFFST" <| if line >= window.last then
+                line - 1
+             else if line <= window.first then
+                line + 1
              else
                  0
   in

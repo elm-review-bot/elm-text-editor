@@ -131,4 +131,4 @@ shiftedCursorDisplay model =
         w = (Editor.internal model.editor).window
         c = (Editor.internal model.editor).cursor
     in
-      Debug.toString (Window.shift w c)
+      Debug.toString (Window.shiftPosition w c)

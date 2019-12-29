@@ -1,4 +1,4 @@
-module Window exposing (Window, select, getOffset, scroll, scrollToIncludeLine, scrollToIncludeCursor, shift)
+module Window exposing (Window, select, getOffset, scroll, identity, scrollToIncludeCursor, shift)
 
 import Position exposing(Position)
 
@@ -33,7 +33,9 @@ shift  : Window -> Position -> Position
 shift window position =
    { position | line = position.line + window.first }
 
-
+identity  : Window -> Position -> Position
+identity window position =
+   position
 
 scroll : Int -> Window -> Window
 scroll k window =
@@ -42,28 +44,15 @@ scroll k window =
        False -> window
 
 
-scrollToIncludeLine : Int -> Window -> Window
-scrollToIncludeLine line window =
-  let
-    offset = Debug.log "OFFST" <| if line >= window.last then
-               line - window.last
-             else if line <= window.first then
-               line - window.first
-             else
-               0
-  in
-    {window | first = window.first + offset, last = window.last + offset}
-
-
-
 scrollToIncludeCursor : Position -> Window -> Window
 scrollToIncludeCursor cursor window =
   let
     line = cursor.line
+    _ = Debug.log "stic" (line, window)
     offset = Debug.log "OFFST" <| if line >= window.last then
                line - window.last
              else if line <= window.first then
-               line - window.first
+              window.first - line
              else
                0
   in

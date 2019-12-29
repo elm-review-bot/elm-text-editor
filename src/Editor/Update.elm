@@ -195,10 +195,11 @@ update buffer msg state =
                   in
                     Position.previousLine moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer
+               newWindow = Window.scroll -1 state.window
             in
              ( { state
                  | cursor = newCursor
-                 , window = Window.scrollToIncludeCursor newCursor state.window
+                 , window = newWindow --  Window.scrollToIncludeCursor newCursor state.window
                  , selection = Nothing
                }
              , buffer

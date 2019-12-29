@@ -9,7 +9,7 @@ import Html.Events as Event exposing (onInput)
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
 import Window
-
+import Html.Attributes as Attributes
 
 main : Program () Model Msg
 main =
@@ -125,6 +125,7 @@ view model =
         , model.editor
             |> Editor.view model.content
             |> Html.map EditorMsg
+        , div [HA.style "margin-top" "20px"] [Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]]
         , details [HA.style "margin-top" "20px"]
             [ summary []
                 [ text "Debug" ]
@@ -142,7 +143,6 @@ view model =
             , model.editor |> Editor.view2 model.content |>  Html.map EditorMsg
             --, div [HA.style "margin-top" "20px"] [ text <| Debug.toString model.editor ]
             ]
-
         ]
 
 

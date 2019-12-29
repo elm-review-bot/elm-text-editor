@@ -52,7 +52,7 @@ scrollToIncludeCursor cursor window =
     offset = Debug.log "OFFST" <| if line >= window.last then
                line - window.last
              else if line <= window.first then
-              window.first - line
+                window.first - line
              else
                0
   in

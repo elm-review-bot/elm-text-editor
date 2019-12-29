@@ -153,26 +153,10 @@ lineNumber number =
         [ text <| String.fromInt (number + 0) ]
 
 
-lineNumber2 : Int -> Int -> Html Msg
-lineNumber2 i j =
-    span
-        [ class <| name ++ "-line-number"
-        , Attribute.style "width" "48px"
-        , captureOnMouseDown (MouseDown { line = i, column = 0 })
-        , captureOnMouseOver (MouseOver { line = i, column = 0 })
-        ]
-        [ text <| String.fromInt j ++ ", " ++ String.fromInt i  ]
-
-
 gutter : Position -> Window -> Html Msg
 gutter cursor window =
     div [ class <| name ++ "-gutter" ] <|
         List.map lineNumber (List.range (window.first + 1) (window.last + 1))
-
-gutter2 : Position -> Window -> Html Msg
-gutter2 cursor window =
-    div [ class <| name ++ "-gutter" ] <|
-        List.map2 lineNumber2 (List.range window.first window.last) (List.range 0 (window.last - window.first))
 
 
 linesContainer : List (Html Msg) -> Html Msg
@@ -195,8 +179,14 @@ view lines state =
         [ gutter state.cursor state.window
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
-        , div [] [ upButton, downButton  ]
+        , div [Attribute.style "width" "100px"] [ upButton, downButton, lineCount lines  ]
         ]
+
+
+lineCount : List String -> Html Msg
+lineCount lines =
+    div buttonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
+
 
 view2 : List String -> InternalState -> Html Msg
 view2 lines state =
@@ -206,10 +196,24 @@ view2 lines state =
             List.indexedMap (line state.window state.cursor state.selection) lines
         ]
 
-upButton  =
-    div [ Attribute.style "margin-right" "10px",  Attribute.style "font-size" "18px"  ]
-        [ button [ onClick ScrollUp ] [ text "Up" ] ]
+buttonStyle = [
+     Attribute.style "margin-top" "10px"
+     , Attribute.style "font-size" "12px"
+     ,  Attribute.style "border" "none"
+  ]
 
-downButton  =
-    div [ Attribute.style "margin-right" "10px", Attribute.style "font-size" "18px" ]
-        [ button [ onClick ScrollDown ] [ text "Down" ] ]
+buttonLabelStyle = [  Attribute.style "font-size" "12px"
+                    , Attribute.style "background-color" "#666"
+                    , Attribute.style "color" "#eee"
+                    , Attribute.style "width"  "80px"
+                    , Attribute.style "height"  "24px"
+                    ,  Attribute.style "border" "none"
+                    ]
+
+myButton msg str =
+   div buttonStyle
+     [ button ([onClick msg] ++ buttonLabelStyle) [text str]]
+
+upButton = myButton ScrollUp "Up"
+
+downButton = myButton ScrollDown "Down"

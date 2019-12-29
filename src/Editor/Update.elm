@@ -377,6 +377,10 @@ update buffer msg state =
 
                                 else
                                     Position.nextColumn state.cursor
+                              , window = if string == "\n" then
+                                    Window.scroll 1 state.window
+                                  else
+                                    state.window
                           }
                         , Buffer.insert state.cursor insertString buffer
                         , Cmd.none

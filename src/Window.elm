@@ -47,10 +47,10 @@ scrollToIncludeCursor cursor window =
     line = cursor.line
     _ = Debug.log "stic" (line, window)
     offset = Debug.log "OFFST" <| if line >= window.last then
-               line - window.last
+                line - window.last
              else if line <= window.first then
-                window.first - line
+                line - window.first
              else
-               0
+                 0
   in
     {window | first = window.first + offset, last = window.last + offset}

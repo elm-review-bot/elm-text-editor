@@ -114,7 +114,6 @@ view model =
 
             , div [HA.style "margin-top" "20px"] [text <| "window: " ++ Debug.toString (Editor.internal model.editor).window]
             , div [] [text <| "cursor:  " ++ Debug.toString (Editor.internal model.editor).cursor]
-            , div [] [text <| "shifted: " ++ shiftedCursorDisplay model]
 
             , case model.lastKeyPress of
                 Just key ->

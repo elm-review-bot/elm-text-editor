@@ -167,6 +167,11 @@ lineNumber2 i j =
 gutter : Position -> Window -> Html Msg
 gutter cursor window =
     div [ class <| name ++ "-gutter" ] <|
+        List.map lineNumber (List.range (window.first + 1) (window.last + 1))
+
+gutter2 : Position -> Window -> Html Msg
+gutter2 cursor window =
+    div [ class <| name ++ "-gutter" ] <|
         List.map2 lineNumber2 (List.range window.first window.last) (List.range 0 (window.last - window.first))
 
 

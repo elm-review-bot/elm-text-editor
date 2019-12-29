@@ -82,7 +82,7 @@ recordHistory oldState oldBuffer ( state, buffer, cmd ) =
     )
 
 
-update : Buffer -> Msg -> InternalState -> ( InternalState, Buffer, Cmd Msg )
+update : Buffer -> Msg -> InternalState -> (  InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
         MouseDown position ->
@@ -131,8 +131,8 @@ update buffer msg state =
             ( { state | dragging = False }, buffer, Cmd.none )
 
         CursorLeft ->
-            ( { state
-                | cursor =
+            let
+                newCursor =
                     let
                         moveFrom =
                             case state.selection of
@@ -145,6 +145,10 @@ update buffer msg state =
                     in
                     Position.previousColumn moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer
+            in
+            ( { state
+                | cursor = newCursor
+                , window = Window.scrollToIncludeCursor newCursor state.window
                 , selection = Nothing
               }
             , buffer
@@ -152,8 +156,8 @@ update buffer msg state =
             )
 
         CursorRight ->
-            ( { state
-                | cursor =
+            let
+                newCursor =
                     let
                         moveFrom =
                             case state.selection of
@@ -166,6 +170,10 @@ update buffer msg state =
                     in
                     Position.nextColumn moveFrom
                         |> Buffer.clampPosition Buffer.Forward buffer
+            in
+            ( { state
+                | cursor = newCursor
+                , window = Window.scrollToIncludeCursor newCursor state.window
                 , selection = Nothing
               }
             , buffer
@@ -176,22 +184,23 @@ update buffer msg state =
             let
                _ = Debug.log "CU, cursor (1)"  state.cursor
                _ = Debug.log "CU, selection" state.selection
+               newCursor =
+                  let
+                    moveFrom =
+                        case state.selection of
+                            Just selection ->
+                                Position.order selection state.cursor
+                                    |> Tuple.first
+
+                            Nothing ->
+                                state.cursor
+                  in
+                    Position.previousLine moveFrom
+                        |> Buffer.clampPosition Buffer.Backward buffer
             in
              ( { state
-                 | cursor = Debug.log "CU, cursor (2)"
-                     (let
-                         moveFrom =
-                             case state.selection of
-                                 Just selection ->
-                                     Position.order selection state.cursor
-                                         |> Tuple.first
-
-                                 Nothing ->
-                                     state.cursor
-                     in
-                     Position.previousLine moveFrom
-                         |> Buffer.clampPosition Buffer.Backward buffer)
-                 , window = Window.scrollToIncludeLine state.cursor.line state.window
+                 | cursor = newCursor
+                 , window = Window.scrollToIncludeCursor newCursor state.window
                  , selection = Nothing
                }
              , buffer
@@ -202,23 +211,24 @@ update buffer msg state =
             let
                _ = Debug.log "CD, cursor (1)"  state.cursor
                _ = Debug.log "CD, selection" state.selection
+               newCursor =
+                    let
+                        moveFrom =
+                            case state.selection of
+                                Just selection ->
+                                    Position.order selection state.cursor
+                                        |> Tuple.second
+
+                                Nothing ->
+                                    state.cursor
+                    in
+                    Position.nextLine moveFrom
+                        |> Buffer.clampPosition Buffer.Backward buffer
 
             in
              ( { state
-                 | cursor = Debug.log "CD, cursor (2)"
-                     (let
-                         moveFrom =
-                             case state.selection of
-                                 Just selection ->
-                                     Position.order selection state.cursor
-                                         |> Tuple.second
-
-                                 Nothing ->
-                                     state.cursor
-                     in
-                     Position.nextLine moveFrom
-                         |> Buffer.clampPosition Buffer.Backward buffer)
-                 , window = Window.scrollToIncludeLine state.cursor.line state.window
+                 | cursor = newCursor
+                 , window = Window.scrollToIncludeCursor newCursor state.window
                  , selection = Nothing
                }
              , buffer

@@ -125,7 +125,11 @@ view model =
         , model.editor
             |> Editor.view model.content
             |> Html.map EditorMsg
-        , div [HA.style "margin-top" "20px"] [Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]]
+        , div [HA.style "margin-top" "20px"] [
+           Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]
+           , text " — plenty of issues to work on.  This is a fork from code of SydneyNemzer"
+           ]
+
         , details [HA.style "margin-top" "20px"]
             [ summary []
                 [ text "Debug" ]

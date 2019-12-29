@@ -30,7 +30,7 @@ init =
     State
         { scrolledLine = 0
         , cursor = Position 0 0
-        , window = {first = 0, last = 4}
+        , window = {first = 0, last = 9}
         , selection = Nothing
         , dragging = False
         , history = Editor.History.empty

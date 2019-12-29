@@ -832,7 +832,17 @@ update buffer msg state =
                 Nothing ->
                     ( state, buffer, Cmd.none )
         ScrollUp ->
-            ({state  | window = Window.scroll -1 state.window}, buffer, Cmd.none)
+             let
+                 newCursor = Position.shift -1 state.cursor
+             in
+                ({state  |  cursor = newCursor
+                         , window = Window.scrollToIncludeCursor newCursor state.window
+                   }, buffer, Cmd.none)
 
         ScrollDown ->
-            ({state  | window = Window.scroll 1 state.window}, buffer, Cmd.none)
+          let
+             newCursor = Position.shift 1 state.cursor
+          in
+            ({state  |  cursor = newCursor
+                     , window = Window.scrollToIncludeCursor newCursor state.window
+               }, buffer, Cmd.none)

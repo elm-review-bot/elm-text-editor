@@ -2,3 +2,4 @@ node_modules
 elm-stuff/
 demo/Demo.js
 .idea/
+demo/publish.sh

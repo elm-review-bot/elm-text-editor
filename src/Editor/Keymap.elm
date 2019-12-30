@@ -111,6 +111,7 @@ keymaps =
             , ( "Delete", RemoveGroupAfter )
             , ( "a", SelectAll )
             , ( "d", SelectGroup )
+            , ( "p", PasteSelection )
             , ( "z", Undo )
             , ( "y", Redo )
             ]

@@ -94,7 +94,7 @@ keyDecoder keyToMsg =
 view : Model -> Html.Html Msg
 view model =
     div
-        [ Event.on "keydown" (keyDecoder KeyPress)
+        [ Event.on "keydown" (keyDecoder KeyPress), HA.style  "backround-color" "#dddddd"
         ]
         [ div [HA.style "font-size" "24px", HA.style "font-style" "bold" , HA.style "margin-bottom" "10px" ]
             [text "Pure Elm Text Editor"]

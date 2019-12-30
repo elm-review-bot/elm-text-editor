@@ -161,12 +161,12 @@ gutter cursor window =
 
 linesContainer : List (Html Msg) -> Html Msg
 linesContainer =
-    div [ class <| name ++ "-lines" ]
+    div [ class <| name ++ "-lines"  ]
 
 
 view : List String -> InternalState -> Html Msg
 view lines state =
-    div [] [
+    div [ Attribute.style "background-color" "#eeeeee",  Attribute.style "width" "700px" ] [
       div
         [ class <| name ++ "-container"
         , Event.preventDefaultOn

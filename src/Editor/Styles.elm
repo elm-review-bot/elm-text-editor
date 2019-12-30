@@ -62,7 +62,7 @@ styleText =
 
 .elm-editor-cursor {
   position: absolute;
-  border-left: 32px solid #990000;
+  border-left: 16px solid #990000;
   opacity: 0.2;
   left: 0;
   height: 100%;

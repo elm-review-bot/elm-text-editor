@@ -91,13 +91,8 @@ update : Buffer -> Msg -> InternalState -> (  InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
         MouseDown position ->
-          let
-                -- newCursor = Debug.log "Shift on MouseDown" (Window.shift state.window (Debug.log "POS"position))
-                newCursor1 =  Debug.log "POS" position
-                newCursor =  Debug.log "POS-Shifted" (Window.shiftPosition state.window position)
-          in
             ( { state
-                | cursor = newCursor --  Debug.log "XX MouseDown" (Window.identity state.window state.cursor)
+                | cursor = Debug.log "XX MouseDown" position
                 , dragging = True
                 , selection = Nothing
               }
@@ -313,32 +308,7 @@ update buffer msg state =
                 Nothing -> ( state, buffer, Cmd.none)
                 Just text ->
                       (state, Buffer.insert state.cursor text buffer, Cmd.none)
---            in
---            case state.selection of
---                 Just selection ->
---                     let
---                         ( start, end ) =
---                             Position.order selection state.cursor
---                     in
---                     ( { state
---                         | cursor = start
---                         , selection = Nothing
---                       }
---                     , Buffer.replace start end "" buffer
---                     , Cmd.none
---                     )
---                         |> recordHistory state buffer
---
---                 Nothing ->
---                     let
---                         start =
---                             Buffer.groupStart state.cursor buffer
---                     in
---                     ( { state | cursor = start }
---                     , Buffer.replace start state.cursor "" buffer
---                     , Cmd.none
---                     )
---                         |> recordHistory state buffer
+
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of
                 ( Just selection, Just closing ) ->

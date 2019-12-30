@@ -110,7 +110,7 @@ line window cursor selection number content =
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                (Window.shiftPosition_ window number  >>  character cursor selection)
+                (Window.shiftPosition window number  >>  character cursor selection)
                 (String.toList content)
             , if cursor.line ==  number - offset && cursor.column >= length then
                 [ span
@@ -216,7 +216,7 @@ buttonLabelStyle = [  Attribute.style "font-size" "12px"
                     , Attribute.style "color" "#eee"
                     , Attribute.style "width"  "80px"
                     , Attribute.style "height"  "24px"
-                    ,  Attribute.style "border" "none"
+                    , Attribute.style "border" "none"
                     ]
 
 myButton msg str =

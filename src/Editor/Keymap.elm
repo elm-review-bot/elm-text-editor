@@ -112,7 +112,8 @@ keymaps =
             , ( "a", SelectAll )
             , ( "d", SelectGroup )
             , ( "c", Copy)
-            , ( "p", Paste )
+            , ( "x", Cut)
+            , ( "v", Paste )
             , ( "z", Undo )
             , ( "y", Redo )
             ]

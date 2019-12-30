@@ -103,7 +103,7 @@ view model =
         , div [HA.style "margin-top" "20px"] [
            Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]
            , text " — plenty of issues to work on.  This is a fork from code of SydneyNemzer"
-           , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-p to paste copied text."]
+           , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
            ]
 
         , details [HA.style "margin-top" "20px"]

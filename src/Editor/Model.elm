@@ -1,4 +1,4 @@
-module Editor.Model exposing (InternalState, Snapshot)
+module Editor.Model exposing (InternalState, Snapshot, lastLine)
 
 import Buffer exposing (Buffer)
 import Editor.History exposing (History)
@@ -23,3 +23,4 @@ type alias InternalState =
     , history : History Snapshot
     }
 
+lastLine = 19

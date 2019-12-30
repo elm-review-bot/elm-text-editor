@@ -24,6 +24,8 @@ type Msg
     | CursorToGroupEnd
     | CursorToGroupStart
     | Insert String
+    | FirstLine
+    | LastLine
     | Paste
     | RemoveCharAfter
     | RemoveCharBefore
@@ -394,6 +396,21 @@ update buffer msg state =
                         , Cmd.none
                         )
                             |> recordHistory state buffer
+
+        FirstLine ->
+           let
+              cursor = {line = 0, column = 0}
+              window = Window.scrollToIncludeCursor cursor state.window
+           in
+             ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
+
+
+        LastLine ->
+            let
+               cursor = {line = (List.length (Buffer.lines buffer)) - 1, column = 0}
+               window = Window.scrollToIncludeCursor cursor state.window
+            in
+              ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
 
         RemoveCharAfter ->
             case state.selection of

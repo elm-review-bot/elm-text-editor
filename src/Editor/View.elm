@@ -180,8 +180,11 @@ view lines state =
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
         , div [Attribute.style "width" "100px"] [
-                upButton
+               firstLineButton
+              , upButton
               , downButton
+              , lastLineButton
+              , scrollPosition state
               , cursorPosition state
               , lineCount lines
               , resetButton
@@ -196,6 +199,10 @@ lineCount lines =
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =
     div buttonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
+
+scrollPosition : InternalState -> Html Msg
+scrollPosition state =
+    div buttonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
 
 view2 : List String -> InternalState -> Html Msg
 view2 lines state =
@@ -228,3 +235,7 @@ upButton = myButton ScrollUp "Up"
 downButton = myButton ScrollDown "Down"
 
 resetButton = myButton Reset "Reset"
+
+firstLineButton = myButton FirstLine "First"
+
+lastLineButton = myButton LastLine "Last"

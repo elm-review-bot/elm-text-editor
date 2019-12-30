@@ -83,13 +83,13 @@ character cursor selection position char =
 
 
 line : Window -> Position -> Maybe Position -> Int -> String -> Html Msg
-line window cursor selection number content =
+line window cursor selection index content =
     let
         length =
             String.length content
 
         endPosition =
-            { line = number , column = length }
+            { line = index , column = length }
 
         {- Used below to correctly position and display the cursor -}
         offset = (Window.getOffset window cursor.line)
@@ -104,15 +104,15 @@ line window cursor selection number content =
         List.concat
             [ [ span
                     [ class <| name ++ "-line__gutter-padding"
-                    , captureOnMouseDown (MouseDown { line = number, column = 0 })
-                    , captureOnMouseOver (MouseOver { line = number, column = 0 })
+                    , captureOnMouseDown (MouseDown { line = index, column = 0 })
+                    , captureOnMouseOver (MouseOver { line = index, column = 0 })
                     ]
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                (Window.shiftPosition window number  >>  character cursor selection)
+                (Window.shiftPosition window index  >>  character cursor selection)
                 (String.toList content)
-            , if cursor.line ==  number - offset && cursor.column >= length then
+            , if cursor.line ==  index - offset && cursor.column >= length then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"

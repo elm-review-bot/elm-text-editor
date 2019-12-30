@@ -13,9 +13,8 @@ type Msg
     =  MouseDown Position
     | MouseOver Position
     | MouseUp
-    | CopyGroupBefore
     | CutGroupBefore
-    | CopyGroupAfter
+    | Copy
     | CutGroupAfter
     | CursorLeft
     | CursorRight
@@ -26,7 +25,7 @@ type Msg
     | CursorToGroupEnd
     | CursorToGroupStart
     | Insert String
-    | PasteSelection
+    | Paste
     | RemoveCharAfter
     | RemoveCharBefore
     | RemoveGroupAfter
@@ -311,18 +310,14 @@ update buffer msg state =
             )
 
 
-        PasteSelection ->
+        Paste ->
             let
                 _ = Debug.log "PasteSelection" (state.selection, state.cursor)
             in
-            case  state.selection of
+            case  state.selectedText of
                 Nothing -> ( state, buffer, Cmd.none)
-                Just sel ->
-                    let
-                      (start, end) = Position.order sel state.cursor
-                      textToPaste = Debug.log "textToPaste" <| Buffer.between start end buffer
-                    in
-                      (state, Buffer.insert state.cursor textToPaste buffer, Cmd.none)
+                Just text ->
+                      (state, Buffer.insert state.cursor text buffer, Cmd.none)
 --            in
 --            case state.selection of
 --                 Just selection ->
@@ -544,32 +539,16 @@ update buffer msg state =
                     )
                         |> recordHistory state buffer
 
-        CopyGroupAfter ->
-            case state.selection of
-                Just selection ->
+        Copy ->
+            case  state.selection of
+                Nothing -> ( {state | selectedText = Nothing}, buffer, Cmd.none)
+                Just sel ->
                     let
-                        ( start, end ) =
-                            Position.order selection state.cursor
+                      (start, end) = Position.order sel state.cursor
+                      selectedText = Debug.log "selectedText" <| Buffer.between start end buffer
                     in
-                    ( { state
-                        | cursor = start
-                        , selection = Nothing
-                      }
-                    , buffer
-                    , Cmd.none
-                    )
-                        |> recordHistory state buffer
+                      ({state | selectedText = Just selectedText}, buffer, Cmd.none)
 
-                Nothing ->
-                    let
-                        end =
-                            Buffer.groupEnd state.cursor buffer
-                    in
-                    ( state
-                    , buffer
-                    , Cmd.none
-                    )
-                        |> recordHistory state buffer
 
         RemoveGroupBefore ->
             case state.selection of
@@ -624,31 +603,6 @@ update buffer msg state =
                     )
                         |> recordHistory state buffer
 
-        CopyGroupBefore ->
-            case state.selection of
-                Just selection ->
-                    let
-                        ( start, end ) =
-                            Position.order selection state.cursor
-                    in
-                    ( { state
-                        | cursor = start
-                      }
-                    , buffer
-                    , Cmd.none
-                    )
-                        |> recordHistory state buffer
-
-                Nothing ->
-                    let
-                        start =
-                            Buffer.groupStart state.cursor buffer
-                    in
-                    ( { state | cursor = start }
-                    , buffer
-                    , Cmd.none
-                    )
-                        |> recordHistory state buffer
 
         Indent ->
             case state.selection of

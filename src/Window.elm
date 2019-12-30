@@ -47,9 +47,12 @@ shift k w =
 
 scroll : Int -> Window -> Window
 scroll k window =
-   case window.first + k >= 0 of
-       False -> window
-       True -> {window | first = window.first + k, last = window.last + k}
+   let
+     index = window.first + k
+   in
+   case index >= window.first && index <= window.last of
+       True -> window
+       False -> {window | first = window.first + k, last = window.last + k}
 
 
 scrollToIncludeCursor : Position -> Window -> Window

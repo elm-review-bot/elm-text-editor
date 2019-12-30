@@ -189,6 +189,7 @@ view lines state =
               , cursorPosition state
               , lineCount lines
               , resetButton
+              , clearButton
             ]
         ]
         , div [] [goToLineButton, acceptLineNumber]
@@ -221,6 +222,8 @@ upButton = myButton 80 ScrollUp "Up" []
 downButton = myButton 80 ScrollDown "Down" []
 
 resetButton = myButton 80 Reset "Reset" []
+
+clearButton = myButton 80 Clear "Clear" []
 
 firstLineButton = myButton 80 FirstLine "First" []
 

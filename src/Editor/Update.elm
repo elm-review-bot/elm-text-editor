@@ -51,6 +51,7 @@ type Msg
     | ScrollUp
     | ScrollDown
     | Reset
+    | Clear
 
 
 autoclose : Dict String String
@@ -382,17 +383,17 @@ update buffer msg state =
                                 string
                     in
                       let
-                          cursor2 = state.cursor -- Debug.log "Shifted cursor" <| Window.shift state.window state.cursor
+                          newCursor =
+                            if string == "\n" then
+                                { line = state.cursor.line + 1, column = 0 }
+
+                            else
+                                Position.nextColumn state.cursor
                       in
                         ( { state
-                            | cursor = Debug.log "INSERTION AT" <|
-                                if string == "\n" then
-                                    { line = state.cursor.line + 1, column = 0 }
-
-                                else
-                                    Position.nextColumn state.cursor
+                            | cursor = newCursor
                               , window = if string == "\n" then
-                                    Window.scroll 1 state.window
+                                    Window.scrollToIncludeCursor newCursor state.window
                                   else
                                     state.window
                           }
@@ -918,6 +919,9 @@ update buffer msg state =
 
         Reset ->
              ( initialState,  Buffer.init TextExample.text2, Cmd.none)
+
+        Clear ->
+              ( initialState,  Buffer.init "", Cmd.none)
 
 initialState = { scrolledLine = 0
         , cursor = Position 0 0

@@ -23,4 +23,4 @@ type alias InternalState =
     , history : History Snapshot
     }
 
-lastLine = 19
+lastLine = 23

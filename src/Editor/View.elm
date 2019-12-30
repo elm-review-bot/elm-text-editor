@@ -183,7 +183,13 @@ view lines state =
         [ gutter state.cursor state.window
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
-        , div [Attribute.style "width" "100px"] [ upButton, downButton, lineCount lines , resetButton ]
+        , div [Attribute.style "width" "100px"] [
+                upButton
+              , downButton
+              , cursorPosition state
+              , lineCount lines
+              , resetButton
+            ]
         ]
 
 
@@ -191,6 +197,9 @@ lineCount : List String -> Html Msg
 lineCount lines =
     div buttonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
 
+cursorPosition : InternalState -> Html Msg
+cursorPosition state =
+    div buttonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
 
 view2 : List String -> InternalState -> Html Msg
 view2 lines state =

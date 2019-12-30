@@ -4,9 +4,9 @@ import Char
 import Editor.Keymap
 import Editor.Model exposing (InternalState)
 import Editor.Update exposing (Msg(..))
-import Html exposing (Attribute, Html, div, span, text, button)
+import Html exposing (Attribute, Html, div, span, text, button, input)
 import Html.Attributes as Attribute exposing (class, classList)
-import Html.Events as Event exposing(onClick)
+import Html.Events as Event exposing(onClick, onInput)
 import Json.Decode as Decode
 import Position exposing (Position)
 import Window exposing(Window)
@@ -166,7 +166,8 @@ linesContainer =
 
 view : List String -> InternalState -> Html Msg
 view lines state =
-    div
+    div [] [
+      div
         [ class <| name ++ "-container"
         , Event.preventDefaultOn
             "keydown"
@@ -190,6 +191,8 @@ view lines state =
               , resetButton
             ]
         ]
+        , div [] [goToLineButton, acceptLineNumber]
+      ]
 
 
 lineCount : List String -> Html Msg
@@ -212,30 +215,42 @@ view2 lines state =
             List.indexedMap (line state.window state.cursor state.selection) lines
         ]
 
+
+upButton = myButton 80 ScrollUp "Up" []
+
+downButton = myButton 80 ScrollDown "Down" []
+
+resetButton = myButton 80 Reset "Reset" []
+
+firstLineButton = myButton 80 FirstLine "First" []
+
+goToLineButton = myButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
+
+lastLineButton = myButton 80 LastLine "Last" []
+
+acceptLineNumber = myInput 30 AcceptLineNumber "" [Attribute.style "float" "left", Attribute.style  "margin-left" "8px", Attribute.style "padding-top"  "8px" ]
+
+{-- WIDGETS -}
+
+
 buttonStyle = [
      Attribute.style "margin-top" "10px"
      , Attribute.style "font-size" "12px"
      ,  Attribute.style "border" "none"
   ]
 
-buttonLabelStyle = [  Attribute.style "font-size" "12px"
+buttonLabelStyle width = [  Attribute.style "font-size" "12px"
                     , Attribute.style "background-color" "#666"
                     , Attribute.style "color" "#eee"
-                    , Attribute.style "width"  "80px"
+                    , Attribute.style "width"  (String.fromInt width ++ "px")
                     , Attribute.style "height"  "24px"
                     , Attribute.style "border" "none"
                     ]
 
-myButton msg str =
-   div buttonStyle
-     [ button ([onClick msg] ++ buttonLabelStyle) [text str]]
+myButton width msg str attr =
+   div (buttonStyle ++ attr)
+     [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
 
-upButton = myButton ScrollUp "Up"
-
-downButton = myButton ScrollDown "Down"
-
-resetButton = myButton Reset "Reset"
-
-firstLineButton = myButton FirstLine "First"
-
-lastLineButton = myButton LastLine "Last"
+myInput width msg str attr =
+    div ([ Attribute.style "margin-bottom" "10px", Attribute.style "width" (String.fromInt width ++ "px") ] ++ attr)
+        [ input [ Attribute.style "height"  "18px", Attribute.type_ "text",  Attribute.placeholder str,  onInput msg ] [] ]

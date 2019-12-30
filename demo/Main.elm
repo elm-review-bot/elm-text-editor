@@ -102,7 +102,7 @@ view model =
         , model.editor
             |> Editor.view model.content
             |> Html.map EditorMsg
-        , div [HA.style "margin-top" "20px"] [
+        , div [HA.style "margin-top" "50px"] [
            Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]
            , text " — needs lots of testing and issue posting/fixing"
            , div [HA.style "margin-top" "20px"] [text "This is a fork from work of SydneyNemzer"]

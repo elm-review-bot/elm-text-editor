@@ -10,7 +10,8 @@ import TextExample
 
 
 type Msg
-    =  MouseDown Position
+    =  NoOp
+    | MouseDown Position
     | MouseOver Position
     | MouseUp
     | Copy
@@ -25,6 +26,7 @@ type Msg
     | CursorToGroupStart
     | Insert String
     | FirstLine
+    | AcceptLineNumber String
     | LastLine
     | Paste
     | RemoveCharAfter
@@ -92,6 +94,8 @@ recordHistory oldState oldBuffer ( state, buffer, cmd ) =
 update : Buffer -> Msg -> InternalState -> (  InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
+        NoOp -> (state, buffer, Cmd.none)
+
         MouseDown position ->
             ( { state
                 | cursor = Debug.log "XX MouseDown" position
@@ -404,6 +408,16 @@ update buffer msg state =
            in
              ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
 
+        AcceptLineNumber nString ->
+            case String.toInt nString of
+                Nothing -> (state, buffer, Cmd.none)
+                Just n_ ->
+                    let
+                      n = clamp 0 ((List.length (Buffer.lines buffer)) - 1) (n_ - 1)
+                      cursor = {line = n, column = 0}
+                      window = Window.scrollToIncludeCursor cursor state.window
+                   in
+                     ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
 
         LastLine ->
             let

@@ -18,6 +18,7 @@ type alias InternalState =
     , window : Window
     , cursor : Position
     , selection : Maybe Position
+    , selectedText : Maybe String 
     , dragging : Bool
     , history : History Snapshot
     }

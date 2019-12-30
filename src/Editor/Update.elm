@@ -312,31 +312,43 @@ update buffer msg state =
 
 
         PasteSelection ->
-            case state.selection of
-                 Just selection ->
-                     let
-                         ( start, end ) =
-                             Position.order selection state.cursor
-                     in
-                     ( { state
-                         | cursor = start
-                         , selection = Nothing
-                       }
-                     , Buffer.replace start end "" buffer
-                     , Cmd.none
-                     )
-                         |> recordHistory state buffer
-
-                 Nothing ->
-                     let
-                         start =
-                             Buffer.groupStart state.cursor buffer
-                     in
-                     ( { state | cursor = start }
-                     , Buffer.replace start state.cursor "" buffer
-                     , Cmd.none
-                     )
-                         |> recordHistory state buffer
+            let
+                _ = Debug.log "PasteSelection" (state.selection, state.cursor)
+            in
+            case  state.selection of
+                Nothing -> ( state, buffer, Cmd.none)
+                Just sel ->
+                    let
+                      (start, end) = Position.order sel state.cursor
+                      textToPaste = Debug.log "textToPaste" <| Buffer.between start end buffer
+                    in
+                      (state, Buffer.insert state.cursor textToPaste buffer, Cmd.none)
+--            in
+--            case state.selection of
+--                 Just selection ->
+--                     let
+--                         ( start, end ) =
+--                             Position.order selection state.cursor
+--                     in
+--                     ( { state
+--                         | cursor = start
+--                         , selection = Nothing
+--                       }
+--                     , Buffer.replace start end "" buffer
+--                     , Cmd.none
+--                     )
+--                         |> recordHistory state buffer
+--
+--                 Nothing ->
+--                     let
+--                         start =
+--                             Buffer.groupStart state.cursor buffer
+--                     in
+--                     ( { state | cursor = start }
+--                     , Buffer.replace start state.cursor "" buffer
+--                     , Cmd.none
+--                     )
+--                         |> recordHistory state buffer
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of
                 ( Just selection, Just closing ) ->
@@ -996,6 +1008,7 @@ initialState = { scrolledLine = 0
         , cursor = Position 0 0
         , window = {first = 0, last = 9}
         , selection = Nothing
+        , selectedText = Nothing
         , dragging = False
         , history = Editor.History.empty
         }

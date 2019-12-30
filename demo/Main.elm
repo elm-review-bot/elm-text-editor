@@ -96,13 +96,16 @@ view model =
     div
         [ Event.on "keydown" (keyDecoder KeyPress)
         ]
-        [ Editor.Styles.styles
+        [ div [HA.style "font-size" "24px", HA.style "font-style" "bold" , HA.style "margin-bottom" "10px" ]
+            [text "Pure Elm Text Editor"]
+        , Editor.Styles.styles
         , model.editor
             |> Editor.view model.content
             |> Html.map EditorMsg
         , div [HA.style "margin-top" "20px"] [
            Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]
-           , text " — plenty of issues to work on.  This is a fork from code of SydneyNemzer"
+           , text " — needs lots of testing and issue posting/fixing"
+           , div [HA.style "margin-top" "20px"] [text "This is a fork from work of SydneyNemzer"]
            , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
            ]
 

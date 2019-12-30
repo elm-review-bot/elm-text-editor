@@ -34,13 +34,8 @@ getOffset window lineNumber_ =
 
 shiftPosition  : Window -> Position -> Position
 shiftPosition window position =
-    let
-        line = position.line
-    in
-      if line < window.last then
-         { position | line = position.line + window.first}
-      else
-         position
+    { position | line = position.line + window.first}
+
 
 shiftPosition_ : Window -> Int -> Int -> Position
 shiftPosition_ window  line column =

@@ -128,11 +128,3 @@ view model =
             ]
         ]
 
-
-shiftedCursorDisplay : Model -> String
-shiftedCursorDisplay model =
-    let
-        w = (Editor.internal model.editor).window
-        c = (Editor.internal model.editor).cursor
-    in
-      Debug.toString (Window.shiftPosition w c)

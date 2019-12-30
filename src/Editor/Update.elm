@@ -899,11 +899,14 @@ update buffer msg state =
                     ( state, buffer, Cmd.none )
         ScrollUp ->
              let
-                 newCursor = Position.shift -1 state.cursor
+                  (newCursor, newWindow) =
+                                if state.window.first > 0 then
+                                  (Position.shift -1 state.cursor, Window.shift -1 state.window)
+                                else
+                                  (state.cursor, state.window)
+
              in
-                ({state  |  cursor = newCursor
-                         ,  window = Window.shift -1 state.window
-                   }, buffer, Cmd.none)
+                ({state  | cursor = newCursor,  window = newWindow}, buffer, Cmd.none)
 
         ScrollDown ->
           let
@@ -913,8 +916,7 @@ update buffer msg state =
                else
                  (state.cursor, state.window)
           in
-            ({state  | cursor = newCursor,  window = newWindow
-               }, buffer, Cmd.none)
+            ({state  | cursor = newCursor,  window = newWindow}, buffer, Cmd.none)
 
 
         Reset ->

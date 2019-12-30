@@ -187,8 +187,6 @@ update buffer msg state =
 
         CursorUp ->
             let
-               _ = Debug.log "CU, cursor (1)"  state.cursor
-               _ = Debug.log "CU, selection" state.selection
                newCursor =
                   let
                     moveFrom =
@@ -215,8 +213,6 @@ update buffer msg state =
 
         CursorDown ->
             let
-               _ = Debug.log "CD, cursor (1)"  state.cursor
-               _ = Debug.log "CD, selection" state.selection
                newCursor =
                     let
                         moveFrom =

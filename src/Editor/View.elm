@@ -92,8 +92,6 @@ line window cursor selection number content =
             { line = number , column = length }
 
         {- Used below to correctly position and display the cursor -}
-        -- _ = Debug.log "(C), cursor.line, offset" (cursor.line, Window.getOffset window cursor.line)
-        -- offset = Debug.log "(C) offset" (Window.getOffset window cursor.line)
         offset = (Window.getOffset window cursor.line)
 
     in
@@ -113,10 +111,8 @@ line window cursor selection number content =
               ]
             , List.indexedMap
                 (Window.shiftPosition_ window number  >>  character cursor selection)
-                -- (Position (number - offset) >>  character cursor selection)
-                -- (Position number  >>  character cursor selection)
                 (String.toList content)
-            , if cursor.line == (number - offset) && cursor.column >= length then
+            , if cursor.line ==  number - offset && cursor.column >= length then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"

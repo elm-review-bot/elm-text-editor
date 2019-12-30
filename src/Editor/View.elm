@@ -252,5 +252,10 @@ myButton width msg str attr =
      [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
 
 myInput width msg str attr =
-    div ([ Attribute.style "margin-bottom" "10px", Attribute.style "width" (String.fromInt width ++ "px") ] ++ attr)
-        [ input [ Attribute.style "height"  "18px", Attribute.type_ "text",  Attribute.placeholder str,  onInput msg ] [] ]
+    div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
+        [ input [  Attribute.style "height"  "18px"
+                 , Attribute.style "width" (String.fromInt width ++ "px")
+                 , Attribute.type_ "text"
+                 , Attribute.placeholder str
+                 , onInput msg ] []
+        ]

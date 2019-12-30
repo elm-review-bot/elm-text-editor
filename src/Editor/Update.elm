@@ -907,10 +907,13 @@ update buffer msg state =
 
         ScrollDown ->
           let
-             newCursor = Position.shift 1 state.cursor
+             (newCursor, newWindow) =
+               if state.window.last < List.length (Buffer.lines buffer) - 1 then
+                 (Position.shift 1 state.cursor, Window.shift 1 state.window)
+               else
+                 (state.cursor, state.window)
           in
-            ({state  | cursor = newCursor
-                         ,  window = Window.shift 1 state.window
+            ({state  | cursor = newCursor,  window = newWindow
                }, buffer, Cmd.none)
 
 

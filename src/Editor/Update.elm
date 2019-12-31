@@ -27,6 +27,8 @@ type Msg
     | Insert String
     | FirstLine
     | AcceptLineNumber String
+    | AcceptSearchText String
+    | AcceptReplaceText String
     | LastLine
     | Paste
     | RemoveCharAfter
@@ -419,6 +421,10 @@ update buffer msg state =
                       window = Window.scrollToIncludeCursor cursor state.window
                    in
                      ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
+
+        AcceptSearchText str -> (state, buffer, Cmd.none)
+
+        AcceptReplaceText str -> (state, buffer, Cmd.none)
 
         LastLine ->
             let

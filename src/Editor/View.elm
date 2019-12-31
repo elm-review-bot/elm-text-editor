@@ -191,7 +191,7 @@ view lines state =
               , clearButton
             ]
         ]
-        , div [] [goToLineButton, acceptLineNumber]
+        , div [] [goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
       ]
 
 
@@ -230,7 +230,27 @@ goToLineButton = myButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
 
 lastLineButton = myButton 80 LastLine "Last" []
 
-acceptLineNumber = myInput 30 AcceptLineNumber "" [Attribute.style "float" "left", Attribute.style  "margin-left" "8px", Attribute.style "padding-top"  "8px" ]
+searchTextButton = myButton 90 NoOp "Search" [Attribute.style "float" "left"]
+
+replaceTextButton = myButton 90 NoOp "Replace" [Attribute.style "float" "left"]
+
+
+acceptLineNumber = myInput 30 AcceptLineNumber "" [
+     Attribute.style "float" "left"
+   , Attribute.style "padding-top"  "8px"
+    ]
+
+
+acceptSearchText = myInput 168 AcceptSearchText "" [
+     Attribute.style "float" "left"
+   , Attribute.style "padding-top"  "8px"
+    ]
+
+
+acceptReplaceText = myInput2 168  AcceptReplaceText "" [
+     Attribute.style "float" "left"
+   , Attribute.style "padding-top"  "8px"
+    ]
 
 {-- WIDGETS -}
 
@@ -239,6 +259,7 @@ buttonStyle = [
      Attribute.style "margin-top" "10px"
      , Attribute.style "font-size" "12px"
      ,  Attribute.style "border" "none"
+     , Attribute.style "margin-right" "8px"
   ]
 
 buttonLabelStyle width = [  Attribute.style "font-size" "12px"
@@ -254,6 +275,17 @@ myButton width msg str attr =
      [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
 
 myInput width msg str attr =
+    div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
+        [ input [  Attribute.style "height"  "18px"
+                 , Attribute.style "width" (String.fromInt width ++ "px")
+                 , Attribute.type_ "text"
+                 , Attribute.placeholder str
+                 , Attribute.style "margin-right" "8px"
+                 , onInput msg ] []
+        ]
+
+
+myInput2 width msg str attr =
     div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
         [ input [  Attribute.style "height"  "18px"
                  , Attribute.style "width" (String.fromInt width ++ "px")

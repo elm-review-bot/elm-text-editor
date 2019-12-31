@@ -101,7 +101,7 @@ update buffer msg state =
 
         MouseDown position ->
             ( { state
-                | cursor = Debug.log "XX MouseDown" position
+                | cursor = position
                 , dragging = True
                 , selection = Nothing
               }
@@ -127,7 +127,7 @@ update buffer msg state =
 
                                 else
                                     Just state.cursor
-                    , cursor = Debug.log "XX MouseOver" position
+                    , cursor = position
                   }
                 , buffer
                 , Cmd.none
@@ -310,9 +310,6 @@ update buffer msg state =
 
 
         Paste ->
-            let
-                _ = Debug.log "PasteSelection" (state.selection, state.cursor)
-            in
             case  state.selectedText of
                 Nothing -> ( state, buffer, Cmd.none)
                 Just text ->
@@ -422,7 +419,11 @@ update buffer msg state =
                    in
                      ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
 
-        AcceptSearchText str -> (state, buffer, Cmd.none)
+        AcceptSearchText str ->
+          let
+            searchResults = Debug.log "searchResults" <| (Buffer.search str buffer |> List.map (Tuple.first >> .line) |> List.map (\i -> i + 1))
+          in
+          (state, buffer, Cmd.none)
 
         AcceptReplaceText str -> (state, buffer, Cmd.none)
 
@@ -523,7 +524,7 @@ update buffer msg state =
                 Just sel ->
                     (let
                       (start, end) = Position.order sel state.cursor
-                      selectedText = Debug.log "selectedText" <| Buffer.between start end buffer
+                      selectedText = Buffer.between start end buffer
                     in
                       ({state | selectedText = Just selectedText}, buffer, Cmd.none))
                         |> recordHistory state buffer
@@ -534,7 +535,7 @@ update buffer msg state =
                 Just sel ->
                     (let
                       (start, end) = Position.order sel state.cursor
-                      selectedText = Debug.log "selectedText" <| Buffer.between start end buffer
+                      selectedText = Buffer.between start end buffer
                     in
                       ({state | selectedText = Just selectedText}, Buffer.replace start end "" buffer, Cmd.none))
                         |> recordHistory state buffer

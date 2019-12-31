@@ -86,8 +86,7 @@ scrollToIncludeCursor : Position -> Window -> Window
 scrollToIncludeCursor cursor window =
   let
     line = cursor.line
-    _ = Debug.log "stic" (line, window)
-    offset = Debug.log "OFFST" <| if line >= window.last then
+    offset = if line >= window.last then
                 line - window.last
              else if line <= window.first then
                 line - window.first

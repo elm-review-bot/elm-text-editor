@@ -91,7 +91,7 @@ line window cursor selection index content =
             { line = index , column = length }
 
         {- Used below to correctly position and display the cursor -}
-        offset = Debug.log "offset" window.first -- (Window.getOffset window cursor.line)
+        offset = window.first -- (Window.getOffset window cursor.line)
 
     in
     div

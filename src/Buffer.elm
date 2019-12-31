@@ -20,6 +20,7 @@ module Buffer exposing
     , nearWordChar
     , removeBefore
     , replace
+    , search
     , toString
     )
 
@@ -71,17 +72,23 @@ indexFromPosition buffer position =
 {-| Return a list of pairs (k, s), where s-}
 
 {-
-    searchHits "AB" ["about this, we know", "that Babs is the best in the lab", "a stich in time saves nine"]
-    --> [(0,"about this, we know",["about"]),(1,"that Babs is the best in the lab",["babs","lab"])]
+    searchHits "AB" ["about this, we know", "that Babs is the best in the lab", "a stitch in time saves nine"]
+    [({ column = 0, line = 0 },{ column = 5, line = 0 }),({ column = 29, line = 1 },{ column = 32, line = 1 })]
 -}
 
-searchHits : String -> List String -> List ( Int, String, List String )
+search : String -> Buffer -> List (Position, Position)
+search key  buffer =
+    searchHits key (lines buffer)
+
+searchHits : String -> List String -> List ( Position, Position )
 searchHits key lines_ =
     let
        key_ = String.toLower key
     in
      indexedFilterMap (\i line -> String.contains key_ (String.toLower line)) lines_
        |> List.map (\(idx, str) -> (idx, str, matches key_ str))
+       |> List.map positions
+       |> List.concat
 
 
 {-|

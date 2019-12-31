@@ -107,7 +107,7 @@ view model =
            , text " — needs lots of testing and issue posting/fixing"
            , div [HA.style "margin-top" "20px"] [text "This is a fork of work of SydneyNemzer"]
            , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-           , div [HA.style "margin-top" "20px"] [text "Coming soon: search and replace.  Open console and enter a seardch to see what's up."]
+           , div [HA.style "margin-top" "20px"] [text "Coming soon: search and replace.  Open console and enter a search term to see what's up."]
 
           ]
 

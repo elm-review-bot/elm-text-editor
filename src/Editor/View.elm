@@ -110,7 +110,7 @@ line window cursor selection index content =
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                (Window.shiftPosition window index  >>  character cursor selection)
+                (Window.identity window index  >>  character cursor selection)
                 (String.toList content)
             , if cursor.line ==  index - offset && cursor.column >= length then
                 [ span

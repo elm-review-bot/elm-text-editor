@@ -1,5 +1,6 @@
 module Window exposing (
     Window
+  , identity
   , select
   , getOffset
   , scroll
@@ -40,6 +41,10 @@ getOffset window lineNumber_ =
 shiftPosition : Window -> Int -> Int -> Position
 shiftPosition window  line column =
     { line = line + window.first, column = column}
+
+identity : Window -> Int -> Int -> Position
+identity window  line column =
+    { line = line, column = column}
 
 shiftPosition_ : Window -> Position -> Position
 shiftPosition_ window pos =

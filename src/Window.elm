@@ -5,6 +5,7 @@ module Window exposing (
   , scroll
   , scrollToIncludeCursor
   , shiftPosition
+  , shiftPosition_
   , shift)
 
 import Position exposing(Position)
@@ -39,6 +40,10 @@ getOffset window lineNumber_ =
 shiftPosition : Window -> Int -> Int -> Position
 shiftPosition window  line column =
     { line = line + window.first, column = column}
+
+shiftPosition_ : Window -> Position -> Position
+shiftPosition_ window pos =
+   { line = pos.line + window.first, column = pos.column}
 
 shift : Int -> Window -> Window
 shift k w =

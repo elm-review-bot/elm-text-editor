@@ -111,7 +111,7 @@ line window cursor selection index content =
             , List.indexedMap
                 ( Window.identity window index  >>  character window cursor selection)
                 (String.toList content)
-            , if index  == cursor.line && cursor.column >= length  then
+            , if index  == (Window.shiftPosition__ window cursor).line && cursor.column >= length  then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"

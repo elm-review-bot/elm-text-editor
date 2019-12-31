@@ -64,16 +64,16 @@ character window cursor selection position char =
     span
         [ classList
             [ ( name ++ "-line__character", True )
-            , ( name ++ "-line__character--has-cursor", cursor == position )
+            , ( name ++ "-line__character--has-cursor", cursor == Window.shiftPosition_ window position )
             , ( name ++ "-line__character--selected"
               , selected cursor selection position
               )
             ]
-        , captureOnMouseDown (MouseDown (Window.shiftPosition_ window position))
-        , captureOnMouseOver (MouseOver (Window.shiftPosition_ window position))
+         , captureOnMouseDown (MouseDown (Window.shiftPosition_ window position))
+         , captureOnMouseOver (MouseOver (Window.shiftPosition_ window position))
         ]
         [ text <| String.fromChar <| ensureNonBreakingSpace char
-        , if cursor == position then
+        , if  cursor ==  Window.shiftPosition_ window position then
             span [ class <| name ++ "-cursor" ] [ text " " ]
 
           else
@@ -103,16 +103,15 @@ line window cursor selection index content =
         List.concat
             [ [ span
                     [ class <| name ++ "-line__gutter-padding"
-                    , captureOnMouseDown (MouseDown { line = index + offset, column = 0 })
-                    , captureOnMouseOver (MouseOver { line = index + offset, column = 0 })
+                    , captureOnMouseDown (MouseDown { line = index + 0, column = 0 })
+                    , captureOnMouseOver (MouseOver { line = index + 0, column = 0 })
                     ]
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
                 ( Window.identity window index  >>  character window cursor selection)
                 (String.toList content)
-            --, if cursor.line ==  index - 0 && cursor.column >= length then
-            , if cursor.line ==  index - 0 && cursor.column >= length  then
+            , if index  == cursor.line && cursor.column >= length  then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"

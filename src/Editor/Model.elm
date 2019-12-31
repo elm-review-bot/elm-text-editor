@@ -22,6 +22,7 @@ type alias InternalState =
     , selectedText : Maybe String 
     , dragging : Bool
     , history : History Snapshot
+    , searchResults : List (Position, Position)
     }
 
 lastLine = 23

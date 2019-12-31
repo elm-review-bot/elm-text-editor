@@ -35,6 +35,7 @@ init =
         , selectedText = Nothing
         , dragging = False
         , history = Editor.History.empty
+        , searchResults = []
         }
 
 

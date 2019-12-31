@@ -107,7 +107,6 @@ view model =
            , text " — needs lots of testing and issue posting/fixing"
            , div [HA.style "margin-top" "20px"] [text "This is a fork from work of SydneyNemzer"]
            , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-           , div [HA.style "margin-top" "20px"] [text "Note: bug when clicking to left of first character of line, or on blank line."]
            ]
 
         , details [HA.style "margin-top" "20px"]

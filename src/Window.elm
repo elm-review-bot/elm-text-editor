@@ -1,12 +1,14 @@
 module Window exposing (
     Window
   , identity
+  , identity_
   , select
   , getOffset
   , scroll
   , scrollToIncludeCursor
   , shiftPosition
   , shiftPosition_
+  , shiftPosition__
   , shift)
 
 import Position exposing(Position)
@@ -42,13 +44,27 @@ shiftPosition : Window -> Int -> Int -> Position
 shiftPosition window  line column =
     { line = line + window.first, column = column}
 
+shiftPosition_ : Window -> Position -> Position
+shiftPosition_ window pos =
+   { line = pos.line + window.first, column = pos.column}
+
+shiftPosition__ : Window -> Position -> Position
+shiftPosition__ window pos =
+  let
+      l = pos.line - window.first
+  in
+  if l < 0 then
+      pos
+  else
+    { line = pos.line - window.first, column = pos.column}
+
 identity : Window -> Int -> Int -> Position
 identity window  line column =
     { line = line, column = column}
 
-shiftPosition_ : Window -> Position -> Position
-shiftPosition_ window pos =
-   { line = pos.line + window.first, column = pos.column}
+identity_ : Window -> Position -> Position
+identity_ window pos =
+    pos
 
 shift : Int -> Window -> Window
 shift k w =

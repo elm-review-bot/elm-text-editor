@@ -10,6 +10,7 @@ import Html.Events as Event exposing(onClick, onInput)
 import Json.Decode as Decode
 import Position exposing (Position)
 import Window exposing(Window)
+import RollingList
 
 
 name : String
@@ -193,7 +194,7 @@ view lines state =
         ]
         , div [Attribute.style "width" "692px", Attribute.style "height" "72px", Attribute.style "padding-left" "8px", Attribute.style "background-color" "#bbb"] [
             div [Attribute.style "width" "690px"] [goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
-          , div [Attribute.style "width" "690px", Attribute.style "height" "36px"] [text <| "Lines: " ++ (searchResultDisplay state) ]
+          , div [Attribute.style "width" "690px", Attribute.style "height" "36px"] [text <| "Lines matching \"" ++ state.searchTerm ++ "\": " ++ (searchResultDisplay state) ]
          ]
          ]
 
@@ -201,7 +202,10 @@ view lines state =
 
 searchResultDisplay : InternalState -> String
 searchResultDisplay state =
-      state.searchResults |> List.map (Tuple.first >> .line) |> List.map ((\i -> i + 1) >> String.fromInt)
+      state.searchResults
+        |> RollingList.toList
+        |> List.map (Tuple.first >> .line)
+        |> List.map ((\i -> i + 1) >> String.fromInt)
         |> String.join ", "
 
 

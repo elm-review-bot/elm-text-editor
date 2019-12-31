@@ -6,7 +6,7 @@ import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
 import Position exposing (Position)
 import Window
-import TextExample
+import RollingList
 
 
 type Msg
@@ -52,6 +52,7 @@ type Msg
     | Redo
     | ScrollUp
     | ScrollDown
+    | ScrollToSelection (Position, Position)
     | Reset
     | Clear
 
@@ -423,7 +424,16 @@ update buffer msg state =
           let
             searchResults = Buffer.search str buffer
           in
-          ({state | searchResults = searchResults}, buffer, Cmd.none)
+          case List.head searchResults of
+               Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer, Cmd.none)
+               Just (cursor, end) ->
+                  let
+                     (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+                  in
+                     ({state | cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
+
+        ScrollToSelection (start, end) ->
+            (state, buffer,Cmd.none)
 
         AcceptReplaceText str -> (state, buffer, Cmd.none)
 
@@ -930,6 +940,27 @@ update buffer msg state =
         Clear ->
               ( initialState,  Buffer.init "", Cmd.none)
 
+
+scrollToSearchSelection  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
+scrollToSearchSelection  state buffer =
+    case RollingList.current state.searchResults of
+        Nothing -> (state, buffer, Cmd.none)
+        Just (cursor, end) ->
+          let
+             (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+          in
+             ({state | cursor = cursor_
+                     , selection = Just end_
+               }, buffer, Cmd.none)
+
+rollSearchSelectionForward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
+rollSearchSelectionForward  state buffer =
+    ({state | searchResults = RollingList.roll state.searchResults}, buffer, Cmd.none)
+
+rollSearchSelectionBackward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
+rollSearchSelectionBackward  state buffer =
+    ({state | searchResults = RollingList.rollBack state.searchResults}, buffer, Cmd.none)
+
 initialState = { scrolledLine = 0
         , cursor = Position 0 0
         , window = {first = 0, last = Editor.Model.lastLine}
@@ -938,5 +969,5 @@ initialState = { scrolledLine = 0
         , dragging = False
         , history = Editor.History.empty
         , searchTerm = ""
-        , searchResults = []
+        , searchResults = RollingList.fromList []
         }

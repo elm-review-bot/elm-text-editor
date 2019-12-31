@@ -7,6 +7,7 @@ import Editor.Update
 import Editor.View
 import Html exposing (Html)
 import Position exposing (Position)
+import RollingList
 
 
 type alias Msg =
@@ -36,7 +37,7 @@ init =
         , dragging = False
         , history = Editor.History.empty
         , searchTerm = ""
-        , searchResults = []
+        , searchResults = RollingList.fromList []
         }
 
 

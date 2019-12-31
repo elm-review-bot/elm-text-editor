@@ -5,6 +5,7 @@ import Editor.History exposing (History)
 import Position exposing (Position)
 import Window exposing (Window)
 import TextExample
+import RollingList exposing(RollingList)
 
 
 type alias Snapshot =
@@ -23,7 +24,7 @@ type alias InternalState =
     , dragging : Bool
     , history : History Snapshot
     , searchTerm : String
-    , searchResults : List (Position, Position)
+    , searchResults : RollingList (Position, Position)
     }
 
 lastLine = 23

@@ -80,6 +80,7 @@ search : String -> Buffer -> List (Position, Position)
 search key  buffer =
     searchHits key (lines buffer)
 
+
 searchHits : String -> List String -> List ( Position, Position )
 searchHits key lines_ =
     let
@@ -125,14 +126,6 @@ matches key str =
       |> String.toLower
       |> String.words
       |> List.filter (\word -> String.contains (String.toLower key) word)
-
-
---getPositions : Int -> String -> String -> List (Position, Position)
---getPositions row key source =
---    let
---        startingIndices = String.indices key source
---        matches =
---    in
 
 
 

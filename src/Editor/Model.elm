@@ -26,4 +26,4 @@ type alias InternalState =
 
 lastLine = 23
 
-initialText = TextExample.text3
+initialText = TextExample.text2

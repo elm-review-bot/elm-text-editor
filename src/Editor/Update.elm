@@ -407,7 +407,7 @@ update buffer msg state =
               cursor = {line = 0, column = 0}
               window = Window.scrollToIncludeCursor cursor state.window
            in
-             ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
+             ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
 
         AcceptLineNumber nString ->
             case String.toInt nString of
@@ -418,14 +418,14 @@ update buffer msg state =
                       cursor = {line = n, column = 0}
                       window = Window.scrollToIncludeCursor cursor state.window
                    in
-                     ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
+                     ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
 
         LastLine ->
             let
                cursor = {line = (List.length (Buffer.lines buffer)) - 1, column = 0}
                window = Window.scrollToIncludeCursor cursor state.window
             in
-              ( {state | cursor = cursor, window = window }, buffer, Cmd.none) |> recordHistory state buffer
+              ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
 
         RemoveCharAfter ->
             case state.selection of
@@ -904,7 +904,7 @@ update buffer msg state =
                                   (state.cursor, state.window)
 
              in
-                ({state  | cursor = newCursor,  window = newWindow}, buffer, Cmd.none)
+                ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
 
         ScrollDown ->
           let
@@ -914,7 +914,7 @@ update buffer msg state =
                else
                  (state.cursor, state.window)
           in
-            ({state  | cursor = newCursor,  window = newWindow}, buffer, Cmd.none)
+            ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
 
 
         Reset ->

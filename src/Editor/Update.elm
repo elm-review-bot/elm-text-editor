@@ -918,7 +918,7 @@ update buffer msg state =
 
 
         Reset ->
-             ( initialState,  Buffer.init TextExample.text2, Cmd.none)
+             ( initialState,  Buffer.init Editor.Model.initialText, Cmd.none)
 
         Clear ->
               ( initialState,  Buffer.init "", Cmd.none)

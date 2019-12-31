@@ -60,9 +60,10 @@ scroll k window =
    let
      index = window.first + k
    in
-   case index >= window.first && index <= window.last of
-       True -> window
-       False -> {window | first = window.first + k, last = window.last + k}
+   case (index < 0, index >= window.first && index <= window.last) of
+       (True, _) -> window
+       (False, True) -> window
+       (False, False) -> {window | first = window.first + k, last = window.last + k}
 
 
 scrollToIncludeCursor : Position -> Window -> Window

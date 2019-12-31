@@ -105,7 +105,7 @@ view model =
         , div [HA.style "margin-top" "50px"] [
            Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]
            , text " — needs lots of testing and issue posting/fixing"
-           , div [HA.style "margin-top" "20px"] [text "This is a fork from work of SydneyNemzer"]
+           , div [HA.style "margin-top" "20px"] [text "This is a fork of work of SydneyNemzer"]
            , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
            ]
 

@@ -70,10 +70,11 @@ indexFromPosition buffer position =
 
 {-| Return a list of pairs (k, s), where s-}
 
-{-|
+{-
     searchHits "AB" ["about this, we know", "that Babs is the best in the lab", "a stich in time saves nine"]
     --> [(0,"about this, we know",["about"]),(1,"that Babs is the best in the lab",["babs","lab"])]
- -}
+-}
+
 searchHits : String -> List String -> List ( Int, String, List String )
 searchHits key lines_ =
     let
@@ -119,12 +120,12 @@ matches key str =
       |> List.filter (\word -> String.contains (String.toLower key) word)
 
 
-getPositions : Int -> String -> String -> List (Position, Position)
-getPositions row key source =
-    let
-        startingIndices = String.indices key source
-        matches =
-    in
+--getPositions : Int -> String -> String -> List (Position, Position)
+--getPositions row key source =
+--    let
+--        startingIndices = String.indices key source
+--        matches =
+--    in
 
 
 

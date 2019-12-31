@@ -1,6 +1,7 @@
 module Buffer exposing
     ( Buffer
     , Direction(..)
+    , at
     , between
     , clampPosition
     , deindentBetween
@@ -158,6 +159,19 @@ between pos1 pos2 (Buffer buffer) =
         (\startIndex endIndex -> String.slice startIndex endIndex buffer)
         (indexFromPosition buffer start)
         (indexFromPosition buffer end)
+        |> Maybe.withDefault ""
+
+{-| Returns the string (a single character) at the  given position
+-}
+at : Position -> Buffer -> String
+at pos (Buffer buffer) =
+    let
+       pos2 = {pos | column = pos.column + 1}
+    in
+    Maybe.map2
+        (\startIndex endIndex -> String.slice startIndex endIndex buffer)
+        (indexFromPosition buffer pos)
+        (indexFromPosition buffer pos2)
         |> Maybe.withDefault ""
 
 

@@ -45,7 +45,6 @@ withTrue : a -> ( a, Bool )
 withTrue a =
     ( a, True )
 
-
 captureOnMouseDown : Msg -> Attribute Msg
 captureOnMouseDown msg =
     Event.stopPropagationOn
@@ -60,8 +59,8 @@ captureOnMouseOver msg =
         (Decode.map withTrue (Decode.succeed msg))
 
 
-character : Position -> Maybe Position -> Position -> Char -> Html Msg
-character cursor selection position char =
+character : Window -> Position -> Maybe Position -> Position -> Char -> Html Msg
+character window cursor selection position char =
     span
         [ classList
             [ ( name ++ "-line__character", True )
@@ -70,8 +69,8 @@ character cursor selection position char =
               , selected cursor selection position
               )
             ]
-        , captureOnMouseDown (MouseDown position)
-        , captureOnMouseOver (MouseOver position)
+        , captureOnMouseDown (MouseDown (Window.shiftPosition_ window position))
+        , captureOnMouseOver (MouseOver (Window.shiftPosition_ window position))
         ]
         [ text <| String.fromChar <| ensureNonBreakingSpace char
         , if cursor == position then
@@ -92,7 +91,7 @@ line window cursor selection index content =
             { line = index , column = length }
 
         {- Used below to correctly position and display the cursor -}
-        offset = (Window.getOffset window cursor.line)
+        offset = Debug.log "offset" window.first -- (Window.getOffset window cursor.line)
 
     in
     div
@@ -104,15 +103,16 @@ line window cursor selection index content =
         List.concat
             [ [ span
                     [ class <| name ++ "-line__gutter-padding"
-                    , captureOnMouseDown (MouseDown { line = index, column = 0 })
-                    , captureOnMouseOver (MouseOver { line = index, column = 0 })
+                    , captureOnMouseDown (MouseDown { line = index + offset, column = 0 })
+                    , captureOnMouseOver (MouseOver { line = index + offset, column = 0 })
                     ]
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                (Window.identity window index  >>  character cursor selection)
+                ( Window.identity window index  >>  character window cursor selection)
                 (String.toList content)
-            , if cursor.line ==  index - offset && cursor.column >= length then
+            --, if cursor.line ==  index - 0 && cursor.column >= length then
+            , if cursor.line ==  index - 0 && cursor.column >= length  then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"

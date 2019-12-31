@@ -1,9 +1,10 @@
-module Editor.Model exposing (InternalState, Snapshot, lastLine)
+module Editor.Model exposing (InternalState, Snapshot, lastLine, initialText)
 
 import Buffer exposing (Buffer)
 import Editor.History exposing (History)
 import Position exposing (Position)
 import Window exposing (Window)
+import TextExample
 
 
 type alias Snapshot =
@@ -24,3 +25,5 @@ type alias InternalState =
     }
 
 lastLine = 23
+
+initialText = TextExample.text3

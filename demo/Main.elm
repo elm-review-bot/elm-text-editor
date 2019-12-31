@@ -3,14 +3,14 @@ module Main exposing (main)
 import Browser
 import Buffer exposing (Buffer)
 import Editor exposing(State)
+import Editor.Model
 import Editor.Styles
 import Html exposing (details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
-import Window
 import Html.Attributes as Attributes
-import TextExample
+
 
 main : Program () Model Msg
 main =
@@ -36,7 +36,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { content = Buffer.init TextExample.text2
+    ( { content = Buffer.init Editor.Model.initialText
       , editor = Editor.init
       , lastKeyPress = Nothing
       }

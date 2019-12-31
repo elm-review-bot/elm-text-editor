@@ -191,8 +191,18 @@ view lines state =
               , clearButton
             ]
         ]
-        , div [] [goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
-      ]
+        , div [Attribute.style "width" "692px", Attribute.style "height" "72px", Attribute.style "padding-left" "8px", Attribute.style "background-color" "#bbb"] [
+            div [Attribute.style "width" "690px"] [goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
+          , div [Attribute.style "width" "690px", Attribute.style "height" "36px"] [text <| "Lines: " ++ (searchResultDisplay state) ]
+         ]
+         ]
+
+
+
+searchResultDisplay : InternalState -> String
+searchResultDisplay state =
+      state.searchResults |> List.map (Tuple.first >> .line) |> List.map ((\i -> i + 1) >> String.fromInt)
+        |> String.join ", "
 
 
 lineCount : List String -> Html Msg
@@ -241,13 +251,13 @@ acceptLineNumber = myInput 30 AcceptLineNumber "" [
     ]
 
 
-acceptSearchText = myInput 168 AcceptSearchText "" [
+acceptSearchText = myInput 155 AcceptSearchText "" [
      Attribute.style "float" "left"
    , Attribute.style "padding-top"  "8px"
     ]
 
 
-acceptReplaceText = myInput2 168  AcceptReplaceText "" [
+acceptReplaceText = myInput2 155  AcceptReplaceText "" [
      Attribute.style "float" "left"
    , Attribute.style "padding-top"  "8px"
     ]

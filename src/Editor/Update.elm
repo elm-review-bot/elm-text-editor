@@ -421,9 +421,9 @@ update buffer msg state =
 
         AcceptSearchText str ->
           let
-            searchResults = Debug.log "searchResults" <| (Buffer.search str buffer |> List.map (Tuple.first >> .line) |> List.map (\i -> i + 1))
+            searchResults = Buffer.search str buffer
           in
-          (state, buffer, Cmd.none)
+          ({state | searchResults = searchResults}, buffer, Cmd.none)
 
         AcceptReplaceText str -> (state, buffer, Cmd.none)
 

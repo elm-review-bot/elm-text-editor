@@ -22,6 +22,7 @@ type alias InternalState =
     , selectedText : Maybe String 
     , dragging : Bool
     , history : History Snapshot
+    , searchTerm : String
     , searchResults : List (Position, Position)
     }
 

@@ -38,4 +38,4 @@ type alias InternalState =
 
 lastLine = 23
 
-initialText = TextExample.text2
+initialText = TextExample.jabberwocky

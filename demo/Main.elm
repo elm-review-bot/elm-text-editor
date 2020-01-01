@@ -13,7 +13,7 @@ import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
 import Html.Attributes as Attributes
 import Editor.Widget as Widget
-
+import TextExample
 
 main : Program () Model Msg
 main =
@@ -23,8 +23,6 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
-
 
 -- INIT
 
@@ -39,7 +37,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { content = Buffer.init TextExample.text2
+    ( { content = Buffer.init TextExample.jabberwocky
       , editor = Editor.init {lines = 25}
       , lastKeyPress = Nothing
       }
@@ -56,6 +54,7 @@ type Msg
     | KeyPress String
     | Test
     | Test2
+    | Reset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -77,26 +76,33 @@ update msg model =
             ( { model | lastKeyPress = Just key }, Cmd.none )
 
         Test ->
-           let
-             data = Editor.load  testString model.editor
-           in
-            ( { model | content = data.buffer, editor = data.state }, Cmd.none)
+            load TextExample.testString model
+
+        Reset ->
+            load TextExample.jabberwocky model
 
         Test2 ->
-            ( model, Cmd.none)
+            highlightText "treasure" model
 
 
-testString = """This is a first test of how
-the editor could be used as a package.
-The API will change a lot as I experiment
-with it.  The goal is to have as few
-exposed functions as possible.
 
-Everything in the 0.5 px bordered region
-above comes from Editor code.  All
-the rest is from the code Main.
+load : String -> Model ->  (Model, Cmd Msg)
+load str model =
+   let
+     data = Editor.load str model.editor
+   in
+    ( { model | content = data.buffer, editor = data.state }, Cmd.none)
 
-"""
+highlightText : String -> Model -> (Model, Cmd Msg)
+highlightText str model =
+    let
+       scrollToText : State -> Buffer -> (State, Buffer)
+       scrollToText = Editor.lift (Editor.Update.scrollToText_ str)
+
+       (newEditor, newContent) = scrollToText model.editor model.content
+    in
+      ( {model | editor = newEditor, content = newContent}, Cmd.none)
+
 
 -- SUBSCRIPTIONS
 
@@ -151,10 +157,12 @@ footer =
              , text "needs lots of testing and issue posting/fixing" ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-           , testButton, testButton2
+           , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, testButton2]
           ]
 
 
-testButton = Widget.columnButton 80 Test "Test" []
+testButton = Widget.rowButton 80 Test "Test" []
 
-testButton2 = Widget.columnButton 80 Test2 "Test2" []
+testButton2 = Widget.rowButton 120 Test2 "Find treasure" []
+
+resetButton = Widget.rowButton 80 Reset "Reset" []

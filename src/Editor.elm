@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, view2, State, load, scrollToString, EditorData)
+module Editor exposing (Msg, lift, init, update, view, view2, State, load, scrollToString, EditorData)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -16,6 +16,12 @@ type alias Msg =
 
 type State
     = State InternalState
+
+toInternal : State -> InternalState
+toInternal (State s) = s
+
+fromInternal : InternalState -> State
+fromInternal s = State s
 
 clearState : State -> State
 clearState (State state) =
@@ -38,6 +44,12 @@ scrollToString str (State state_) buffer =
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =
     (State (f s))
+
+
+lift : (InternalState -> Buffer -> (InternalState, Buffer)) -> (State -> Buffer -> (State, Buffer))
+lift f =
+    \s b -> f (toInternal s) b |> (\(is, b_) -> (State is, b_))
+
 
 
 init : Config -> State

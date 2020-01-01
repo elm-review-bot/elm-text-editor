@@ -15,6 +15,7 @@ rowButtonStyle = [
        Attribute.style "font-size" "12px"
      , Attribute.style "border" "none"
      , Attribute.style "margin-right" "8px"
+     , Attribute.style "float" "left"
   ]
 
 buttonLabelStyle width = [  Attribute.style "font-size" "12px"

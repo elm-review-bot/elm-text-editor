@@ -1,4 +1,21 @@
-module TextExample exposing (text1, text2, text3)
+module TextExample exposing (text1, jabberwocky, text3, testString)
+
+
+testString = """This is a first test of how
+the editor could be used as a package.
+The 'Test' is a proxy for loading new
+content into the editor from an external
+source.
+
+The API will change a lot as I experiment
+with it.  The goal is to have as few
+exposed functions as possible.
+
+Everything in the 0.5 px bordered region
+above comes from Editor code.  All
+the rest is from the code Main.
+
+"""
 
 text3 = """1
 2
@@ -39,7 +56,7 @@ z
 
 """
 
-text2 = """Jabberwocky
+jabberwocky = """Jabberwocky
 
 By Lewis Carroll
 
@@ -77,6 +94,22 @@ O frabjous day! Callooh! Callay!”
      Did gyre and gimble in the wabe:
 All mimsy were the borogoves,
      And the mome raths outgrabe.
+
+PS. Here is the buried treasure.
+
+NOTES
+
+1. The above text about "treasure" is **fake**.
+We were just testing to see if we could send
+the editor requests like "find the word 'treasure,'
+scroll down to it, and highlight it."
+
+2. Now that this is working, we have a bit of
+code cleanup to do. And more work on some
+cursor and highight flakines, e.g., highlighting
+should be preserved when scrolling.
+
+
 """
 
 text1 = """0 aaa

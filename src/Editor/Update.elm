@@ -431,8 +431,9 @@ update buffer msg state =
                Just (cursor, end) ->
                   let
                      --(cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
-                     (cursor_, end_) = ( cursor,  end)
+                     -- (cursor_, end_) = ( cursor,  end)
                      window_ = Window.scrollToIncludeCursor cursor state.window
+                     (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
                   in
                      ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
 

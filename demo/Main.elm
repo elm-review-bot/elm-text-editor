@@ -5,7 +5,7 @@ import Buffer exposing (Buffer)
 import Editor exposing(State)
 import Editor.Model
 import Editor.Styles
-import Html exposing (details, div, summary, text, textarea)
+import Html exposing (Html, details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
@@ -91,40 +91,36 @@ keyDecoder keyToMsg =
         |> Decode.map keyToMsg
 
 
-view : Model -> Html.Html Msg
+view : Model -> Html Msg
 view model =
+    div [] [
+               title
+             , embeddedEditor model
+             , footer
+           ]
+
+title : Html Msg
+title =
+  div [HA.style "font-size" "16px", HA.style "font-style" "bold" , HA.style "margin-bottom" "10px" ]
+            [text "A Pure Elm Text Editor"]
+
+embeddedEditor : Model -> Html Msg
+embeddedEditor model =
     div
-        [ Event.on "keydown" (keyDecoder KeyPress), HA.style  "backround-color" "#dddddd"
-        ]
-        [ div [HA.style "font-size" "24px", HA.style "font-style" "bold" , HA.style "margin-bottom" "10px" ]
-            [text "Pure Elm Text Editor"]
-        , Editor.Styles.styles
-        , model.editor
+        [ Event.on "keydown" (keyDecoder KeyPress), HA.style  "backround-color" "#dddddd" ]
+        [  Editor.Styles.styles
+         , model.editor
             |> Editor.view model.content
             |> Html.map EditorMsg
-        , div [HA.style "margin-top" "50px"] [
-           Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"]
-           , text " — needs lots of testing and issue posting/fixing"
-           , div [HA.style "margin-top" "20px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
-           , div [HA.style "margin-top" "20px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-          ]
-
-        , details [HA.style "margin-top" "20px"]
-            [ summary []
-                [ text "Debug" ]
-
-            , div [HA.style "margin-top" "20px"] [text <| "window: " ++ Debug.toString (Editor.internal model.editor).window]
-            , div [HA.style "margin-top" "5px"] [text <| "cursor:  " ++ Debug.toString (Editor.internal model.editor).cursor]
-
-            , case model.lastKeyPress of
-                Just key ->
-                    div [HA.style "margin-top" "20px"] [ text <| "Last key press: " ++ key ]
-
-                Nothing ->
-                    text ""
-
-            , model.editor |> Editor.view2 model.content |>  Html.map EditorMsg
-            --, div [HA.style "margin-top" "20px"] [ text <| Debug.toString model.editor ]
-            ]
         ]
+
+footer : Html Msg
+footer =
+       div [HA.style "font-size" "14px"] [
+           div [HA.style "margin-top" "30px"] [
+              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code: "]
+             , text "needs lots of testing and issue posting/fixing" ]
+           , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
+           , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
+          ]
 

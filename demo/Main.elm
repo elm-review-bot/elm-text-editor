@@ -76,16 +76,21 @@ update msg model =
             ( { model | lastKeyPress = Just key }, Cmd.none )
 
         Test ->
-            ( { model | content = Buffer.fromString testString, editor = Editor.clearState model.editor }, Cmd.none)
+           let
+             data = Editor.load  testString model.editor
+           in
+            ( { model | content = data.buffer, editor = data.state }, Cmd.none)
 
 
-testString = """This is a test of using
-the editor as a package,
-even though it is not (yet).
+testString = """This is a first test of how
+the editor could be used as a package.
+The API will change a lot as I experiment
+with it.  The goal is to have as few
+exposed functions as possible. 
 
-Everything in 0.5 px bordered region
+Everything in the 0.5 px bordered region
 above comes from Editor code.  All
-the rest is from Main.
+the rest is from the code Main.
 
 """
 

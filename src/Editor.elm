@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, view2, State, internal, clearState)
+module Editor exposing (Msg, init, update, view, view2, State, internal, clearState,  load, EditorData)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -20,6 +20,15 @@ type State
 clearState : State -> State
 clearState (State state) =
     State (Editor.Update.clearInternalState state)
+
+type alias EditorData = {
+     state : State
+   , buffer : Buffer
+   }
+
+load : String ->  State -> EditorData
+load content state =
+  {buffer = Buffer.fromString content, state = clearState state }
 
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =

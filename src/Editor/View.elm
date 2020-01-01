@@ -188,6 +188,7 @@ view lines state =
               , scrollPosition state
               , cursorPosition state
               , lineCount lines
+              , wordCount lines
               , resetButton
               , clearButton
             ]
@@ -225,6 +226,15 @@ searchResultDisplay state =
 lineCount : List String -> Html Msg
 lineCount lines =
     div columnButtonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
+
+wordCount : List String -> Html Msg
+wordCount lines =
+  let
+      words = List.map String.words lines |> List.concat
+  in
+   div columnButtonStyle  [text ("Words: " ++ String.fromInt (List.length words))]
+
+
 
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =

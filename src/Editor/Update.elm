@@ -960,6 +960,19 @@ update buffer msg state =
         Clear ->
               ( initialState,  Buffer.init "", Cmd.none)
 
+scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
+scrollToText str state buffer =
+     let
+        searchResults = Buffer.search str buffer
+      in
+      case List.head searchResults of
+           Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer, Cmd.none)
+           Just (cursor, end) ->
+              let
+                 window_ = Window.scrollToIncludeCursor cursor state.window
+                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
+              in
+                 ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
 
 
 rollSearchSelectionForward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)

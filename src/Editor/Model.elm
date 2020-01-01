@@ -4,7 +4,7 @@ import Buffer exposing (Buffer)
 import Editor.History exposing (History)
 import Position exposing (Position)
 import Window exposing (Window)
-import TextExample
+import Text
 import RollingList exposing(RollingList)
 
 
@@ -38,4 +38,4 @@ type alias InternalState =
 
 lastLine = 23
 
-initialText = TextExample.jabberwocky
+initialText = Text.jabberwocky

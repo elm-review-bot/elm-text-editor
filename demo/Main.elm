@@ -6,14 +6,14 @@ import Editor exposing(State)
 import Editor.Model
 import Editor.Styles
 import Editor.Update
-import TextExample
+import Text
 import Html exposing (Html, details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
 import Html.Attributes as Attributes
 import Editor.Widget as Widget
-import TextExample
+import Text
 
 main : Program () Model Msg
 main =
@@ -37,7 +37,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { content = Buffer.init TextExample.jabberwocky
+    ( { content = Buffer.init Text.jabberwocky
       , editor = Editor.init {lines = 25}
       , lastKeyPress = Nothing
       }
@@ -76,10 +76,10 @@ update msg model =
             ( { model | lastKeyPress = Just key }, Cmd.none )
 
         Test ->
-            load TextExample.testString model
+            load Text.testString model
 
         Reset ->
-            load TextExample.jabberwocky model
+            load Text.jabberwocky model
 
         Test2 ->
             highlightText "treasure" model

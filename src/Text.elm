@@ -1,4 +1,4 @@
-module TextExample exposing (text1, jabberwocky, text3, testString)
+module Text exposing (jabberwocky, alphabet, testString)
 
 
 testString = """This is a first test of how
@@ -12,12 +12,13 @@ with it.  The goal is to have as few
 exposed functions as possible.
 
 Everything in the 0.5 px bordered region
-above comes from Editor code.  All
-the rest is from the code Main.
+you see here comes from Editor code.  All
+the rest (below, beginning with "Source ...")
+is from the code in Main.
 
 """
 
-text3 = """1
+alphabet = """1
 2
 3
 4
@@ -112,14 +113,4 @@ should be preserved when scrolling.
 
 """
 
-text1 = """0 aaa
-        1 bbb
-        2 ccc
-        3 ddd
-        4 eee
-        5 fff
-        6 ggg
-        7 hhh
-        8 iii
-        9 jjj
-        """
+

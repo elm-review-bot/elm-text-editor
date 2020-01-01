@@ -28,7 +28,8 @@ type Msg
     | FirstLine
     | AcceptLineNumber String
     | AcceptSearchText String
-    | AcceptReplaceText String
+    | AcceptReplacementText String
+    | ReplaceCurrentSelection
     | LastLine
     | Paste
     | RemoveCharAfter
@@ -444,8 +445,18 @@ update buffer msg state =
         RollSearchSelectionBackward ->
             rollSearchSelectionBackward  state buffer
 
-        AcceptReplaceText str -> (state, buffer, Cmd.none)
+        AcceptReplacementText str ->
+           ({state | replacementText = str} , buffer, Cmd.none)
 
+        ReplaceCurrentSelection ->
+          case state.selection of
+              Nothing -> (state, buffer, Cmd.none)
+              Just end ->
+                  let
+                    newBuffer = Buffer.replace state.cursor end state.replacementText buffer
+                  in
+                    (state, newBuffer, Cmd.none)
+                      |> recordHistory state buffer
         LastLine ->
             let
                cursor = {line = (List.length (Buffer.lines buffer)) - 1, column = 0}

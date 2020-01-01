@@ -263,13 +263,13 @@ searchBackwardButton = rowButton 78 RollSearchSelectionBackward "Prev" [Attribut
 
 searchTextButton = rowButton 90 NoOp "Search" [Attribute.style "float" "left"]
 
-replaceTextButton = rowButton 90 NoOp "Replace" [Attribute.style "float" "left"]
+replaceTextButton = rowButton 90 ReplaceCurrentSelection "Replace" [Attribute.style "float" "left"]
 
 acceptLineNumber = myInput 30 AcceptLineNumber "" [ Attribute.style "float" "left" ]
 
 acceptSearchText = myInput 155 AcceptSearchText "" [ Attribute.style "float" "left" ]
 
-acceptReplaceText = myInput2 155  AcceptReplaceText "" [ Attribute.style "float" "left" ]
+acceptReplaceText = myInput2 155  AcceptReplacementText "" [ Attribute.style "float" "left" ]
 
 {-- WIDGETS -}
 

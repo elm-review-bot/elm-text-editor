@@ -55,6 +55,7 @@ type Msg
     = EditorMsg Editor.Msg
     | KeyPress String
     | Test
+    | Test2
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -80,6 +81,9 @@ update msg model =
              data = Editor.load  testString model.editor
            in
             ( { model | content = data.buffer, editor = data.state }, Cmd.none)
+
+        Test2 ->
+            ( model, Cmd.none)
 
 
 testString = """This is a first test of how
@@ -147,8 +151,10 @@ footer =
              , text "needs lots of testing and issue posting/fixing" ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-           , testButton
+           , testButton, testButton2
           ]
 
 
 testButton = Widget.columnButton 80 Test "Test" []
+
+testButton2 = Widget.columnButton 80 Test2 "Test2" []

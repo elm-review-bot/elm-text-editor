@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, view2, State, load, EditorData)
+module Editor exposing (Msg, init, update, view, view2, State, load, scrollToString, EditorData)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -29,6 +29,11 @@ type alias EditorData = {
 load : String ->  State -> EditorData
 load content state =
   {buffer = Buffer.fromString content, state = clearState state }
+
+scrollToString : String -> State -> Buffer -> EditorData
+scrollToString str (State state_) buffer =
+  Editor.Update.scrollToText_ str state_ buffer
+    |> (\(is, b) -> {buffer = b, state = State is})
 
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =

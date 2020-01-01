@@ -1,4 +1,4 @@
-module Editor.Update exposing (Msg(..), update, clearInternalState)
+module Editor.Update exposing (Msg(..), update, scrollToText, scrollToText_, clearInternalState)
 
 import Buffer exposing (Buffer)
 import Dict exposing (Dict)
@@ -423,17 +423,7 @@ update buffer msg state =
                      ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
 
         AcceptSearchText str ->
-          let
-            searchResults = Buffer.search str buffer
-          in
-          case List.head searchResults of
-               Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer, Cmd.none)
-               Just (cursor, end) ->
-                  let
-                     window_ = Window.scrollToIncludeCursor cursor state.window
-                     (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
-                  in
-                     ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
+            scrollToText str state buffer
 
         ScrollToSelection (start, end) ->
             (state, buffer,Cmd.none)
@@ -968,6 +958,20 @@ scrollToText str state buffer =
                  (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
               in
                  ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
+
+scrollToText_ : String -> InternalState -> Buffer -> (InternalState, Buffer)
+scrollToText_ str state buffer =
+     let
+        searchResults = Buffer.search str buffer
+      in
+      case List.head searchResults of
+           Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer)
+           Just (cursor, end) ->
+              let
+                 window_ = Window.scrollToIncludeCursor cursor state.window
+                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
+              in
+                 ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer)
 
 
 rollSearchSelectionForward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)

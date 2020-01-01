@@ -197,7 +197,7 @@ view lines state =
           , div [Attribute.style "width" "690px", Attribute.style "height" "36px",  Attribute.style "margin-top" "0px"]
               [
                   div [ Attribute.style "float" "left", Attribute.style "width" "241px" ]
-                        [text <| "Lines matching \"" ++ state.searchTerm ++ "\": " ++ (searchResultDisplay state)]
+                        [text <| "Matches : " ++ (searchResultDisplay state)]
                   , searchForwardButton
                   , searchBackwardButton
               ]
@@ -214,7 +214,7 @@ searchResultDisplay state =
             |> List.map (Tuple.first >> .line)
             |> List.map ((\i -> i + 1) >> String.fromInt)
       fewerLines =
-             List.take 3 lines
+             List.take 5 lines
     in
       if List.length lines > List.length fewerLines then
         (String.join ", " fewerLines) ++ " ..."

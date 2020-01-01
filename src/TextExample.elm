@@ -48,8 +48,6 @@ By Lewis Carroll
 All mimsy were the borogoves,
      And the mome raths outgrabe.
 
-axax
-
 “Beware the Jabberwock, my son!
      The jaws that bite, the claws that catch!
 Beware the Jubjub bird, and shun
@@ -65,8 +63,6 @@ And, as in uffish thought he stood,
 Came whiffling through the tulgey wood,
      And burbled as it came!
 
-axax
-
 One, two! One, two! And through and through
      The vorpal blade went snicker-snack!
 He left it dead, and with its head
@@ -81,8 +77,6 @@ O frabjous day! Callooh! Callay!”
      Did gyre and gimble in the wabe:
 All mimsy were the borogoves,
      And the mome raths outgrabe.
-
-yxy axax
 """
 
 text1 = """0 aaa

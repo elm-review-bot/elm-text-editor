@@ -84,9 +84,9 @@ search key  buffer =
 searchHits : String -> List String -> List ( Position, Position )
 searchHits key lines_ =
     let
-       key_ = String.toLower key
+       key_ =  key
     in
-     indexedFilterMap (\i line -> String.contains key_ (String.toLower line)) lines_
+     indexedFilterMap (\i line -> String.contains key_  line) lines_
        |> List.map (\(idx, str) -> (idx, str, matches key_ str))
        |> List.map positions
        |> List.concat
@@ -123,9 +123,8 @@ stringIndices key source =
 matches : String -> String -> List String
 matches key str =
     str
-      |> String.toLower
       |> String.words
-      |> List.filter (\word -> String.contains (String.toLower key) word)
+      |> List.filter (\word -> String.contains key word)
 
 
 

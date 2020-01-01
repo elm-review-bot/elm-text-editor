@@ -24,6 +24,7 @@ type alias InternalState =
     , dragging : Bool
     , history : History Snapshot
     , searchTerm : String
+    , replacementText : String
     , searchResults : RollingList (Position, Position)
     }
 

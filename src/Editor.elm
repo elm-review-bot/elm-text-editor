@@ -37,6 +37,7 @@ init =
         , dragging = False
         , history = Editor.History.empty
         , searchTerm = ""
+        , replacementText = ""
         , searchResults = RollingList.fromList []
         }
 

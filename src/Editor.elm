@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, view2, State, internal, clearState,  load, EditorData)
+module Editor exposing (Msg, init, update, view, view2, State, load, EditorData)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -33,11 +33,6 @@ load content state =
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =
     (State (f s))
-
-{-| TEMPORARY!!! -}
-internal : State -> InternalState
-internal (State s) = s
-
 
 
 init : Config -> State

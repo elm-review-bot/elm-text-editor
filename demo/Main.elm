@@ -86,7 +86,7 @@ testString = """This is a first test of how
 the editor could be used as a package.
 The API will change a lot as I experiment
 with it.  The goal is to have as few
-exposed functions as possible. 
+exposed functions as possible.
 
 Everything in the 0.5 px bordered region
 above comes from Editor code.  All

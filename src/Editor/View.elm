@@ -192,11 +192,14 @@ view lines state =
               , clearButton
             ]
         ]
-        , div [Attribute.style "width" "692px", Attribute.style "height" "72px", Attribute.style "padding-left" "8px", Attribute.style "background-color" "#bbb"] [
+        , div [Attribute.style "width" "692px", Attribute.style "padding-top" "10px",Attribute.style "height" "72px", Attribute.style "padding-left" "8px", Attribute.style "background-color" "#bbb"] [
             div [Attribute.style "width" "690px"] [ goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
-          , div [Attribute.style "width" "690px", Attribute.style "height" "36px"]
-              [  searchForwardButton , searchBackwardButton
-              , div [ Attribute.style "float" "left", Attribute.style "width" "400px",Attribute.style "padding-top" "14px", Attribute.style "height" "36px" ] [text <| "Lines matching \"" ++ state.searchTerm ++ "\": " ++ (searchResultDisplay state)]
+          , div [Attribute.style "width" "690px", Attribute.style "height" "36px",  Attribute.style "margin-top" "0px"]
+              [
+                  div [ Attribute.style "float" "left", Attribute.style "width" "241px" ]
+                        [text <| "Lines matching \"" ++ state.searchTerm ++ "\": " ++ (searchResultDisplay state)]
+                  , searchForwardButton
+                  , searchBackwardButton
               ]
          ]
          ]
@@ -205,24 +208,31 @@ view lines state =
 
 searchResultDisplay : InternalState -> String
 searchResultDisplay state =
-      state.searchResults
-        |> RollingList.toList
-        |> List.map (Tuple.first >> .line)
-        |> List.map ((\i -> i + 1) >> String.fromInt)
-        |> String.join ", "
+    let
+      lines = state.searchResults
+            |> RollingList.toList
+            |> List.map (Tuple.first >> .line)
+            |> List.map ((\i -> i + 1) >> String.fromInt)
+      fewerLines =
+             List.take 3 lines
+    in
+      if List.length lines > List.length fewerLines then
+        (String.join ", " fewerLines) ++ " ..."
+      else
+        String.join ", " lines
 
 
 lineCount : List String -> Html Msg
 lineCount lines =
-    div buttonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
+    div columnButtonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
 
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =
-    div buttonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
+    div columnButtonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
 
 scrollPosition : InternalState -> Html Msg
 scrollPosition state =
-    div buttonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
+    div columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
 
 view2 : List String -> InternalState -> Html Msg
 view2 lines state =
@@ -233,53 +243,47 @@ view2 lines state =
         ]
 
 
-upButton = myButton 80 ScrollUp "Up" []
+upButton = columnButton 80 ScrollUp "Up" []
 
-downButton = myButton 80 ScrollDown "Down" []
+downButton = columnButton 80 ScrollDown "Down" []
 
-resetButton = myButton 80 Reset "Reset" []
+resetButton = columnButton 80 Reset "Reset" []
 
-clearButton = myButton 80 Clear "Clear" []
+clearButton = columnButton 80 Clear "Clear" []
 
-firstLineButton = myButton 80 FirstLine "First" []
+firstLineButton = columnButton 80 FirstLine "First" []
 
-goToLineButton = myButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
+lastLineButton = columnButton 80 LastLine "Last" []
 
-lastLineButton = myButton 80 LastLine "Last" []
+goToLineButton = rowButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
 
-searchForwardButton = myButton 80 RollSearchSelectionForward "Next" [Attribute.style "float" "left"]
+searchForwardButton = rowButton 78 RollSearchSelectionForward "Next" [Attribute.style "float" "left"]
 
-searchBackwardButton = myButton 80 RollSearchSelectionForward "Prev" [Attribute.style "float" "left"]
+searchBackwardButton = rowButton 78 RollSearchSelectionBackward "Prev" [Attribute.style "float" "left"]
 
-searchTextButton = myButton 90 NoOp "Search" [Attribute.style "float" "left"]
+searchTextButton = rowButton 90 NoOp "Search" [Attribute.style "float" "left"]
 
-replaceTextButton = myButton 90 NoOp "Replace" [Attribute.style "float" "left"]
+replaceTextButton = rowButton 90 NoOp "Replace" [Attribute.style "float" "left"]
 
+acceptLineNumber = myInput 30 AcceptLineNumber "" [ Attribute.style "float" "left" ]
 
-acceptLineNumber = myInput 30 AcceptLineNumber "" [
-     Attribute.style "float" "left"
-   , Attribute.style "padding-top"  "8px"
-    ]
+acceptSearchText = myInput 155 AcceptSearchText "" [ Attribute.style "float" "left" ]
 
-
-acceptSearchText = myInput 155 AcceptSearchText "" [
-     Attribute.style "float" "left"
-   , Attribute.style "padding-top"  "8px"
-    ]
-
-
-acceptReplaceText = myInput2 155  AcceptReplaceText "" [
-     Attribute.style "float" "left"
-   , Attribute.style "padding-top"  "8px"
-    ]
+acceptReplaceText = myInput2 155  AcceptReplaceText "" [ Attribute.style "float" "left" ]
 
 {-- WIDGETS -}
 
 
-buttonStyle = [
-     Attribute.style "margin-top" "10px"
-     , Attribute.style "font-size" "12px"
+columnButtonStyle = [
+      Attribute.style "margin-top" "10px"
+     ,  Attribute.style "font-size" "12px"
      ,  Attribute.style "border" "none"
+     , Attribute.style "margin-right" "8px"
+  ]
+
+rowButtonStyle = [
+       Attribute.style "font-size" "12px"
+     , Attribute.style "border" "none"
      , Attribute.style "margin-right" "8px"
   ]
 
@@ -291,8 +295,12 @@ buttonLabelStyle width = [  Attribute.style "font-size" "12px"
                     , Attribute.style "border" "none"
                     ]
 
-myButton width msg str attr =
-   div (buttonStyle ++ attr)
+columnButton width msg str attr =
+   div (columnButtonStyle ++ attr)
+     [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
+
+rowButton width msg str attr =
+   div (rowButtonStyle ++ attr)
      [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
 
 myInput width msg str attr =

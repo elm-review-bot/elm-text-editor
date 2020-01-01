@@ -430,8 +430,6 @@ update buffer msg state =
                Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer, Cmd.none)
                Just (cursor, end) ->
                   let
-                     --(cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
-                     -- (cursor_, end_) = ( cursor,  end)
                      window_ = Window.scrollToIncludeCursor cursor state.window
                      (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
                   in
@@ -444,7 +442,7 @@ update buffer msg state =
             rollSearchSelectionForward  state buffer
 
         RollSearchSelectionBackward ->
-            rollSearchSelectionForward  state buffer
+            rollSearchSelectionBackward  state buffer
 
         AcceptReplaceText str -> (state, buffer, Cmd.none)
 
@@ -952,20 +950,6 @@ update buffer msg state =
               ( initialState,  Buffer.init "", Cmd.none)
 
 
-scrollToSearchSelection  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
-scrollToSearchSelection  state buffer =
-    case RollingList.current state.searchResults of
-        Nothing -> (state, buffer, Cmd.none)
-        Just (cursor, end) ->
-          let
-             -- (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
-             (cursor_, end_) = ( cursor,  end)
-             window = Debug.log "New Window" <| Window.scrollToIncludeCursor cursor_ state.window
-          in
-             ({state | cursor = cursor_
-                     , selection = Just end_
-                     , window = window
-               }, buffer, Cmd.none)
 
 rollSearchSelectionForward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
 rollSearchSelectionForward  state buffer =
@@ -976,32 +960,32 @@ rollSearchSelectionForward  state buffer =
             Nothing -> (state, buffer, Cmd.none)
             Just (cursor, end) ->
               let
-                 window = Window.scrollToIncludeCursor cursor state.window
-                --   cursor_, end_) = (Window.shiftPosition_  window cursor, Window.shiftPosition_ window end)
-
+                 window_ = Window.scrollToIncludeCursor cursor state.window
+                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
               in
-                 ({state | cursor = cursor
-                         , window = window
-                         , selection = Just end
+                 ({state | cursor = cursor_
+                         , window = window_
+                         , selection = Just end_
                          , searchResults = searchResults_
                   }, buffer, Cmd.none)
 
 rollSearchSelectionBackward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
 rollSearchSelectionBackward  state buffer =
     let
-            searchResults_ = RollingList.rollBack state.searchResults
+        searchResults_ = RollingList.rollBack state.searchResults
     in
-        case RollingList.current searchResults_ of
-                Nothing -> (state, buffer, Cmd.none)
-                Just (cursor, end) ->
-                  let
-                     (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
-                  in
-                     ({state | cursor = cursor_
-                             , window = Window.scrollToIncludeCursor cursor_ state.window
-                             , selection = Just end_
-                             , searchResults = searchResults_
-                      }, buffer, Cmd.none)
+    case RollingList.current searchResults_ of
+            Nothing -> (state, buffer, Cmd.none)
+            Just (cursor, end) ->
+              let
+                 window_ = Window.scrollToIncludeCursor cursor state.window
+                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
+              in
+                 ({state | cursor = cursor_
+                         , window = window_
+                         , selection = Just end_
+                         , searchResults = searchResults_
+                  }, buffer, Cmd.none)
 
 initialState = { scrolledLine = 0
         , cursor = Position 0 0

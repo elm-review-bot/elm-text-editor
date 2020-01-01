@@ -1,4 +1,4 @@
-module Editor.Update exposing (Msg(..), update)
+module Editor.Update exposing (Msg(..), update, clearInternalState)
 
 import Buffer exposing (Buffer)
 import Dict exposing (Dict)
@@ -56,7 +56,6 @@ type Msg
     | ScrollToSelection (Position, Position)
     | RollSearchSelectionForward
     | RollSearchSelectionBackward
-    | Reset
     | Clear
 
 
@@ -953,12 +952,8 @@ update buffer msg state =
           in
             ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
 
-
-        Reset ->
-             ( initialState,  Buffer.init Editor.Model.initialText, Cmd.none)
-
         Clear ->
-              ( initialState,  Buffer.init "", Cmd.none)
+              ( clearInternalState state,  Buffer.init "", Cmd.none)
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =
@@ -1011,14 +1006,17 @@ rollSearchSelectionBackward  state buffer =
                          , searchResults = searchResults_
                   }, buffer, Cmd.none)
 
-initialState = { scrolledLine = 0
-        , cursor = Position 0 0
-        , window = {first = 0, last = Editor.Model.lastLine}
-        , selection = Nothing
-        , selectedText = Nothing
-        , dragging = False
-        , history = Editor.History.empty
-        , searchTerm = ""
-        , replacementText = ""
-        , searchResults = RollingList.fromList []
-        }
+clearInternalState : InternalState -> InternalState
+clearInternalState state =
+    {state |  window = {first = 0, last = state.config.lines - 1}
+            , cursor = {line = 0, column = 0}
+            , selection = Nothing
+            , selectedText = Nothing
+            , dragging = False
+            , searchTerm = ""
+            , replacementText = ""
+            , scrolledLine = 0
+            , searchResults = RollingList.fromList []
+       }
+
+

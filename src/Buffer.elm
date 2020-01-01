@@ -22,6 +22,7 @@ module Buffer exposing
     , replace
     , search
     , toString
+    , fromString
     )
 
 {-| Manipulates a string using Positions. The string of characters is stored in
@@ -214,6 +215,10 @@ lines : Buffer -> List String
 lines (Buffer content) =
     String.split "\n" content
 
+
+fromString : String -> Buffer
+fromString str =
+    (Buffer str)
 
 toString : Buffer -> String
 toString (Buffer buffer) =

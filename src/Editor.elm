@@ -1,8 +1,8 @@
-module Editor exposing (Msg, init, update, view, view2, State, internal)
+module Editor exposing (Msg, init, update, view, view2, State, internal, clearState)
 
 import Buffer exposing (Buffer)
 import Editor.History
-import Editor.Model exposing (InternalState)
+import Editor.Model exposing (InternalState, Config)
 import Editor.Update
 import Editor.View
 import Html exposing (Html)
@@ -17,6 +17,10 @@ type alias Msg =
 type State
     = State InternalState
 
+clearState : State -> State
+clearState (State state) =
+    State (Editor.Update.clearInternalState state)
+
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =
     (State (f s))
@@ -26,12 +30,14 @@ internal : State -> InternalState
 internal (State s) = s
 
 
-init : State
-init =
+
+init : Config -> State
+init config =
     State
-        { scrolledLine = 0
+        { config = config
+        , scrolledLine = 0
         , cursor = Position 0 0
-        , window = {first = 0, last = Editor.Model.lastLine}
+        , window = {first = 0, last = config.lines - 1}
         , selection = Nothing
         , selectedText = Nothing
         , dragging = False

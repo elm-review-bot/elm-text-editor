@@ -11,6 +11,7 @@ import Json.Decode as Decode
 import Position exposing (Position)
 import Window exposing(Window)
 import RollingList
+import Editor.Widget as Widget
 
 
 name : String
@@ -189,7 +190,6 @@ view lines state =
               , cursorPosition state
               , lineCount lines
               , wordCount lines
-              , resetButton
               , clearButton
             ]
         ]
@@ -225,24 +225,24 @@ searchResultDisplay state =
 
 lineCount : List String -> Html Msg
 lineCount lines =
-    div columnButtonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
+    div Widget.columnButtonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
 
 wordCount : List String -> Html Msg
 wordCount lines =
   let
       words = List.map String.words lines |> List.concat
   in
-   div columnButtonStyle  [text ("Words: " ++ String.fromInt (List.length words))]
+   div Widget.columnButtonStyle  [text ("Words: " ++ String.fromInt (List.length words))]
 
 
 
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =
-    div columnButtonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
+    div Widget.columnButtonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
 
 scrollPosition : InternalState -> Html Msg
 scrollPosition state =
-    div columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
+    div Widget.columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
 
 view2 : List String -> InternalState -> Html Msg
 view2 lines state =
@@ -253,82 +253,31 @@ view2 lines state =
         ]
 
 
-upButton = columnButton 80 ScrollUp "Up" []
+upButton = Widget.columnButton 80 ScrollUp "Up" []
 
-downButton = columnButton 80 ScrollDown "Down" []
+downButton = Widget.columnButton 80 ScrollDown "Down" []
 
-resetButton = columnButton 80 Reset "Reset" []
+clearButton = Widget.columnButton 80 Clear "Clear" []
 
-clearButton = columnButton 80 Clear "Clear" []
+firstLineButton = Widget.columnButton 80 FirstLine "First" []
 
-firstLineButton = columnButton 80 FirstLine "First" []
+lastLineButton = Widget.columnButton 80 LastLine "Last" []
 
-lastLineButton = columnButton 80 LastLine "Last" []
+goToLineButton = Widget.rowButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
 
-goToLineButton = rowButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
+searchForwardButton = Widget.rowButton 78 RollSearchSelectionForward "Next" [Attribute.style "float" "left"]
 
-searchForwardButton = rowButton 78 RollSearchSelectionForward "Next" [Attribute.style "float" "left"]
+searchBackwardButton = Widget.rowButton 78 RollSearchSelectionBackward "Prev" [Attribute.style "float" "left"]
 
-searchBackwardButton = rowButton 78 RollSearchSelectionBackward "Prev" [Attribute.style "float" "left"]
+searchTextButton = Widget.rowButton 90 NoOp "Search" [Attribute.style "float" "left"]
 
-searchTextButton = rowButton 90 NoOp "Search" [Attribute.style "float" "left"]
+replaceTextButton = Widget.rowButton 90 ReplaceCurrentSelection "Replace" [Attribute.style "float" "left"]
 
-replaceTextButton = rowButton 90 ReplaceCurrentSelection "Replace" [Attribute.style "float" "left"]
+acceptLineNumber = Widget.myInput 30 AcceptLineNumber "" [ Attribute.style "float" "left" ]
 
-acceptLineNumber = myInput 30 AcceptLineNumber "" [ Attribute.style "float" "left" ]
+acceptSearchText = Widget.myInput 155 AcceptSearchText "" [ Attribute.style "float" "left" ]
 
-acceptSearchText = myInput 155 AcceptSearchText "" [ Attribute.style "float" "left" ]
-
-acceptReplaceText = myInput2 155  AcceptReplacementText "" [ Attribute.style "float" "left" ]
+acceptReplaceText = Widget.myInput2 155  AcceptReplacementText "" [ Attribute.style "float" "left" ]
 
 {-- WIDGETS -}
 
-
-columnButtonStyle = [
-      Attribute.style "margin-top" "10px"
-     ,  Attribute.style "font-size" "12px"
-     ,  Attribute.style "border" "none"
-     , Attribute.style "margin-right" "8px"
-  ]
-
-rowButtonStyle = [
-       Attribute.style "font-size" "12px"
-     , Attribute.style "border" "none"
-     , Attribute.style "margin-right" "8px"
-  ]
-
-buttonLabelStyle width = [  Attribute.style "font-size" "12px"
-                    , Attribute.style "background-color" "#666"
-                    , Attribute.style "color" "#eee"
-                    , Attribute.style "width"  (String.fromInt width ++ "px")
-                    , Attribute.style "height"  "24px"
-                    , Attribute.style "border" "none"
-                    ]
-
-columnButton width msg str attr =
-   div (columnButtonStyle ++ attr)
-     [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
-
-rowButton width msg str attr =
-   div (rowButtonStyle ++ attr)
-     [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
-
-myInput width msg str attr =
-    div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
-        [ input [  Attribute.style "height"  "18px"
-                 , Attribute.style "width" (String.fromInt width ++ "px")
-                 , Attribute.type_ "text"
-                 , Attribute.placeholder str
-                 , Attribute.style "margin-right" "8px"
-                 , onInput msg ] []
-        ]
-
-
-myInput2 width msg str attr =
-    div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
-        [ input [  Attribute.style "height"  "18px"
-                 , Attribute.style "width" (String.fromInt width ++ "px")
-                 , Attribute.type_ "text"
-                 , Attribute.placeholder str
-                 , onInput msg ] []
-        ]

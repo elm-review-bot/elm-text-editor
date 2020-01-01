@@ -5,11 +5,14 @@ import Buffer exposing (Buffer)
 import Editor exposing(State)
 import Editor.Model
 import Editor.Styles
+import Editor.Update
+import TextExample
 import Html exposing (Html, details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
 import Html.Attributes as Attributes
+import Editor.Widget as Widget
 
 
 main : Program () Model Msg
@@ -36,8 +39,8 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { content = Buffer.init Editor.Model.initialText
-      , editor = Editor.init
+    ( { content = Buffer.init TextExample.text2
+      , editor = Editor.init {lines = 25}
       , lastKeyPress = Nothing
       }
     , Cmd.none
@@ -51,6 +54,7 @@ init () =
 type Msg
     = EditorMsg Editor.Msg
     | KeyPress String
+    | Test
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -71,7 +75,19 @@ update msg model =
         KeyPress key ->
             ( { model | lastKeyPress = Just key }, Cmd.none )
 
+        Test ->
+            ( { model | content = Buffer.fromString testString, editor = Editor.clearState model.editor }, Cmd.none)
 
+
+testString = """This is a test of using
+the editor as a package,
+even though it is not (yet).
+
+Everything in 0.5 px bordered region
+above comes from Editor code.  All
+the rest is from Main.
+
+"""
 
 -- SUBSCRIPTIONS
 
@@ -107,7 +123,11 @@ title =
 embeddedEditor : Model -> Html Msg
 embeddedEditor model =
     div
-        [ Event.on "keydown" (keyDecoder KeyPress), HA.style  "backround-color" "#dddddd" ]
+        [   Event.on "keydown" (keyDecoder KeyPress)
+          , HA.style  "backround-color" "#dddddd"
+          , HA.style "border" "solid 0.5px"
+          , HA.style "width" "700px"
+        ]
         [  Editor.Styles.styles
          , model.editor
             |> Editor.view model.content
@@ -122,5 +142,8 @@ footer =
              , text "needs lots of testing and issue posting/fixing" ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
+           , testButton
           ]
 
+
+testButton = Widget.columnButton 80 Test "Test" []

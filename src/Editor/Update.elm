@@ -53,6 +53,8 @@ type Msg
     | ScrollUp
     | ScrollDown
     | ScrollToSelection (Position, Position)
+    | RollSearchSelectionForward
+    | RollSearchSelectionBackward
     | Reset
     | Clear
 
@@ -428,12 +430,20 @@ update buffer msg state =
                Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer, Cmd.none)
                Just (cursor, end) ->
                   let
-                     (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+                     --(cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+                     (cursor_, end_) = ( cursor,  end)
+                     window_ = Window.scrollToIncludeCursor cursor state.window
                   in
-                     ({state | cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
+                     ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
 
         ScrollToSelection (start, end) ->
             (state, buffer,Cmd.none)
+
+        RollSearchSelectionForward ->
+            rollSearchSelectionForward  state buffer
+
+        RollSearchSelectionBackward ->
+            rollSearchSelectionForward  state buffer
 
         AcceptReplaceText str -> (state, buffer, Cmd.none)
 
@@ -947,19 +957,50 @@ scrollToSearchSelection  state buffer =
         Nothing -> (state, buffer, Cmd.none)
         Just (cursor, end) ->
           let
-             (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+             -- (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+             (cursor_, end_) = ( cursor,  end)
+             window = Debug.log "New Window" <| Window.scrollToIncludeCursor cursor_ state.window
           in
              ({state | cursor = cursor_
                      , selection = Just end_
+                     , window = window
                }, buffer, Cmd.none)
 
 rollSearchSelectionForward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
 rollSearchSelectionForward  state buffer =
-    ({state | searchResults = RollingList.roll state.searchResults}, buffer, Cmd.none)
+    let
+        searchResults_ = RollingList.roll state.searchResults
+    in
+    case RollingList.current searchResults_ of
+            Nothing -> (state, buffer, Cmd.none)
+            Just (cursor, end) ->
+              let
+                 window = Window.scrollToIncludeCursor cursor state.window
+                --   cursor_, end_) = (Window.shiftPosition_  window cursor, Window.shiftPosition_ window end)
+
+              in
+                 ({state | cursor = cursor
+                         , window = window
+                         , selection = Just end
+                         , searchResults = searchResults_
+                  }, buffer, Cmd.none)
 
 rollSearchSelectionBackward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
 rollSearchSelectionBackward  state buffer =
-    ({state | searchResults = RollingList.rollBack state.searchResults}, buffer, Cmd.none)
+    let
+            searchResults_ = RollingList.rollBack state.searchResults
+    in
+        case RollingList.current searchResults_ of
+                Nothing -> (state, buffer, Cmd.none)
+                Just (cursor, end) ->
+                  let
+                     (cursor_, end_) = (Window.shiftPosition_ state.window cursor, Window.shiftPosition_ state.window end)
+                  in
+                     ({state | cursor = cursor_
+                             , window = Window.scrollToIncludeCursor cursor_ state.window
+                             , selection = Just end_
+                             , searchResults = searchResults_
+                      }, buffer, Cmd.none)
 
 initialState = { scrolledLine = 0
         , cursor = Position 0 0

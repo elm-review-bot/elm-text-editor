@@ -193,8 +193,11 @@ view lines state =
             ]
         ]
         , div [Attribute.style "width" "692px", Attribute.style "height" "72px", Attribute.style "padding-left" "8px", Attribute.style "background-color" "#bbb"] [
-            div [Attribute.style "width" "690px"] [goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
-          , div [Attribute.style "width" "690px", Attribute.style "height" "36px"] [text <| "Lines matching \"" ++ state.searchTerm ++ "\": " ++ (searchResultDisplay state) ]
+            div [Attribute.style "width" "690px"] [ goToLineButton, acceptLineNumber, searchTextButton, acceptSearchText, replaceTextButton, acceptReplaceText]
+          , div [Attribute.style "width" "690px", Attribute.style "height" "36px"]
+              [  searchForwardButton , searchBackwardButton
+              , div [ Attribute.style "float" "left", Attribute.style "width" "400px",Attribute.style "padding-top" "14px", Attribute.style "height" "36px" ] [text <| "Lines matching \"" ++ state.searchTerm ++ "\": " ++ (searchResultDisplay state)]
+              ]
          ]
          ]
 
@@ -243,6 +246,10 @@ firstLineButton = myButton 80 FirstLine "First" []
 goToLineButton = myButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
 
 lastLineButton = myButton 80 LastLine "Last" []
+
+searchForwardButton = myButton 80 RollSearchSelectionForward "Next" [Attribute.style "float" "left"]
+
+searchBackwardButton = myButton 80 RollSearchSelectionForward "Prev" [Attribute.style "float" "left"]
 
 searchTextButton = myButton 90 NoOp "Search" [Attribute.style "float" "left"]
 

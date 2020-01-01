@@ -6,6 +6,7 @@ import Editor exposing(State)
 import Editor.Model
 import Editor.Styles
 import Editor.Update
+import Editor.Model
 import Text
 import Html exposing (Html, details, div, summary, text, textarea)
 import Html.Events as Event exposing (onInput)
@@ -37,8 +38,11 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { content = Buffer.init Text.jabberwocky
-      , editor = Editor.init {lines = 25}
+    let
+        config = Editor.Model.defaultConfig
+    in
+    ( { content = Buffer.init Text.tolstoy
+      , editor = Editor.init {config | lines = 25}
       , lastKeyPress = Nothing
       }
     , Cmd.none
@@ -157,6 +161,7 @@ footer =
              , text "needs lots of testing and issue posting/fixing" ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
+           , div [HA.style "margin-top" "10px"] [text "New wrap function needs a lot of work."]
            , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, testButton2]
           ]
 

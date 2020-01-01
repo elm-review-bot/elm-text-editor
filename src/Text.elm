@@ -1,4 +1,23 @@
-module Text exposing (jabberwocky, alphabet, testString)
+module Text exposing (jabberwocky, alphabet, testString, news, tolstoy)
+
+news = """The siege by supporters of an Iranian-backed militia at the U.S. Embassy in Baghdad ended Wednesday after the militia ordered them to withdraw, bringing relief to the diplomats trapped inside and averting a potential showdown between the United States and Iran.
+
+Supporters of the Kataib Hezbollah militia who had spent the night camped outside the embassy dismantled their tents and marched out of the area, saying they would instead continue to press for the withdrawal of U.S. troops from Iraq in the nation’s parliament.
+
+“Yay! We burned them!” they chanted as they headed away from the embassy, a reference to the fires set by the demonstrators that burned two embassy reception areas Tuesday.
+"""
+
+
+tolstoy = """“Well, Prince, so Genoa and Lucca are now just family
+estates of the Buonapartes. But I warn you, if you don’t
+tell me that this means war, if you still try to defend
+the infamies and horrors perpetrated by that Antichrist—
+I really believe he is Antichrist—I will have nothing
+more to do with you and you are no longer my friend,
+no longer my ‘faithful slave,’ as you call yourself!
+But how do you do? I see I have frightened you—
+sit down and tell me all the news.
+ ”"""
 
 
 testString = """This is a first test of how

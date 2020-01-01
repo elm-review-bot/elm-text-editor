@@ -9,11 +9,23 @@ import RollingList exposing(RollingList)
 
 
 type alias Config = {
-   lines : Int
+     lines : Int
+   , wrapParams : WrapParams
   }
 
+type alias WrapParams = {
+    maximumWidth : Int
+   , optimalWidth : Int
+   , stringWidth : String -> Int
+  }
+
+defaultConfig : Config
 defaultConfig = {
-   lines = 20
+     lines = 20
+   ,  wrapParams = { maximumWidth = 50
+           , optimalWidth = 45
+           , stringWidth = String.length
+           }
   }
 
 type alias Snapshot =

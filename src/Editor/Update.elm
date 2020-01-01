@@ -7,6 +7,8 @@ import Editor.Model exposing (InternalState, Snapshot)
 import Position exposing (Position)
 import Window
 import RollingList
+import Paragraph
+
 
 
 type Msg
@@ -57,6 +59,7 @@ type Msg
     | RollSearchSelectionForward
     | RollSearchSelectionBackward
     | Clear
+    | WrapText
 
 
 autoclose : Dict String String
@@ -944,6 +947,9 @@ update buffer msg state =
 
         Clear ->
               ( clearInternalState state,  Buffer.init "", Cmd.none)
+
+        WrapText ->
+            (state, Buffer.init (Paragraph.lines state.config.wrapParams (Buffer.toString buffer) |> String.join "\n"), Cmd.none)
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =

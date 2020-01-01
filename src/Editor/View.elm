@@ -186,6 +186,7 @@ view lines state =
               , upButton
               , downButton
               , lastLineButton
+              , wrapTextButton
               , scrollPosition state
               , cursorPosition state
               , lineCount lines
@@ -262,6 +263,8 @@ clearButton = Widget.columnButton 80 Clear "Clear" []
 firstLineButton = Widget.columnButton 80 FirstLine "First" []
 
 lastLineButton = Widget.columnButton 80 LastLine "Last" []
+
+wrapTextButton = Widget.columnButton 80 WrapText "Wrap" []
 
 goToLineButton = Widget.rowButton 90 NoOp "Go to line" [Attribute.style "float" "left"]
 

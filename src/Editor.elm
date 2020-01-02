@@ -12,13 +12,41 @@ import RollingList
 import Editor.Text
 
 
-
 type alias Msg =
     Editor.Update.Msg
 
-
 type State
     = State InternalState
+
+
+init : Config -> State
+init config =
+    State
+        { config = config
+        , scrolledLine = 0
+        , cursor = Position 0 0
+        , window = {first = 0, last = config.lines - 1}
+        , selection = Nothing
+        , selectedText = Nothing
+        , dragging = False
+        , history = Editor.History.empty
+        , searchTerm = ""
+        , replacementText = ""
+        , searchResults = RollingList.fromList []
+        }
+
+
+update : Buffer -> Msg -> State -> ( State, Buffer, Cmd Msg )
+update buffer msg (State state) =
+    Editor.Update.update buffer msg state
+        |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
+
+view : Buffer -> State -> Html Msg
+view buffer (State state) =
+    Editor.View.view (Buffer.lines buffer) state
+
+
+--  STATE HELPERS --
 
 toInternal : State -> InternalState
 toInternal (State s) = s
@@ -48,6 +76,8 @@ scrollToString  =
 
 
 
+-- FANCY HA HA --
+
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =
     (State (f s))
@@ -56,34 +86,4 @@ map f (State s) =
 lift : (InternalState -> Buffer -> (InternalState, Buffer)) -> (State -> Buffer -> (State, Buffer))
 lift f =
     \s b -> f (toInternal s) b |> (\(is, b_) -> (State is, b_))
-
-
-
-init : Config -> State
-init config =
-    State
-        { config = config
-        , scrolledLine = 0
-        , cursor = Position 0 0
-        , window = {first = 0, last = config.lines - 1}
-        , selection = Nothing
-        , selectedText = Nothing
-        , dragging = False
-        , history = Editor.History.empty
-        , searchTerm = ""
-        , replacementText = ""
-        , searchResults = RollingList.fromList []
-        }
-
-
-update : Buffer -> Msg -> State -> ( State, Buffer, Cmd Msg )
-update buffer msg (State state) =
-    Editor.Update.update buffer msg state
-        |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
-
-
-
-view : Buffer -> State -> Html Msg
-view buffer (State state) =
-    Editor.View.view (Buffer.lines buffer) state
 

@@ -1,4 +1,4 @@
-module Editor.View exposing (view,view2)
+module Editor.View exposing (view)
 
 import Char
 import Editor.Keymap
@@ -245,14 +245,7 @@ scrollPosition : InternalState -> Html Msg
 scrollPosition state =
     div Widget.columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
 
-view2 : List String -> InternalState -> Html Msg
-view2 lines state =
-    div
-        [ class <| name ++ "-container" ]
-        [ linesContainer <|
-            List.indexedMap (line state.window state.cursor state.selection) lines
-        ]
-
+-- BUTTONS --
 
 upButton = Widget.columnButton 80 ScrollUp "Up" []
 
@@ -282,5 +275,4 @@ acceptSearchText = Widget.myInput 155 AcceptSearchText "" [ Attribute.style "flo
 
 acceptReplaceText = Widget.myInput2 155  AcceptReplacementText "" [ Attribute.style "float" "left" ]
 
-{-- WIDGETS -}
 

@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, State, load, slider, updateSlider, scrollToString)
+module Editor exposing (Msg, init, update, view, State, load, slider, scrollToLine, updateSlider, sliderView, scrollToString)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -92,7 +92,9 @@ scrollToString : String -> State -> Buffer -> (State, Buffer)
 scrollToString  =
      (\str state buffer -> (lift (Editor.Update.scrollToText_ str)) state buffer)
 
-
+scrollToLine : Int -> State -> Buffer -> (State, Buffer)
+scrollToLine =
+    (\k state buffer -> (lift (Editor.Update.scrollToLine k)) state buffer)
 
 -- FANCY HA HA --
 

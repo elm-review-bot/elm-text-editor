@@ -44,8 +44,8 @@ slider =
   in
     { initialSlider
         | min = 0
-        , max = 10
-        , step = 1
+        , max = 100
+        , step = 0.01
         , value = 0
     }
 

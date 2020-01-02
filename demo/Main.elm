@@ -103,8 +103,19 @@ update msg model =
                 ( newSlider, cmd, updateResults ) =
                   Slider.update sliderMsg (Editor.slider editorState)
 
-                newEditorState =
+                newEditorState_ =
                   Editor.updateSlider newSlider editorState
+
+
+                numberOfLines = (Buffer.lines model.editorBuffer)
+                   |> List.length
+                   |> toFloat
+
+                line =  (newSlider.value/100.0
+                        |> (\x -> x * numberOfLines)
+                        |> round)
+
+                newEditorState = Editor.scrollToLine line newEditorState_ model.editorBuffer |> Tuple.first
 
                 newCmd =
                   if updateResults then
@@ -158,9 +169,11 @@ keyDecoder keyToMsg =
 
 view : Model -> Html Msg
 view model =
-    div [] [
+    div [HA.style "position" "absolute", HA.style "top" "50px", HA.style "left" "50px"] [
                title
-             , embeddedEditor model
+             ,  embeddedEditor model
+             ,  div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "top" "440px",  HA.style "left" "40px"]
+                      [Editor.sliderView model.editorState |> Html.map SliderMsg]
              , footer model
            ]
 
@@ -173,7 +186,7 @@ embeddedEditor : Model -> Html Msg
 embeddedEditor model =
     div
         [   Event.on "keydown" (keyDecoder KeyPress)
-          , HA.style "backround-color" "#dddddd"
+          , HA.style "background-color" "#dddddd"
           , HA.style "border" "solid 0.5px"
           , HA.style "width" "700px"
         ]
@@ -185,7 +198,7 @@ embeddedEditor model =
 
 footer : Model -> Html Msg
 footer model =
-       div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "top" "480px"] [
+       div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "top" "460px", HA.style "left" "40px"] [
            div [HA.style "margin-top" "30px"] [
               Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code (Work in Progress) Dec 27, 2009 — present"] ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]

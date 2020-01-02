@@ -1,4 +1,4 @@
-module Editor.Update exposing (Msg(..), update, scrollToText, scrollToText_, clearInternalState)
+module Editor.Update exposing (Msg(..), update, scrollToText, scrollToText_, scrollToLine, clearInternalState)
 
 import Buffer exposing (Buffer)
 import Dict exposing (Dict)
@@ -11,7 +11,6 @@ import Editor.Text
 import Text
 import Task
 import Browser.Dom as Dom
-import SingleSlider as Slider
 
 
 
@@ -979,7 +978,14 @@ update buffer msg state =
               ({state | showSearchPanel = True}, buffer, blur "search-box")
 
 
-
+scrollToLine : Int -> InternalState -> Buffer -> (InternalState, Buffer)
+scrollToLine k state buffer =
+            let
+              n = clamp 0 ((List.length (Buffer.lines buffer)) - 1) (k - 1)
+              cursor = {line = n, column = 0}
+              window = Window.scrollToIncludeCursor cursor state.window
+           in
+             ( {state | cursor = cursor, window = window, selection = Nothing }, buffer)
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =

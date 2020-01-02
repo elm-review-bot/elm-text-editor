@@ -16,3 +16,5 @@ body {
     text-align: left;
     background-color : #eeeeee;
     }
+
+.input-range-labels-container { visibility: hidden }

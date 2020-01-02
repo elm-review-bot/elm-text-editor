@@ -3,9 +3,8 @@ module Main exposing (main)
 import Browser
 import Buffer exposing (Buffer)
 import Editor exposing(State)
-import Editor.Model
 import Editor.Styles
-import Editor.Model
+import Editor.Config
 import Text
 import Html exposing (Html, div,  text)
 import Html.Events as Event
@@ -35,12 +34,12 @@ type alias Model =
     }
 
 
-defaultConfig = Editor.Model.defaultConfig
+defaultConfig = Editor.Config.default
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editorBuffer = Buffer.init Text.tolstoy
+    ( { editorBuffer = Buffer.init Text.jabberwocky
       , editorState = Editor.init {defaultConfig | lines = 25}
       , lastKeyPress = Nothing
       }
@@ -57,6 +56,7 @@ type Msg
     | KeyPress String
     | Test
     | FindTreasure
+    | GetSpeech
     | Reset
 
 
@@ -81,12 +81,14 @@ update msg model =
         Test ->
             load Text.testString model
 
+        GetSpeech ->
+            load Text.gettysburgAddress model
+
         Reset ->
             load Text.jabberwocky model
 
         FindTreasure ->
             highlightText"treasure" model
-
 
 
 -- HELPER FUNCTIONS FOR UPDATE
@@ -161,13 +163,15 @@ footer =
              , text "needs lots of testing and issue posting/fixing" ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-           , div [HA.style "margin-top" "10px"] [text "New wrap function needs a lot of work."]
-           , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, treasureButton]
+           , div [HA.style "margin-top" "10px"] [text "The new wrap needs more thought"]
+           , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, treasureButton, speechTextButton]
           ]
 
 
 testButton = Widget.rowButton 80 Test "Test" []
 
 treasureButton = Widget.rowButton 120 FindTreasure "Find treasure" []
+
+speechTextButton = Widget.rowButton 160 GetSpeech "Gettysburg Address" []
 
 resetButton = Widget.rowButton 80 Reset "Reset" []

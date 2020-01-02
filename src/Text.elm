@@ -4,18 +4,33 @@ help = """
 Help
 ====
 
-First line      ctrl-option up-arrow
-Last line       ctrl-option down-arrow
+Partial list of key commands
+----------------------------
 
-Page Up         ctrl-option up-arrow
-Page Down       ctrl-option down-arrow
+Show help         ctrl-h  (Toggle)
+Go to line        ctrl-g  (Toggle)
 
-Line Up         up-arrow
-Line Down       down-arrow
+First line        ctrl-option up-arrow
+Last line         ctrl-option down-arrow
 
-Wrap text       ctrl-w
+Page Up           ctrl-option up-arrow
+Page Down         ctrl-option down-arrow
 
-Clear           ctrl-shft
+Line Up           up-arrow
+Line Down         down-arrow
+
+Copy selection    ctrl-c
+Cut selection     ctrl-x
+Paste selection   ctrl-v
+Wrap text         ctrl-w
+Clear text        ctrl-shift c
+
+Search panel      ctrl-s (Toggle)
+Next search hit   ctrl-. (Think >)
+Prev search hit   ctrl-. (Think <)
+
+Undo              ctrl-z
+Redo              ctrl-y
 
 ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text
 

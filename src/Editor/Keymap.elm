@@ -133,8 +133,12 @@ keymaps =
             , ( "a", SelectAll )
             , ( "d", SelectGroup )
             , ( "c", Copy)
+            , ( "g", ToggleGoToLinePanel)
+            , ( ".", RollSearchSelectionForward)
+            , ( ",", RollSearchSelectionBackward)
             , ( "h", ToggleHelp)
             , ( "x", Cut)
+            , ( "s", ToggleSearchPanel)
             , ( "v", Paste )
             , ( "z", Undo )
             , ( "w", WrapText)
@@ -144,6 +148,7 @@ keymaps =
         Dict.fromList
             [ ( "ArrowRight", SelectToGroupEnd )
             , ( "ArrowLeft", SelectToGroupStart )
+
             , ("c", Clear)
             ]
     }

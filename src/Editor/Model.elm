@@ -29,6 +29,8 @@ type alias InternalState =
     , replacementText : String
     , searchResults : RollingList (Position, Position)
     , showHelp : Bool
+    , showGoToLinePanel : Bool
+    , showSearchPanel : Bool
     , savedBuffer : Buffer
     }
 

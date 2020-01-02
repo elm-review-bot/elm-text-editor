@@ -62,6 +62,8 @@ type Msg
     | Clear
     | WrapText
     | ToggleHelp
+    | ToggleGoToLinePanel
+    | ToggleSearchPanel
 
 
 autoclose : Dict String String
@@ -959,6 +961,18 @@ update buffer msg state =
             else
               ({state | showHelp = True, savedBuffer = Buffer.fromString ""}
               , state.savedBuffer, Cmd.none)
+
+        ToggleGoToLinePanel ->
+            if state.showGoToLinePanel == True then
+                ({state | showGoToLinePanel = False}, buffer, Cmd.none)
+            else
+              ({state | showGoToLinePanel = True}, buffer, Cmd.none)
+
+        ToggleSearchPanel ->
+            if state.showSearchPanel == True then
+                ({state | showSearchPanel = False}, buffer, Cmd.none)
+            else
+              ({state | showSearchPanel = True}, buffer, Cmd.none)
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =

@@ -157,7 +157,7 @@ embeddedEditor model =
 
 footer : Model -> Html Msg
 footer model =
-       div [HA.style "font-size" "14px"] [
+       div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "bottom" "800px"] [
            div [HA.style "margin-top" "30px"] [
               Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code: "]
              , text "needs lots of testing and issue posting/fixing" ]

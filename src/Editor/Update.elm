@@ -7,7 +7,7 @@ import Editor.Model exposing (InternalState, Snapshot)
 import Position exposing (Position)
 import Window
 import RollingList
-import Paragraph
+import Editor.Text
 
 
 
@@ -949,7 +949,7 @@ update buffer msg state =
               ( clearInternalState state,  Buffer.init "", Cmd.none)
 
         WrapText ->
-            (state, Buffer.init (Paragraph.lines state.config.wrapParams (Buffer.toString buffer) |> String.join "\n"), Cmd.none)
+            (state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none)
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =

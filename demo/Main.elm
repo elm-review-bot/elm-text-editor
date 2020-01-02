@@ -133,7 +133,7 @@ view model =
     div [] [
                title
              , embeddedEditor model
-             , footer
+             , footer model
            ]
 
 title : Html Msg
@@ -155,15 +155,16 @@ embeddedEditor model =
             |> Html.map EditorMsg
         ]
 
-footer : Html Msg
-footer =
+footer : Model -> Html Msg
+footer model =
        div [HA.style "font-size" "14px"] [
            div [HA.style "margin-top" "30px"] [
               Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code: "]
              , text "needs lots of testing and issue posting/fixing" ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
-           , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
-           , div [HA.style "margin-top" "10px"] [text "The new wrap needs more thought"]
+           , div [HA.style "margin-top" "10px"] [text "Press the 'Help' button upper-right for a list of key commands."]
+--           , div [HA.style "margin-top" "10px"] [text "The new wrap needs more thought"]
+--           , lastKeyDisplay model.lastKeyPress
            , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, treasureButton, speechTextButton]
           ]
 
@@ -175,3 +176,13 @@ treasureButton = Widget.rowButton 120 FindTreasure "Find treasure" []
 speechTextButton = Widget.rowButton 160 GetSpeech "Gettysburg Address" []
 
 resetButton = Widget.rowButton 80 Reset "Reset" []
+
+
+lastKeyDisplay : Maybe String -> Html Msg
+lastKeyDisplay ms =
+    let
+      report = case ms of
+                   Nothing -> "none"
+                   Just m -> m
+   in
+      div [HA.style "margin-top" "10px"] [text <| "Last key pressed: " ++ report]

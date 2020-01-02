@@ -8,8 +8,10 @@ import Json.Decode as Decode exposing (Decoder)
 type Modifier
     = None
     | Control
+    | Option
     | Shift
     | ControlAndShift
+    | ControlAndOption
 
 
 type alias Keydown =
@@ -19,27 +21,34 @@ type alias Keydown =
     }
 
 
-modifier : Bool -> Bool -> Modifier
-modifier ctrl shift =
-    case ( ctrl, shift ) of
-        ( True, True ) ->
+modifier : Bool -> Bool -> Bool -> Modifier
+modifier ctrl shift option =
+    case ( ctrl, shift, option ) of
+        ( True, True, False ) ->
             ControlAndShift
 
-        ( False, True ) ->
+        ( False, True , False) ->
             Shift
 
-        ( True, False ) ->
+        ( True, False, False ) ->
             Control
 
-        ( False, False ) ->
+        ( False, False, True ) ->
+              Option
+
+        ( True, False, True) ->
+            ControlAndOption
+
+        ( _, _, _ ) ->
             None
 
 
 modifierDecoder : Decoder Modifier
 modifierDecoder =
-    Decode.map2 modifier
+    Decode.map3 modifier
         (Decode.field "ctrlKey" Decode.bool)
         (Decode.field "shiftKey" Decode.bool)
+        (Decode.field "altKey" Decode.bool)
 
 
 characterDecoder : Decoder (Maybe String)
@@ -76,8 +85,10 @@ type alias Keymap =
 keymaps :
     { noModifier : Keymap
     , shift : Keymap
+    , option : Keymap
     , control : Keymap
     , controlAndShift : Keymap
+    , controlAndOption : Keymap
     }
 keymaps =
     { noModifier =
@@ -103,6 +114,16 @@ keymaps =
             , ( "Home", SelectToLineStart )
             , ( "End", SelectToLineEnd )
             ]
+    , option =
+         Dict.fromList
+             [ ( "ArrowUp", ScrollUp 20 )
+             , ( "ArrowDown", ScrollDown 20 )
+             ]
+    , controlAndOption =
+             Dict.fromList
+                 [ ( "ArrowUp", FirstLine )
+                 , ( "ArrowDown", LastLine )
+                 ]
     , control =
         Dict.fromList
             [ ( "ArrowRight", CursorToGroupEnd )
@@ -112,15 +133,18 @@ keymaps =
             , ( "a", SelectAll )
             , ( "d", SelectGroup )
             , ( "c", Copy)
+            , ( "h", ToggleHelp)
             , ( "x", Cut)
             , ( "v", Paste )
             , ( "z", Undo )
+            , ( "w", WrapText)
             , ( "y", Redo )
             ]
     , controlAndShift =
         Dict.fromList
             [ ( "ArrowRight", SelectToGroupEnd )
             , ( "ArrowLeft", SelectToGroupStart )
+            , ("c", Clear)
             ]
     }
 
@@ -154,3 +178,9 @@ keyToMsg event =
 
         ControlAndShift ->
             keyFrom keymaps.controlAndShift
+
+        ControlAndOption ->
+                    keyFrom keymaps.controlAndOption
+
+        Option ->
+            keyFrom keymaps.option

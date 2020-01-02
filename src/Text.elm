@@ -1,4 +1,26 @@
-module Text exposing (jabberwocky, alphabet, testString, gettysburgAddress, tolstoy)
+module Text exposing (jabberwocky, help, alphabet, testString, gettysburgAddress, tolstoy)
+
+help = """
+Help
+====
+
+First line      ctrl-option up-arrow
+Last line       ctrl-option down-arrow
+
+Page Up         ctrl-option up-arrow
+Page Down       ctrl-option down-arrow
+
+Line Up         up-arrow
+Line Down       down-arrow
+
+Wrap text       ctrl-w
+
+Clear           ctrl-shft
+
+ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text
+
+NOTE: The above list is far from complete.
+"""
 
 gettysburgAddress = """
 Below is Abraham Lincoln's Gettysburg Address.

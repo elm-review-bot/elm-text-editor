@@ -33,6 +33,8 @@ init config =
         , searchTerm = ""
         , replacementText = ""
         , searchResults = RollingList.fromList []
+        , showHelp = True
+        , savedBuffer = Buffer.fromString ""
         }
 
 

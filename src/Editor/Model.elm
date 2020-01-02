@@ -28,6 +28,8 @@ type alias InternalState =
     , searchTerm : String
     , replacementText : String
     , searchResults : RollingList (Position, Position)
+    , showHelp : Bool
+    , savedBuffer : Buffer
     }
 
 lastLine = 23

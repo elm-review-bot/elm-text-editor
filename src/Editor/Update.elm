@@ -8,6 +8,7 @@ import Position exposing (Position)
 import Window
 import RollingList
 import Editor.Text
+import Text
 
 
 
@@ -60,6 +61,7 @@ type Msg
     | RollSearchSelectionBackward
     | Clear
     | WrapText
+    | ToggleHelp
 
 
 autoclose : Dict String String
@@ -950,6 +952,13 @@ update buffer msg state =
 
         WrapText ->
             (state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none)
+
+        ToggleHelp ->
+            if state.showHelp == True then
+              ({state | showHelp = False, savedBuffer =  buffer}, Buffer.init Text.help, Cmd.none)
+            else
+              ({state | showHelp = True, savedBuffer = Buffer.fromString ""}
+              , state.savedBuffer, Cmd.none)
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =

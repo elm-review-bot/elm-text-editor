@@ -182,18 +182,11 @@ view lines state =
         , linesContainer <|
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
         , div [Attribute.style "width" "100px"] [
-               firstLineButton
-              , lastLineButton
-              , jumpUpButton
-              , jumpDownButton
-              , upButton
-              , downButton
-              , wrapTextButton
+               toggleHelpButton state
               , scrollPosition state
               , cursorPosition state
               , lineCount lines
               , wordCount lines
-              , clearButton
             ]
         ]
         , div [Attribute.style "width" "692px", Attribute.style "padding-top" "10px",Attribute.style "height" "72px", Attribute.style "padding-left" "8px", Attribute.style "background-color" "#bbb"] [
@@ -239,6 +232,7 @@ wordCount lines =
 
 
 
+
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =
     div Widget.columnButtonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
@@ -248,6 +242,15 @@ scrollPosition state =
     div Widget.columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
 
 -- BUTTONS --
+
+toggleHelpButton state =
+  let
+      label = if state.showHelp == True then
+                "Help"
+              else
+                 "Back"
+  in
+   Widget.columnButton 80 ToggleHelp label []
 
 upButton = Widget.columnButton 80 (ScrollUp 1) "Line Up" []
 

@@ -1,4 +1,4 @@
-module Editor.Model exposing (InternalState, Snapshot, Config, defaultConfig, lastLine, initialText)
+module Editor.Model exposing (InternalState, Snapshot, lastLine, initialText)
 
 import Buffer exposing (Buffer)
 import Editor.History exposing (History)
@@ -6,27 +6,9 @@ import Position exposing (Position)
 import Window exposing (Window)
 import Text
 import RollingList exposing(RollingList)
+import Editor.Config exposing (Config)
 
 
-type alias Config = {
-     lines : Int
-   , wrapParams : WrapParams
-  }
-
-type alias WrapParams = {
-    maximumWidth : Int
-   , optimalWidth : Int
-   , stringWidth : String -> Int
-  }
-
-defaultConfig : Config
-defaultConfig = {
-     lines = 20
-   ,  wrapParams = { maximumWidth = 50
-           , optimalWidth = 45
-           , stringWidth = String.length
-           }
-  }
 
 type alias Snapshot =
     { cursor : Position

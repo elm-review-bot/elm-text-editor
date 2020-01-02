@@ -34,7 +34,7 @@ init config =
         , replacementText = ""
         , searchResults = RollingList.fromList []
         , showHelp = True
-        , showGoToLinePanel = True
+        , showGoToLinePanel = False
         , showSearchPanel = False
         , savedBuffer = Buffer.fromString ""
         }

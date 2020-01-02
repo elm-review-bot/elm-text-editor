@@ -9,6 +9,8 @@ import Window
 import RollingList
 import Editor.Text
 import Text
+import Task
+import Browser.Dom as Dom
 
 
 
@@ -964,15 +966,17 @@ update buffer msg state =
 
         ToggleGoToLinePanel ->
             if state.showGoToLinePanel == True then
-                ({state | showGoToLinePanel = False}, buffer, Cmd.none)
+                ({state | showGoToLinePanel = False}, buffer, focus "line-number-input")
             else
-              ({state | showGoToLinePanel = True}, buffer, Cmd.none)
+              ({state | showGoToLinePanel = True}, buffer, blur "line-number-input")
 
         ToggleSearchPanel ->
             if state.showSearchPanel == True then
-                ({state | showSearchPanel = False}, buffer, Cmd.none)
+                ({state | showSearchPanel = False}, buffer, focus "search-box")
             else
-              ({state | showSearchPanel = True}, buffer, Cmd.none)
+              ({state | showSearchPanel = True}, buffer, blur "search-box")
+
+
 
 scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
 scrollToText str state buffer =
@@ -1053,3 +1057,10 @@ clearInternalState state =
        }
 
 
+focus : String -> Cmd Msg
+focus id =
+    Task.attempt (\_ -> NoOp) (Dom.focus id)
+
+blur : String -> Cmd Msg
+blur id =
+    Task.attempt (\_ -> NoOp) (Dom.focus id)

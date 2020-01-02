@@ -198,21 +198,21 @@ view lines state =
 
 searchPanel state =
     let
-      opacity = if state.showSearchPanel == True then
-        "0.7"
+      (opacity, top) = if state.showSearchPanel == True then
+        ("0.7", "80px")
         else
-        "0.0"
+        ("0.0", "-1000px")
     in
     div [    Attribute.style "width" "600px"
            , Attribute.style "padding-top" "10px"
-           ,  Attribute.style "height" "36px"
+           , Attribute.style "height" "36px"
            , Attribute.style "padding-left" "8px"
            , Attribute.style "background-color" "#bbb"
            , Attribute.style "opacity" opacity
            , Attribute.style "font-size" "14px"
            , Attribute.style "position" "absolute"
            , Attribute.style "right" "8px"
-           , Attribute.style "top" "80px"
+           , Attribute.style "top" top
        ]
        [
            searchTextButton
@@ -230,10 +230,10 @@ searchPanel state =
 
 goToLinePanel state =
     let
-      opacity = if state.showGoToLinePanel == True then
-        "0"
+      (opacity, top) = if state.showGoToLinePanel == True then
+         ("0.8", "-1000px")
         else
-        "0.8"
+         ("0.0", "0px" )
     in
     div [  Attribute.style "width" "140px"
          , Attribute.style "height" "36px"
@@ -341,11 +341,14 @@ searchTextButton = Widget.rowButton 60 NoOp "Search" [Attribute.style "float" "l
 
 replaceTextButton = Widget.rowButton 70 ReplaceCurrentSelection "Replace" [Attribute.style "float" "left"]
 
-acceptLineNumber = Widget.myInput 30 AcceptLineNumber "" [
+acceptLineNumber = Widget.myInput 30 AcceptLineNumber "" [ setHtmlId "line-number-input",
                               Attribute.style "position" "absolute", Attribute.style "left" "98px",  Attribute.style "top" "6px"]
 
-acceptSearchText = Widget.myInput 130 AcceptSearchText "" [ Attribute.style "float" "left" ]
+acceptSearchText = Widget.myInput 130 AcceptSearchText "" [ setHtmlId "search-box", Attribute.style "float" "left" ]
 
 acceptReplaceText = Widget.myInput 130  AcceptReplacementText "" [ Attribute.style "float" "left" ]
 
 
+setHtmlId : String -> Html.Attribute msg
+setHtmlId id =
+    Attribute.attribute "id" id

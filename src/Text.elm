@@ -1,4 +1,4 @@
-module Text exposing (jabberwocky, long, help, testString, gettysburgAddress, tolstoy)
+module Text exposing (jabberwocky, long, help, info, gettysburgAddress, tolstoy)
 
 help = """
 Help
@@ -62,9 +62,9 @@ sit down and tell me all the news.
  ”"""
 
 
-testString = """This is a first test of how
+info = """This is a first test of how
 the editor could be used as a package.
-The 'Test' button is a proxy for loading new
+The 'Info' button is a proxy for loading new
 content into the editor from an external
 source.
 
@@ -80,9 +80,10 @@ is from the code in Main.
 The "Reset" button loads the initial text.
 The "Gettysburg address" button loads
 Abraham Lincoln's speech.  It contains three
-very kong lines which are wrapped by the editor
+very long lines which are wrapped by the editor
 before you see them.  I need to devote more
-thought to how best to do text wrapping.
+thought to how best to do text wrapping —
+it needs to be an option, for instance.
 Am using Folkert de Vries' *elm-paragraph*
 library for this.
 

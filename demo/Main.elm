@@ -79,7 +79,7 @@ update msg model =
             ( { model | lastKeyPress = Just key }, Cmd.none )
 
         Test ->
-            load Text.testString model
+            load Text.info model
 
         GetSpeech ->
             load Text.gettysburgAddress model
@@ -145,7 +145,7 @@ embeddedEditor : Model -> Html Msg
 embeddedEditor model =
     div
         [   Event.on "keydown" (keyDecoder KeyPress)
-          , HA.style  "backround-color" "#dddddd"
+          , HA.style "backround-color" "#dddddd"
           , HA.style "border" "solid 0.5px"
           , HA.style "width" "700px"
         ]
@@ -159,7 +159,7 @@ footer : Model -> Html Msg
 footer model =
        div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "top" "480px"] [
            div [HA.style "margin-top" "30px"] [
-              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code (Work in Progress)"] ]
+              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code (Work in Progress) Dec 27, 2009 — present"] ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "Press the 'Help' button upper-right for a list of key commands."]
 --           , div [HA.style "margin-top" "10px"] [text "The new wrap needs more thought"]

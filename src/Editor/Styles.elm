@@ -36,7 +36,7 @@ styleText =
 
 .elm-editor-line-number {
   display: inline-block;
-  width: 20px;
+  width: 35px;
   padding-right: 5px;
   text-align: right;
   background-color: lightgray;

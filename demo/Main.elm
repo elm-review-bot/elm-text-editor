@@ -159,7 +159,7 @@ footer : Model -> Html Msg
 footer model =
        div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "top" "480px"] [
            div [HA.style "margin-top" "30px"] [
-              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"] ]
+              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code (Work in Progress)"] ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "Press the 'Help' button upper-right for a list of key commands."]
 --           , div [HA.style "margin-top" "10px"] [text "The new wrap needs more thought"]
@@ -168,7 +168,7 @@ footer model =
           ]
 
 
-testButton = Widget.rowButton 80 Test "Test" []
+testButton = Widget.rowButton 80 Test "Info" []
 
 treasureButton = Widget.rowButton 120 FindTreasure "Find treasure" []
 

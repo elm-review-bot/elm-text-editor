@@ -1,4 +1,4 @@
-module Text exposing (jabberwocky, help, alphabet, testString, gettysburgAddress, tolstoy)
+module Text exposing (jabberwocky, long, help, testString, gettysburgAddress, tolstoy)
 
 help = """
 Help
@@ -64,7 +64,7 @@ sit down and tell me all the news.
 
 testString = """This is a first test of how
 the editor could be used as a package.
-The 'Test' is a proxy for loading new
+The 'Test' button is a proxy for loading new
 content into the editor from an external
 source.
 
@@ -77,46 +77,42 @@ you see here comes from Editor code.  All
 the rest (below, beginning with "Source ...")
 is from the code in Main.
 
-"""
+The "Reset" button loads the initial text.
+The "Gettysburg address" button loads
+Abraham Lincoln's speech.  It contains three
+very kong lines which are wrapped by the editor
+before you see them.  I need to devote more
+thought to how best to do text wrapping.
+Am using Folkert de Vries' *elm-paragraph*
+library for this.
 
-alphabet = """1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-a
-b
-c
-d
-e
-f
-g
-h
-i
-j
-k
-l
-m
-n
-o
-p
-q
-r
-s
-t
-u
-v
-w
-x
-y
-z
+NOTES
+
+1. At present, all the editor controls
+are key commands.  Press the "Help" button,
+upper right, for a partial list of these.
+Full list coming soon.
+
+2. I've tested the editor on a file of 1700
+lines and 7700 words. It works fine.  For
+a file of 17,000 lines and 770,000 words,
+moving around the text is extremely fast,
+whereas double-clicking to select a word
+fails.  I don't know why as of this writing.
+
+3. In view of (2), I've set the gutter width
+to accommodate files of up to 9,999 lines.
+
+ROADMAP
+
+There is still a lot to do.
+
+
 
 """
+
+
+long = List.repeat 30 jabberwocky |> String.join  "\n----\n\n"
 
 jabberwocky = """Jabberwocky
 

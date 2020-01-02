@@ -157,15 +157,14 @@ embeddedEditor model =
 
 footer : Model -> Html Msg
 footer model =
-       div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "bottom" "800px"] [
+       div [HA.style "font-size" "14px", HA.style "position" "absolute",  HA.style "top" "480px"] [
            div [HA.style "margin-top" "30px"] [
-              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code: "]
-             , text "needs lots of testing and issue posting/fixing" ]
+              Html.a [Attributes.href "https://github.com/jxxcarlson/elm-text-editor"] [text "Source code"] ]
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "Press the 'Help' button upper-right for a list of key commands."]
 --           , div [HA.style "margin-top" "10px"] [text "The new wrap needs more thought"]
 --           , lastKeyDisplay model.lastKeyPress
-           , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, treasureButton, speechTextButton]
+           , div [Attributes.style "margin-top" "10px"] [testButton, resetButton, treasureButton, speechTextButton]
           ]
 
 

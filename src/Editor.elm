@@ -2,12 +2,15 @@ module Editor exposing (Msg, init, update, view, State, load, scrollToString)
 
 import Buffer exposing (Buffer)
 import Editor.History
-import Editor.Model exposing (InternalState, Config)
+import Editor.Model exposing (InternalState)
+import Editor.Config exposing(Config)
 import Editor.Update
 import Editor.View
 import Html exposing (Html)
 import Position exposing (Position)
 import RollingList
+import Editor.Text
+
 
 
 type alias Msg =
@@ -27,8 +30,17 @@ clearState (State state) =
 
 
 load : String ->  State -> (State, Buffer)
-load str state =
-  (clearState state, Buffer.fromString str)
+load content state =
+   let
+     config = (toInternal state).config
+     lineLengths = String.lines content |> List.map String.length
+     maxLineLength = List.maximum lineLengths |> Maybe.withDefault 1000
+     buffer = if maxLineLength > config.wrapParams.maximumWidth then
+                 Buffer.fromString (Editor.Text.prepareLines config content)
+               else
+                 Buffer.fromString content
+   in
+    (clearState state, buffer)
 
 scrollToString : String -> State -> Buffer -> (State, Buffer)
 scrollToString  =
@@ -68,6 +80,7 @@ update : Buffer -> Msg -> State -> ( State, Buffer, Cmd Msg )
 update buffer msg (State state) =
     Editor.Update.update buffer msg state
         |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
+
 
 
 view : Buffer -> State -> Html Msg

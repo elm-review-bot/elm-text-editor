@@ -13,6 +13,8 @@ import Json.Decode as Decode exposing (Decoder)
 import Html.Attributes as Attributes
 import Editor.Widget as Widget
 import Text
+import SingleSlider as Slider
+
 
 
 main : Program () Model Msg
@@ -25,6 +27,17 @@ main =
         }
 
 -- INIT
+
+
+type Msg
+    = EditorMsg Editor.Msg
+    | KeyPress String
+    | Test
+    | FindTreasure
+    | GetSpeech
+    | Reset
+    | SliderMsg Slider.Msg
+
 
 
 type alias Model =
@@ -51,13 +64,6 @@ init () =
 -- UPDATE
 
 
-type Msg
-    = EditorMsg Editor.Msg
-    | KeyPress String
-    | Test
-    | FindTreasure
-    | GetSpeech
-    | Reset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -90,6 +96,23 @@ update msg model =
         FindTreasure ->
             highlightText"treasure" model
 
+        SliderMsg sliderMsg ->
+              let
+                editorState =  model.editorState
+
+                ( newSlider, cmd, updateResults ) =
+                  Slider.update sliderMsg (Editor.slider editorState)
+
+                newEditorState =
+                  Editor.updateSlider newSlider editorState
+
+                newCmd =
+                  if updateResults then
+                    Cmd.batch [ Cmd.map SliderMsg cmd, Cmd.none ]
+                  else
+                    Cmd.none
+              in
+                ({model | editorState = newEditorState},  newCmd)
 
 -- HELPER FUNCTIONS FOR UPDATE
 
@@ -113,11 +136,16 @@ highlightText str model =
 -- SUBSCRIPTIONS
 
 
+--subscriptions : Model -> Sub Msg
+--subscriptions model =
+--    Sub.none
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
-
-
+  Sub.batch
+    [ Sub.map SliderMsg <|
+      Slider.subscriptions (Editor.slider model.editorState)
+    ]
 
 -- VIEW
 

@@ -1,4 +1,4 @@
-module Editor exposing (Msg, init, update, view, State, load, scrollToString)
+module Editor exposing (Msg, init, update, view, State, load, slider, updateSlider, scrollToString)
 
 import Buffer exposing (Buffer)
 import Editor.History
@@ -10,6 +10,7 @@ import Html exposing (Html)
 import Position exposing (Position)
 import RollingList
 import Editor.Text
+import SingleSlider as Slider
 
 
 type alias Msg =
@@ -37,8 +38,16 @@ init config =
         , showGoToLinePanel = False
         , showSearchPanel = False
         , savedBuffer = Buffer.fromString ""
+        , slider = Editor.Model.slider
         }
 
+slider : State -> Slider.Model
+slider (State s) =
+    s.slider
+
+updateSlider : Slider.Model -> State -> State
+updateSlider slider_ (State s) =
+    (State {s | slider = slider_ } )
 
 update : Buffer -> Msg -> State -> ( State, Buffer, Cmd Msg )
 update buffer msg (State state) =
@@ -49,6 +58,11 @@ view : Buffer -> State -> Html Msg
 view buffer (State state) =
     Editor.View.view (Buffer.lines buffer) state
 
+sliderView : State -> Html Slider.Msg
+sliderView state =
+  Html.div
+    []
+    [ Slider.view (toInternal state).slider  ]
 
 --  STATE HELPERS --
 

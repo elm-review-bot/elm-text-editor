@@ -14,6 +14,8 @@ import RollingList
 import Editor.Widget as Widget
 
 
+
+
 name : String
 name =
     "elm-editor"
@@ -299,6 +301,8 @@ cursorPosition state =
 scrollPosition : InternalState -> Html Msg
 scrollPosition state =
     div Widget.columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
+
+
 
 -- BUTTONS --
 

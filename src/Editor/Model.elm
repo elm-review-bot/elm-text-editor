@@ -1,4 +1,4 @@
-module Editor.Model exposing (InternalState, Snapshot, lastLine, initialText)
+module Editor.Model exposing (InternalState, Snapshot, lastLine, initialText, slider)
 
 import Buffer exposing (Buffer)
 import Editor.History exposing (History)
@@ -7,6 +7,7 @@ import Window exposing (Window)
 import Text
 import RollingList exposing(RollingList)
 import Editor.Config exposing (Config)
+import SingleSlider as Slider exposing (..)
 
 
 
@@ -32,6 +33,20 @@ type alias InternalState =
     , showGoToLinePanel : Bool
     , showSearchPanel : Bool
     , savedBuffer : Buffer
+    , slider : Slider.Model
+    }
+
+slider : Slider.Model
+slider =
+  let
+    initialSlider =
+      Slider.defaultModel
+  in
+    { initialSlider
+        | min = 0
+        , max = 10
+        , step = 1
+        , value = 0
     }
 
 lastLine = 23

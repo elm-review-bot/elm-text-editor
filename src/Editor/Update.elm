@@ -11,6 +11,7 @@ import Editor.Text
 import Text
 import Task
 import Browser.Dom as Dom
+import SingleSlider as Slider
 
 
 
@@ -66,6 +67,7 @@ type Msg
     | ToggleHelp
     | ToggleGoToLinePanel
     | ToggleSearchPanel
+
 
 
 autoclose : Dict String String
@@ -975,6 +977,7 @@ update buffer msg state =
                 ({state | showSearchPanel = False}, buffer, focus "search-box")
             else
               ({state | showSearchPanel = True}, buffer, blur "search-box")
+
 
 
 

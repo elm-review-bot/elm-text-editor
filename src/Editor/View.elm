@@ -183,9 +183,11 @@ view lines state =
             List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
         , div [Attribute.style "width" "100px"] [
                firstLineButton
+              , lastLineButton
+              , jumpUpButton
+              , jumpDownButton
               , upButton
               , downButton
-              , lastLineButton
               , wrapTextButton
               , scrollPosition state
               , cursorPosition state
@@ -247,9 +249,13 @@ scrollPosition state =
 
 -- BUTTONS --
 
-upButton = Widget.columnButton 80 ScrollUp "Up" []
+upButton = Widget.columnButton 80 (ScrollUp 1) "Line Up" []
 
-downButton = Widget.columnButton 80 ScrollDown "Down" []
+downButton = Widget.columnButton 80 (ScrollDown 1) "Line Down" []
+
+jumpUpButton = Widget.columnButton 80 (ScrollUp 20) "Page Up" []
+
+jumpDownButton = Widget.columnButton 80 (ScrollDown 20) "Page Down" []
 
 clearButton = Widget.columnButton 80 Clear "Clear" []
 

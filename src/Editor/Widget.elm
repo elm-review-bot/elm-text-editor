@@ -24,6 +24,15 @@ buttonLabelStyle width = [  Attribute.style "font-size" "12px"
                     , Attribute.style "width"  (String.fromInt width ++ "px")
                     , Attribute.style "height"  "24px"
                     , Attribute.style "border" "none"
+                    , Attribute.style "text-align" "left"
+                    ]
+
+rowButtonLabelStyle width = [  Attribute.style "font-size" "12px"
+                    , Attribute.style "background-color" "#666"
+                    , Attribute.style "color" "#eee"
+                    , Attribute.style "width"  (String.fromInt width ++ "px")
+                    , Attribute.style "height"  "24px"
+                    , Attribute.style "border" "none"
                     ]
 
 columnButton width msg str attr =
@@ -32,7 +41,7 @@ columnButton width msg str attr =
 
 rowButton width msg str attr =
    div (rowButtonStyle ++ attr)
-     [ button ([onClick msg] ++ buttonLabelStyle width ) [text str]]
+     [ button ([onClick msg] ++ rowButtonLabelStyle width ) [text str]]
 
 myInput width msg str attr =
     div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)

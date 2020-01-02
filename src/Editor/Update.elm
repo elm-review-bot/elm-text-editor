@@ -53,8 +53,8 @@ type Msg
     | SelectLine
     | Undo
     | Redo
-    | ScrollUp
-    | ScrollDown
+    | ScrollUp Int
+    | ScrollDown Int
     | ScrollToSelection (Position, Position)
     | RollSearchSelectionForward
     | RollSearchSelectionBackward
@@ -924,24 +924,24 @@ update buffer msg state =
 
                 Nothing ->
                     ( state, buffer, Cmd.none )
-        ScrollUp ->
+        ScrollUp k ->
              let
+                  maxDelta = min (state.window.first) k
                   (newCursor, newWindow) =
-                                if state.window.first > 0 then
-                                  (Position.shift -1 state.cursor, Window.shift -1 state.window)
-                                else
-                                  (state.cursor, state.window)
-
+                      (Position.shift -maxDelta state.cursor, Window.shift -maxDelta state.window)
              in
                 ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
 
-        ScrollDown ->
+        ScrollDown k ->
           let
+             deltaMax = List.length (Buffer.lines buffer) - state.cursor.line
+             delta = min (deltaMax - 1) k
              (newCursor, newWindow) =
-               if state.window.last < List.length (Buffer.lines buffer) - 1 then
-                 (Position.shift 1 state.cursor, Window.shift 1 state.window)
-               else
-                 (state.cursor, state.window)
+               -- if state.window.last < List.length (Buffer.lines buffer) - k then
+--               if deltaMax > state.window.last - state.window.first then
+                 (Position.shift delta state.cursor, Window.shift delta state.window)
+--               else
+--                 (state.cursor, state.window)
           in
             ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
 

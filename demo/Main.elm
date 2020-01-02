@@ -40,7 +40,7 @@ defaultConfig = Editor.Config.default
 init : () -> ( Model, Cmd Msg )
 init () =
     ( { editorBuffer = Buffer.init Text.jabberwocky
-      , editorState = Editor.init {defaultConfig | lines = 25}
+      , editorState = Editor.init {defaultConfig | lines = 30}
       , lastKeyPress = Nothing
       }
     , Cmd.none

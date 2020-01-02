@@ -32,14 +32,9 @@ type alias EditorData = {
    , buffer : Buffer
    }
 
-load : String ->  State -> EditorData
-load content state =
-  {buffer = Buffer.fromString content, state = clearState state }
-
---scrollToString : String -> State -> Buffer -> EditorData
---scrollToString str (State state_) buffer =
---  Editor.Update.scrollToText_ str state_ buffer
---    |> (\(is, b) -> {buffer = b, state = State is})
+load : String ->  State -> (State, Buffer)
+load str state =
+  (clearState state, Buffer.fromString str)
 
 scrollToString : String -> State -> Buffer -> (State, Buffer)
 scrollToString  =

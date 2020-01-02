@@ -92,9 +92,9 @@ update msg model =
 load : String -> Model ->  (Model, Cmd Msg)
 load str model =
    let
-     data = Editor.load str model.editorState
+     (newEditorState, newEditorBuffer) = Editor.load str model.editorState
    in
-    ( { model | editorBuffer = data.buffer, editorState = data.state }, Cmd.none)
+    ( { model | editorState = newEditorState, editorBuffer = newEditorBuffer }, Cmd.none)
 
 
 highlightText : String -> Model -> (Model, Cmd Msg)

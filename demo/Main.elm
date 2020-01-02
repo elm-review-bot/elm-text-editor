@@ -5,16 +5,16 @@ import Buffer exposing (Buffer)
 import Editor exposing(State)
 import Editor.Model
 import Editor.Styles
-import Editor.Update
 import Editor.Model
 import Text
-import Html exposing (Html, details, div, summary, text, textarea)
-import Html.Events as Event exposing (onInput)
+import Html exposing (Html, div,  text)
+import Html.Events as Event
 import Html.Attributes as HA
 import Json.Decode as Decode exposing (Decoder)
 import Html.Attributes as Attributes
 import Editor.Widget as Widget
 import Text
+
 
 main : Program () Model Msg
 main =
@@ -56,7 +56,7 @@ type Msg
     = EditorMsg Editor.Msg
     | KeyPress String
     | Test
-    | Test2
+    | FindTreasure
     | Reset
 
 
@@ -84,10 +84,12 @@ update msg model =
         Reset ->
             load Text.jabberwocky model
 
-        Test2 ->
+        FindTreasure ->
             highlightText"treasure" model
 
 
+
+-- HELPER FUNCTIONS FOR UPDATE
 
 load : String -> Model ->  (Model, Cmd Msg)
 load str model =
@@ -160,12 +162,12 @@ footer =
            , div [HA.style "margin-top" "10px"] [text "This is a fork of work of Sydney Nemzer: ", Html.a [Attributes.href "https://github.com/SidneyNemzer/elm-text-editor"] [text "Source code"]]
            , div [HA.style "margin-top" "10px"] [text "ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text"]
            , div [HA.style "margin-top" "10px"] [text "New wrap function needs a lot of work."]
-           , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, testButton2]
+           , div [Attributes.style "margin-top" "20px"] [testButton, resetButton, treasureButton]
           ]
 
 
 testButton = Widget.rowButton 80 Test "Test" []
 
-testButton2 = Widget.rowButton 120 Test2 "Find treasure" []
+treasureButton = Widget.rowButton 120 FindTreasure "Find treasure" []
 
 resetButton = Widget.rowButton 80 Reset "Reset" []

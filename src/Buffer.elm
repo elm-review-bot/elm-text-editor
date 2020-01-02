@@ -36,6 +36,8 @@ import Maybe.Extra
 import Position exposing (Position)
 import String.Extra
 import Util.Array
+import Editor.Text
+import Editor.Config exposing(default)
 
 
 type Buffer

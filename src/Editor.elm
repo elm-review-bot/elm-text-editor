@@ -36,10 +36,16 @@ load : String ->  State -> EditorData
 load content state =
   {buffer = Buffer.fromString content, state = clearState state }
 
-scrollToString : String -> State -> Buffer -> EditorData
-scrollToString str (State state_) buffer =
-  Editor.Update.scrollToText_ str state_ buffer
-    |> (\(is, b) -> {buffer = b, state = State is})
+--scrollToString : String -> State -> Buffer -> EditorData
+--scrollToString str (State state_) buffer =
+--  Editor.Update.scrollToText_ str state_ buffer
+--    |> (\(is, b) -> {buffer = b, state = State is})
+
+scrollToString : String -> State -> Buffer -> (State, Buffer)
+scrollToString  =
+     (\str state buffer -> (lift (Editor.Update.scrollToText_ str)) state buffer)
+
+
 
 map : (InternalState -> InternalState) -> State -> State
 map f (State s) =

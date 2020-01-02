@@ -29,20 +29,19 @@ main =
 
 
 type alias Model =
-    { content : Buffer
-    , editor : State
+    { editorBuffer : Buffer
+    , editorState : State
     , lastKeyPress : Maybe String
     }
 
 
+defaultConfig = Editor.Model.defaultConfig
+
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    let
-        config = Editor.Model.defaultConfig
-    in
-    ( { content = Buffer.init Text.tolstoy
-      , editor = Editor.init {config | lines = 25}
+    ( { editorBuffer = Buffer.init Text.tolstoy
+      , editorState = Editor.init {defaultConfig | lines = 25}
       , lastKeyPress = Nothing
       }
     , Cmd.none
@@ -67,11 +66,11 @@ update msg model =
         EditorMsg msg_ ->
             let
                 ( editor, content, cmd ) =
-                    Editor.update model.content msg_ model.editor
+                    Editor.update model.editorBuffer msg_ model.editorState
             in
             ( { model
-                | editor = editor
-                , content = content
+                | editorState = editor
+                , editorBuffer = content
               }
             , Cmd.map EditorMsg cmd
             )
@@ -86,26 +85,25 @@ update msg model =
             load Text.jabberwocky model
 
         Test2 ->
-            highlightText "treasure" model
+            highlightText"treasure" model
 
 
 
 load : String -> Model ->  (Model, Cmd Msg)
 load str model =
    let
-     data = Editor.load str model.editor
+     data = Editor.load str model.editorState
    in
-    ( { model | content = data.buffer, editor = data.state }, Cmd.none)
+    ( { model | editorBuffer = data.buffer, editorState = data.state }, Cmd.none)
+
 
 highlightText : String -> Model -> (Model, Cmd Msg)
 highlightText str model =
     let
-       scrollToText : State -> Buffer -> (State, Buffer)
-       scrollToText = Editor.lift (Editor.Update.scrollToText_ str)
-
-       (newEditor, newContent) = scrollToText model.editor model.content
+       (newEditorState, newEditorBuffer) = Editor.scrollToString str model.editorState model.editorBuffer
     in
-      ( {model | editor = newEditor, content = newContent}, Cmd.none)
+      ( {model | editorState = newEditorState, editorBuffer = newEditorBuffer}, Cmd.none)
+
 
 
 -- SUBSCRIPTIONS
@@ -148,8 +146,8 @@ embeddedEditor model =
           , HA.style "width" "700px"
         ]
         [  Editor.Styles.styles
-         , model.editor
-            |> Editor.view model.content
+         , model.editorState
+            |> Editor.view model.editorBuffer
             |> Html.map EditorMsg
         ]
 

@@ -52,11 +52,17 @@ defaultConfig =
 init : () -> ( Model, Cmd Msg )
 init () =
     ( { editorBuffer = Buffer.init Text.jabberwocky
-      , editorState = Editor.init { defaultConfig | lines = 30, showInfoPanel = True }
+      , editorState = Editor.init config
       , lastKeyPress = Nothing
       }
     , Cmd.none
     )
+
+config = {  lines = 30
+          , showInfoPanel = True
+          , wrapParams = { maximumWidth = 65, optimalWidth = 60, stringWidth = String.length }
+          , wrapOption = DontWrap
+         }
 
 
 

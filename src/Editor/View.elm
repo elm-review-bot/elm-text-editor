@@ -2,6 +2,7 @@ module Editor.View exposing (view)
 
 import Char
 import Editor.Keymap
+import Editor.Config exposing(WrapOption(..))
 import Editor.Model exposing (InternalState)
 import Editor.Update exposing (Msg(..))
 import Editor.Widget as Widget
@@ -203,8 +204,20 @@ infoPanel_  state lines =
         , cursorPosition state
         , lineCount lines
         , wordCount lines
+        , wrappingOption state
         , dismissInfoPanel
         ]
+
+wrappingOption state =
+    let
+        message = if state.config.wrapOption == DoWrap then
+                      "Wrap: ON"
+                  else
+                      "Wrap: OFF"
+    in
+       div [style "margin-top" "10px"] [text message]
+
+
 
 infoPanelStyle =
      [ style "width" "90px"

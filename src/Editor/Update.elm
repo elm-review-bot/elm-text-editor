@@ -11,6 +11,7 @@ import RollingList
 import Task
 import Text
 import Window
+import Editor.Config as Config exposing(Config, WrapOption(..))
 
 
 type Msg
@@ -62,6 +63,7 @@ type Msg
     | RollSearchSelectionBackward
     | Clear
     | WrapText
+    | ToggleWrapping
     | ToggleHelp
     | ToggleInfoPanel
     | ToggleGoToLinePanel
@@ -997,6 +999,13 @@ update buffer msg state =
             ( state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none )
               |> recordHistory state buffer
 
+        ToggleWrapping ->
+            if state.config.wrapOption == DoWrap then
+                ( setWrapOption DontWrap state, buffer, Cmd.none )
+            else
+                ( setWrapOption DoWrap state, buffer, Cmd.none )
+
+
         ToggleHelp ->
             if state.showHelp == True then
                 ( { state | showHelp = False, savedBuffer = buffer }, Buffer.init Text.help, Cmd.none )
@@ -1139,6 +1148,24 @@ rollSearchSelectionBackward state buffer =
             , buffer
             , Cmd.none
             )
+
+setMaximumWrapWidth : Int -> InternalState -> InternalState
+setMaximumWrapWidth k state =
+    lift (Config.setMaximumWrapWidth k) state
+
+setOptimumWrapWidth : Int -> InternalState -> InternalState
+setOptimumWrapWidth k state =
+    lift (Config.setOptimumWrapWidth k) state
+
+
+setWrapOption: WrapOption -> InternalState -> InternalState
+setWrapOption wrapOption state =
+    lift (Config.setWrapOption wrapOption) state
+
+
+lift : (Config -> Config) -> (InternalState -> InternalState)
+lift f =
+    \is -> {is | config = f is.config}
 
 
 clearInternalState : InternalState -> InternalState

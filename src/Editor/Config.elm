@@ -1,4 +1,4 @@
-module Editor.Config exposing (Config, WrapOption(..), default, setMaximumWrapWidth,setOptimumWrapWidth )
+module Editor.Config exposing (Config, WrapOption(..), default, setMaximumWrapWidth,setOptimumWrapWidth, setWrapOption )
 
 
 type alias Config =
@@ -16,6 +16,10 @@ type alias WrapParams =
     }
 
 -- TODO: Make maximumWidth and optimalWidth configurable at startup and at runtime
+
+setWrapOption : WrapOption -> Config -> Config
+setWrapOption wrapOption config =
+    { config | wrapOption = wrapOption }
 
 setMaximumWrapWidth : Int -> Config -> Config
 setMaximumWrapWidth k config =

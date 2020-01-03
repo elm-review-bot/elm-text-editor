@@ -150,6 +150,7 @@ keymaps =
             , ( "ArrowLeft", SelectToGroupStart )
             , ( "C", Clear )
             , ( "I", ToggleInfoPanel)
+            , ( "W", ToggleWrapping)
             ]
     }
 

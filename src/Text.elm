@@ -26,6 +26,7 @@ Copy selection    ctrl-c
 Cut selection     ctrl-x
 Paste selection   ctrl-v
 Wrap text         ctrl-w
+Toggle wrap       ctrl-shift w   (for wrap on load)
 Clear text        ctrl-shift c
 
 Search panel      ctrl-s (Toggle)

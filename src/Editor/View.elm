@@ -268,7 +268,7 @@ goToLinePanel state =
 
     else
         div [] []
-        
+
 goToLinePanel_ =
     div
         [ style "width" "140px"
@@ -372,19 +372,20 @@ acceptLineNumber =
     Widget.myInput 30
         AcceptLineNumber
         ""
-        [ setHtmlId "line-number-input"
-        , style "position" "absolute"
+        [
+          style "position" "absolute"
         , style "left" "98px"
         , style "top" "6px"
         ]
+        [setHtmlId "line-number-input"]
 
 
 acceptSearchText =
-    Widget.myInput 130 AcceptSearchText "" [ setHtmlId "search-box", style "float" "left" ]
+    Widget.myInput 130 AcceptSearchText "" [ style "float" "left" ] [setHtmlId "search-box"]
 
 
 acceptReplaceText =
-    Widget.myInput 130 AcceptReplacementText "" [ style "float" "left" ]
+    Widget.myInput 130 AcceptReplacementText "" [ style "float" "left" ] [setHtmlId "replacement-box"]
 
 
 setHtmlId : String -> Html.Attribute msg

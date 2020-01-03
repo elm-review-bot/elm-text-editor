@@ -1,4 +1,4 @@
-module Editor.Update exposing (Msg(..), clearInternalState, scrollToLine, scrollToText, scrollToText_, update)
+module Editor.Update exposing (Msg(..), clearInternalState, scrollToLine, scrollToText, scrollToText_, update, focus)
 
 import Browser.Dom as Dom
 import Buffer exposing (Buffer)
@@ -1022,17 +1022,29 @@ update buffer msg state =
 
         ToggleGoToLinePanel ->
             if state.showGoToLinePanel == True then
-                ( { state | showGoToLinePanel = False }, buffer, focus "line-number-input" )
+              let
+                  _ = Debug.log "A" state.showGoToLinePanel
+              in
+                ( { state | showGoToLinePanel = False }, buffer, blur "line-number-input" )
 
             else
-                ( { state | showGoToLinePanel = True }, buffer, blur "line-number-input" )
+              let
+                  _ = Debug.log "B" state.showGoToLinePanel
+              in
+                ( { state | showGoToLinePanel = True }, buffer, focus "line-number-input" )
 
         ToggleSearchPanel ->
             if state.showSearchPanel == True then
-                ( { state | showSearchPanel = False }, buffer, focus "search-box" )
+               let
+                   _ = Debug.log "A" state.showSearchPanel
+               in
+                 ( { state | showSearchPanel = False }, buffer, blur "search-box" )
 
             else
-                ( { state | showSearchPanel = True }, buffer, blur "search-box" )
+               let
+                   _ = Debug.log "B" state.showSearchPanel
+               in
+                ( { state | showSearchPanel = True }, buffer, focus "search-box" )
 
 
 scrollToLine : Int -> InternalState -> Buffer -> ( InternalState, Buffer )
@@ -1190,4 +1202,4 @@ focus id =
 
 blur : String -> Cmd Msg
 blur id =
-    Task.attempt (\_ -> NoOp) (Dom.focus id)
+    Task.attempt (\_ -> NoOp) (Dom.blur id)

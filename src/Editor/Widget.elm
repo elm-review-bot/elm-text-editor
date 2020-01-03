@@ -65,16 +65,16 @@ rowButton width msg str attr =
         [ button ([ onClick msg ] ++ rowButtonLabelStyle width) [ text str ] ]
 
 
-myInput width msg str attr =
+myInput width msg str attr innerAttr =
     div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
         [ input
-            [ Attribute.style "height" "18px"
+            ([ Attribute.style "height" "18px"
             , Attribute.style "width" (String.fromInt width ++ "px")
             , Attribute.type_ "text"
             , Attribute.placeholder str
             , Attribute.style "margin-right" "8px"
             , onInput msg
-            ]
+            ] ++ innerAttr)
             []
         ]
 

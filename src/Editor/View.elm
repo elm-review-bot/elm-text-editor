@@ -12,6 +12,7 @@ import Json.Decode as Decode
 import Position exposing (Position)
 import RollingList
 import Window exposing (Window)
+import Editor.Style as Style
 
 
 name : String
@@ -196,13 +197,23 @@ infoPanel state lines =
     else div [] []
 
 infoPanel_  state lines =
-    div [ style "width" "90px", style "position" "absolute", style "right" "0px", style "top" "30px"]
+    div infoPanelStyle
         [ toggleHelpButton state
         , scrollPosition state
         , cursorPosition state
         , lineCount lines
         , wordCount lines
         ]
+
+infoPanelStyle =
+     [ style "width" "90px"
+     , style "position" "absolute"
+     , style "right" "0px"
+     , style "top" "30px"
+     , style "opacity" "0.75"
+     , style "background-color" Style.lightBlue
+     , style "padding" "8px"]
+
 
 searchPanel state =
     let
@@ -360,3 +371,6 @@ acceptReplaceText =
 setHtmlId : String -> Html.Attribute msg
 setHtmlId id =
     Attribute.attribute "id" id
+
+
+

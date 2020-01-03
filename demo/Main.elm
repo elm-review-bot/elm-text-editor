@@ -197,7 +197,7 @@ editorStyle =
     [ Event.on "keydown" (keyDecoder KeyPress)
     , HA.style "background-color" "#dddddd"
     , HA.style "border" "solid 0.5px"
-    , HA.style "width" "500px"
+    , HA.style "width" "600px"
     ]
 
 
@@ -215,6 +215,7 @@ footer model =
             ]
         , div [ HA.style "margin-top" "10px" ] [ text "This is an unpublished fork of work of Sydney Nemzer: ", Html.a [ HA.href "https://github.com/SidneyNemzer/elm-text-editor" ] [ text "Source code" ] ]
         , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands." ]
+        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift I to toggle info panel." ]
         , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton ]
         ]
 

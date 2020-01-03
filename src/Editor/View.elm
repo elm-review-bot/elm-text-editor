@@ -172,9 +172,10 @@ linesContainer =
 
 view : List (Attribute Msg) -> List String -> InternalState -> Html Msg
 view attr lines state =
-    div attr
+    div (attr ++ [style "position" "absolute"])
         [ goToLinePanel state
         , searchPanel state
+        , infoPanel state lines
         , div
             [ class <| name ++ "-container"
             , Event.preventDefaultOn
@@ -188,7 +189,6 @@ view attr lines state =
             [ gutter state.cursor state.window
             , linesContainer <|
                 List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
-            , infoPanel state lines
             ]
         ]
 
@@ -228,8 +228,8 @@ wrappingOption state =
 infoPanelStyle =
     [ style "width" "90px"
     , style "position" "absolute"
-    , style "right" "8px"
-    , style "top" "34px"
+    , style "right" "38px"
+    , style "top" "8px"
     , style "opacity" "1.0"
     , style "border" "solid 0.5px #444"
     , style "background-color" Style.lightBlue
@@ -256,7 +256,7 @@ searchPanel_ state =
         , style "font-size" "14px"
         , style "position" "absolute"
         , style "left" "0px"
-        , style "top" "-20px"
+        , style "top" "0px"
         ]
         [ searchTextButton
         , acceptSearchText

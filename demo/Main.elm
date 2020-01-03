@@ -140,7 +140,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ HA.style "position" "absolute", HA.style "top" "50px", HA.style "left" "50px" ]
+    div []
         [ title
         , Editor.embedded editorConfig model.editorState model.editorBuffer
         , footer model
@@ -151,6 +151,7 @@ editorConfig =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg
     , editorStyle = editorStyle
+    , width = 300
     }
 
 
@@ -158,7 +159,6 @@ editorStyle : List (Html.Attribute msg)
 editorStyle =
     [ HA.style "background-color" "#dddddd"
     , HA.style "border" "solid 0.5px"
-    , HA.style "width" "600px"
     ]
 
 

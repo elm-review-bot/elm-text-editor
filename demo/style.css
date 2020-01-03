@@ -1,7 +1,6 @@
 
 body {
     font-family: sans-serif;
-    padding: 50px;
     background-color : #cccccc;
     }
 
@@ -19,6 +18,10 @@ body {
 
 .input-range-labels-container { visibility: hidden }
 
+.input-range-container1 {
+     transform: rotate(-270deg);
+}
+
 .input-range-container {
-     transform: rotate(-270deg) translateY(-475px) translateX(-95px)
-  }
+     transform: rotate(-270deg) translateY(-745px) translateX(315px)
+}

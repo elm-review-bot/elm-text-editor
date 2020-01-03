@@ -69,21 +69,28 @@ init config =
 type alias EditorConfig a =
     { editorMsg : PEEditorMsg -> a
     , sliderMsg : Slider.Msg -> a
+    , width : Int
     , editorStyle : List (Html.Attribute a)
     }
 
 
 embedded : EditorConfig a -> State -> Buffer -> Html a
 embedded editorConfig state buffer =
-    div editorConfig.editorStyle
+  div [style "position" "absolute"] [
+    div ((elementWidth editorConfig.width) ::  editorConfig.editorStyle)
         [ Editor.Styles.styles
         , state
             |> view [ style "background-color" "#eeeeee" ] buffer
             |> Html.map editorConfig.editorMsg
-        , div [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "440px", HA.style "left" "40px" ]
+        -- , div [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "440px", HA.style "left" "40px" ]
+        , div [ HA.style "position" "absolute"]
             [ sliderView state |> Html.map editorConfig.sliderMsg ]
         ]
+    ]
 
+elementWidth : Int -> Attribute msg
+elementWidth k =
+   style "width" ((String.fromInt k) ++ "px")
 
 
 -- UPDATE --
@@ -152,7 +159,8 @@ updateSlider slider_ (State s) =
 sliderView : State -> Html Slider.Msg
 sliderView state =
     Html.div
-        []
+         [style "position" "absolute", style "right" "0px", style "top" "0px"]
+        --[]
         [ Slider.view (toInternal state).slider ]
 
 

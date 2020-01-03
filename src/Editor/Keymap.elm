@@ -148,7 +148,8 @@ keymaps =
         Dict.fromList
             [ ( "ArrowRight", SelectToGroupEnd )
             , ( "ArrowLeft", SelectToGroupStart )
-            , ( "c", Clear )
+            , ( "C", Clear )
+            , ( "I", ToggleInfoPanel)
             ]
     }
 

@@ -63,6 +63,7 @@ type Msg
     | Clear
     | WrapText
     | ToggleHelp
+    | ToggleInfoPanel
     | ToggleGoToLinePanel
     | ToggleSearchPanel
 
@@ -1004,6 +1005,10 @@ update buffer msg state =
                 , state.savedBuffer
                 , Cmd.none
                 )
+
+        ToggleInfoPanel ->
+                ( { state | showInfoPanel = not state.showInfoPanel }, buffer, Cmd.none )
+
 
         ToggleGoToLinePanel ->
             if state.showGoToLinePanel == True then

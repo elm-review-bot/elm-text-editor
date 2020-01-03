@@ -9,8 +9,9 @@ Help
 Partial list of key commands
 ----------------------------
 
-Show help         ctrl-h  (Toggle)
-Go to line        ctrl-g  (Toggle)
+Show help         ctrl-h         (Toggle)
+Show info panel   ctrl-shift-i   (Toggle)
+Go to line        ctrl-g         (Toggle)
 
 First line        ctrl-option up-arrow
 Last line         ctrl-option down-arrow
@@ -92,17 +93,28 @@ NOTES
 
 1. At present, all the editor controls
 are key commands.  Press the "Help" button,
-upper right, for a partial list of these.
-Full list coming soon.
+in hte info panel, upper right, for a partial
+list of these. Full list coming soon.
 
-2. I've tested the editor on a file of 1700
+2. More parameters are now configurable.
+For example, one can do this in Main:
+
+editorState = Editor.init
+   { defaultConfig | lines = 30
+                   , showInfoPanel = False
+   }
+
+to set up the embedded editor with a 30-line
+display and the info panel not shown.
+
+3. I've tested the editor on a file of 1700
 lines and 7700 words. It works fine.  For
 a file of 17,000 lines and 770,000 words,
 moving around the text is extremely fast,
 whereas double-clicking to select a word
 fails.  I don't know why as of this writing.
 
-3. In view of (2), I've set the gutter width
+4. In view of (3), I've set the gutter width
 to accommodate files of up to 9,999 lines.
 
 ROADMAP

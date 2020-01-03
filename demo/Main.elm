@@ -7,7 +7,7 @@ import Editor.Config
 import Editor.Styles
 import Editor.Widget as Widget
 import Html exposing (Html, div, text)
-import Html.Attributes as HA
+import Html.Attributes as HA exposing(style)
 import Html.Events as Event
 import Json.Decode as Decode exposing (Decoder)
 import SingleSlider as Slider
@@ -52,7 +52,7 @@ defaultConfig =
 init : () -> ( Model, Cmd Msg )
 init () =
     ( { editorBuffer = Buffer.init Text.jabberwocky
-      , editorState = Editor.init { defaultConfig | lines = 30 }
+      , editorState = Editor.init { defaultConfig | lines = 30, showInfoPanel = True }
       , lastKeyPress = Nothing
       }
     , Cmd.none
@@ -188,7 +188,7 @@ embeddedEditor model =
     div editorStyle
         [ Editor.Styles.styles
         , model.editorState
-            |> Editor.view model.editorBuffer
+            |> Editor.view [style "background-color" "#eeeeee"] model.editorBuffer
             |> Html.map EditorMsg
         ]
 
@@ -197,7 +197,7 @@ editorStyle =
     [ Event.on "keydown" (keyDecoder KeyPress)
     , HA.style "background-color" "#dddddd"
     , HA.style "border" "solid 0.5px"
-    , HA.style "width" "700px"
+    , HA.style "width" "600px"
     ]
 
 

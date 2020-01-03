@@ -5,9 +5,9 @@ import Editor.Keymap
 import Editor.Model exposing (InternalState)
 import Editor.Update exposing (Msg(..))
 import Editor.Widget as Widget
-import Html exposing (Attribute, Html, button, div, input, span, text)
+import Html exposing (Attribute, Html, div, span, text)
 import Html.Attributes as Attribute exposing (class, classList, style)
-import Html.Events as Event exposing (onClick, onInput)
+import Html.Events as Event 
 import Json.Decode as Decode
 import Position exposing (Position)
 import RollingList
@@ -168,9 +168,9 @@ linesContainer =
     div [ class <| name ++ "-lines" ]
 
 
-view : List String -> InternalState -> Html Msg
-view lines state =
-    div [ Attribute.style "background-color" "#eeeeee", Attribute.style "width" "700px", Attribute.style "position" "absolute" ]
+view : List (Attribute Msg) -> List String -> InternalState -> Html Msg
+view attr lines state =
+    div attr
         [ goToLinePanel state
         , searchPanel state
         , div
@@ -182,21 +182,27 @@ view lines state =
             , Event.onDoubleClick SelectGroup
             , onTripleClick SelectLine
             , Attribute.tabindex 0
-            , Attribute.style "width" "700px"
             ]
             [ gutter state.cursor state.window
             , linesContainer <|
                 List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
-            , div [ Attribute.style "width" "100px" ]
-                [ toggleHelpButton state
-                , scrollPosition state
-                , cursorPosition state
-                , lineCount lines
-                , wordCount lines
-                ]
+            , infoPanel state lines
             ]
         ]
 
+infoPanel state lines =
+    if state.showInfoPanel then
+      infoPanel_ state lines
+    else div [] []
+
+infoPanel_  state lines =
+    div [ style "width" "90px", style "position" "absolute", style "right" "0px", style "top" "30px"]
+        [ toggleHelpButton state
+        , scrollPosition state
+        , cursorPosition state
+        , lineCount lines
+        , wordCount lines
+        ]
 
 searchPanel state =
     let
@@ -208,16 +214,16 @@ searchPanel state =
                 ( "0.0", "-1000px" )
     in
     div
-        [ Attribute.style "width" "600px"
-        , Attribute.style "padding-top" "10px"
-        , Attribute.style "height" "36px"
-        , Attribute.style "padding-left" "8px"
-        , Attribute.style "background-color" "#bbb"
-        , Attribute.style "opacity" opacity
-        , Attribute.style "font-size" "14px"
-        , Attribute.style "position" "absolute"
-        , Attribute.style "right" "8px"
-        , Attribute.style "top" top
+        [ style "width" "600px"
+        , style "padding-top" "10px"
+        , style "height" "36px"
+        , style "padding-left" "8px"
+        , style "background-color" "#bbb"
+        , style "opacity" opacity
+        , style "font-size" "14px"
+        , style "position" "absolute"
+        , style "right" "8px"
+        , style "top" top
         ]
         [ searchTextButton
         , acceptSearchText
@@ -230,10 +236,6 @@ searchPanel state =
 
 
 
---  [text <| "Matches : " ++ (searchResultDisplay state)]
---         , div [ Attribute.style "float" "left", Attribute.style "width" "200px" ]
-
-
 goToLinePanel state =
     let
         ( opacity, top ) =
@@ -244,14 +246,14 @@ goToLinePanel state =
                 ( "0.0", "0px" )
     in
     div
-        [ Attribute.style "width" "140px"
-        , Attribute.style "height" "36px"
-        , Attribute.style "padding" "ipx"
-        , Attribute.style "opacity" opacity
-        , Attribute.style "position" "absolute"
-        , Attribute.style "right" "120px"
-        , Attribute.style "top" "0px"
-        , Attribute.style "background-color" "#aab"
+        [ style "width" "140px"
+        , style "height" "36px"
+        , style "padding" "ipx"
+        , style "opacity" opacity
+        , style "position" "absolute"
+        , style "right" "120px"
+        , style "top" "0px"
+        , style "background-color" "#aab"
         ]
         [ goToLineButton
         , acceptLineNumber
@@ -268,25 +270,6 @@ numberOfHitsDisplay state =
                 |> String.fromInt
     in
     Widget.rowButton 40 NoOp n []
-
-
-searchResultDisplay : InternalState -> String
-searchResultDisplay state =
-    let
-        lines =
-            state.searchResults
-                |> RollingList.toList
-                |> List.map (Tuple.first >> .line)
-                |> List.map ((\i -> i + 1) >> String.fromInt)
-
-        fewerLines =
-            List.take 5 lines
-    in
-    if List.length lines > List.length fewerLines then
-        String.join ", " fewerLines ++ " ..."
-
-    else
-        String.join ", " lines
 
 
 lineCount : List String -> Html Msg
@@ -329,62 +312,30 @@ toggleHelpButton state =
     Widget.columnButton 80 ToggleHelp label []
 
 
-upButton =
-    Widget.columnButton 80 (ScrollUp 1) "Line Up" []
-
-
-downButton =
-    Widget.columnButton 80 (ScrollDown 1) "Line Down" []
-
-
-jumpUpButton =
-    Widget.columnButton 80 (ScrollUp 20) "Page Up" []
-
-
-jumpDownButton =
-    Widget.columnButton 80 (ScrollDown 20) "Page Down" []
-
-
-clearButton =
-    Widget.columnButton 80 Clear "Clear" []
-
-
-firstLineButton =
-    Widget.columnButton 80 FirstLine "First" []
-
-
-lastLineButton =
-    Widget.columnButton 80 LastLine "Last" []
-
-
-wrapTextButton =
-    Widget.columnButton 80 WrapText "Wrap" []
-
-
 goToLineButton =
     Widget.rowButton 80
         NoOp
         "Go to line"
-        [ Attribute.style "position" "absolute"
-        , Attribute.style "left" "8px"
-        , Attribute.style "top" "6px"
+        [ style "position" "absolute"
+        , style "left" "8px"
+        , style "top" "6px"
         ]
 
 
 searchForwardButton =
-    Widget.rowButton 30 RollSearchSelectionForward ">" [ Attribute.style "float" "left" ]
+    Widget.rowButton 30 RollSearchSelectionForward ">" [ style "float" "left" ]
 
 
 searchBackwardButton =
-    Widget.rowButton 30 RollSearchSelectionBackward "<" [ Attribute.style "float" "left" ]
+    Widget.rowButton 30 RollSearchSelectionBackward "<" [ style "float" "left" ]
 
 
 searchTextButton =
-    Widget.rowButton 60 NoOp "Search" [ Attribute.style "float" "left" ]
+    Widget.rowButton 60 NoOp "Search" [ style "float" "left" ]
 
 
 replaceTextButton =
-    Widget.rowButton 70 ReplaceCurrentSelection "Replace" [ Attribute.style "float" "left" ]
+    Widget.rowButton 70 ReplaceCurrentSelection "Replace" [ style "float" "left" ]
 
 
 acceptLineNumber =
@@ -392,18 +343,18 @@ acceptLineNumber =
         AcceptLineNumber
         ""
         [ setHtmlId "line-number-input"
-        , Attribute.style "position" "absolute"
-        , Attribute.style "left" "98px"
-        , Attribute.style "top" "6px"
+        , style "position" "absolute"
+        , style "left" "98px"
+        , style "top" "6px"
         ]
 
 
 acceptSearchText =
-    Widget.myInput 130 AcceptSearchText "" [ setHtmlId "search-box", Attribute.style "float" "left" ]
+    Widget.myInput 130 AcceptSearchText "" [ setHtmlId "search-box", style "float" "left" ]
 
 
 acceptReplaceText =
-    Widget.myInput 130 AcceptReplacementText "" [ Attribute.style "float" "left" ]
+    Widget.myInput 130 AcceptReplacementText "" [ style "float" "left" ]
 
 
 setHtmlId : String -> Html.Attribute msg

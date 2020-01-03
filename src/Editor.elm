@@ -7,7 +7,7 @@ import Editor.Model exposing (InternalState)
 import Editor.Text
 import Editor.Update
 import Editor.View
-import Html exposing (Html)
+import Html exposing (Html, Attribute)
 import Position exposing (Position)
 import RollingList
 import SingleSlider as Slider
@@ -36,6 +36,7 @@ init config =
         , replacementText = ""
         , searchResults = RollingList.fromList []
         , showHelp = True
+        , showInfoPanel = config.showInfoPanel
         , showGoToLinePanel = False
         , showSearchPanel = False
         , savedBuffer = Buffer.fromString ""
@@ -59,9 +60,9 @@ update buffer msg (State state) =
         |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
 
 
-view : Buffer -> State -> Html Msg
-view buffer (State state) =
-    Editor.View.view (Buffer.lines buffer) state
+view : List (Attribute Msg) -> Buffer -> State -> Html Msg
+view attr buffer (State state) =
+    Editor.View.view attr (Buffer.lines buffer) state
 
 
 sliderView : State -> Html Slider.Msg
@@ -69,7 +70,6 @@ sliderView state =
     Html.div
         []
         [ Slider.view (toInternal state).slider ]
-
 
 
 --  STATE HELPERS --

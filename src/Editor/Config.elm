@@ -4,6 +4,7 @@ module Editor.Config exposing (Config, default)
 type alias Config =
     { lines : Int
     , wrapParams : WrapParams
+    , showInfoPanel : Bool
     }
 
 
@@ -22,4 +23,5 @@ default =
         , optimalWidth = 45
         , stringWidth = String.length
         }
+     , showInfoPanel = True
     }

@@ -139,6 +139,7 @@ keymaps =
             , ( "h", ToggleHelp )
             , ( "x", Cut )
             , ( "s", ToggleSearchPanel )
+            , ( "r", ToggleReplacePanel )
             , ( "v", Paste )
             , ( "z", Undo )
             , ( "w", WrapText )

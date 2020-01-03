@@ -68,6 +68,8 @@ type Msg
     | ToggleInfoPanel
     | ToggleGoToLinePanel
     | ToggleSearchPanel
+    | ToggleReplacePanel
+    | OpenReplaceField
 
 
 autoclose : Dict String String
@@ -472,7 +474,7 @@ update buffer msg state =
                         newBuffer =
                             Buffer.replace state.cursor end state.replacementText buffer
                     in
-                    ( state, newBuffer, Cmd.none )
+                    rollSearchSelectionForward state newBuffer
                         |> recordHistory state buffer
 
         LastLine ->
@@ -1022,29 +1024,27 @@ update buffer msg state =
 
         ToggleGoToLinePanel ->
             if state.showGoToLinePanel == True then
-              let
-                  _ = Debug.log "A" state.showGoToLinePanel
-              in
                 ( { state | showGoToLinePanel = False }, buffer, blur "line-number-input" )
 
             else
-              let
-                  _ = Debug.log "B" state.showGoToLinePanel
-              in
                 ( { state | showGoToLinePanel = True }, buffer, focus "line-number-input" )
 
         ToggleSearchPanel ->
             if state.showSearchPanel == True then
-               let
-                   _ = Debug.log "A" state.showSearchPanel
-               in
                  ( { state | showSearchPanel = False }, buffer, blur "search-box" )
 
             else
-               let
-                   _ = Debug.log "B" state.showSearchPanel
-               in
                 ( { state | showSearchPanel = True }, buffer, focus "search-box" )
+
+        ToggleReplacePanel ->
+           if state.showSearchPanel == True then
+                ( { state | showSearchPanel = False, canReplace = False }, buffer, blur "search-box" )
+
+           else
+               ( { state | showSearchPanel = True, canReplace = True }, buffer, focus "search-box" )
+
+        OpenReplaceField ->
+            ( { state | canReplace = True} , buffer, Cmd.none )
 
 
 scrollToLine : Int -> InternalState -> Buffer -> ( InternalState, Buffer )
@@ -1061,7 +1061,11 @@ scrollToLine k state buffer =
     in
     ( { state | cursor = cursor, window = window, selection = Nothing }, buffer )
 
+{-
 
+    TODO: Currently search on a string returns hits which are words.  They should be exact matches.
+
+-}
 scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
 scrollToText str state buffer =
     let

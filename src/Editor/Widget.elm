@@ -59,6 +59,9 @@ lightColumnButton width msg str attr =
     div (columnButtonStyle ++ attr)
         [ button ([ onClick msg ] ++ lightButtonLabelStyle width) [ text str ] ]
 
+lightRowButton width msg str attr =
+    div (rowButtonStyle ++ attr)
+        [ button ([ onClick msg ] ++ lightButtonLabelStyle width) [ text str ] ]
 
 rowButton width msg str attr =
     div (rowButtonStyle ++ attr)

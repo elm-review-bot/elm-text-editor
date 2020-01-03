@@ -254,10 +254,12 @@ searchPanel_ state =
         [ searchTextButton
         , acceptSearchText
         , numberOfHitsDisplay state
+        , showIf (not state.canReplace) openReplaceField
         , showIf state.canReplace replaceTextButton
         , showIf state.canReplace acceptReplaceText
         , searchForwardButton
         , searchBackwardButton
+        , dismissSearchPanel
         ]
 
 
@@ -350,6 +352,18 @@ dismissInfoPanel =
     Widget.lightColumnButton 20
         ToggleInfoPanel
         "X"
+        [ ]
+
+dismissSearchPanel =
+    Widget.lightRowButton 25
+        ToggleSearchPanel
+        "X"
+        [ ]
+
+openReplaceField =
+    Widget.rowButton 25
+        OpenReplaceField
+        "R"
         [ ]
 
 searchForwardButton =

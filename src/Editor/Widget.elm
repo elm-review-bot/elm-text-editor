@@ -31,6 +31,15 @@ buttonLabelStyle width =
     , Attribute.style "text-align" "left"
     ]
 
+lightButtonLabelStyle width =
+    [ Attribute.style "font-size" "12px"
+    , Attribute.style "color" "#444"
+    , Attribute.style "width" (String.fromInt width ++ "px")
+    , Attribute.style "height" "24px"
+    , Attribute.style "border" "none"
+    , Attribute.style "text-align" "left"
+    ]
+
 
 rowButtonLabelStyle width =
     [ Attribute.style "font-size" "12px"
@@ -45,6 +54,10 @@ rowButtonLabelStyle width =
 columnButton width msg str attr =
     div (columnButtonStyle ++ attr)
         [ button ([ onClick msg ] ++ buttonLabelStyle width) [ text str ] ]
+
+lightColumnButton width msg str attr =
+    div (columnButtonStyle ++ attr)
+        [ button ([ onClick msg ] ++ lightButtonLabelStyle width) [ text str ] ]
 
 
 rowButton width msg str attr =

@@ -203,14 +203,16 @@ infoPanel_  state lines =
         , cursorPosition state
         , lineCount lines
         , wordCount lines
+        , dismissInfoPanel
         ]
 
 infoPanelStyle =
      [ style "width" "90px"
      , style "position" "absolute"
-     , style "right" "0px"
-     , style "top" "30px"
-     , style "opacity" "0.75"
+     , style "right" "8px"
+     , style "top" "34px"
+     , style "opacity" "1.0"
+     , style "border" "solid 0.5px #444"
      , style "background-color" Style.lightBlue
      , style "padding" "8px"]
 
@@ -332,6 +334,11 @@ goToLineButton =
         , style "top" "6px"
         ]
 
+dismissInfoPanel =
+    Widget.lightColumnButton 20
+        ToggleInfoPanel
+        "X"
+        [ ]
 
 searchForwardButton =
     Widget.rowButton 30 RollSearchSelectionForward ">" [ style "float" "left" ]

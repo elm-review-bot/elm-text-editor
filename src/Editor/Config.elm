@@ -1,10 +1,11 @@
-module Editor.Config exposing (Config, default)
+module Editor.Config exposing (Config, default, setMaximumWrapWidth,setOptimumWrapWidth )
 
 
 type alias Config =
     { lines : Int
     , wrapParams : WrapParams
     , showInfoPanel : Bool
+    , wrapOption : WrapOption
     }
 
 
@@ -13,6 +14,24 @@ type alias WrapParams =
     , optimalWidth : Int
     , stringWidth : String -> Int
     }
+
+-- TODO: Make maximumWidth and optimalWidth configurable at startup and at runtime
+
+setMaximumWrapWidth : Int -> Config -> Config
+setMaximumWrapWidth k config =
+    let
+      w = config.wrapParams
+      newWrapParams = { w | maximumWidth = k }
+    in
+      { config | wrapParams = newWrapParams }
+
+setOptimumWrapWidth : Int -> Config -> Config
+setOptimumWrapWidth k config =
+    let
+      w = config.wrapParams
+      newWrapParams = { w | optimalWidth = k }
+    in
+      { config | wrapParams = newWrapParams }
 
 
 default : Config
@@ -24,4 +43,8 @@ default =
         , stringWidth = String.length
         }
      , showInfoPanel = True
+     , wrapOption = DoWrap
     }
+
+type WrapOption = DoWrap | DontWrap
+

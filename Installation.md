@@ -1,7 +1,18 @@
 # Editor Installation
 
 To install the Editor in app, use the outline below, 
-consulting the code in `./demo` as needed.
+consulting the code in `./demo` 
+
+## Installation
+
+```bash
+elm install bemyak/elm-slider
+elm install lovasoa/elm-rolling-list
+elm install elm-community/string-extra
+elm install elm-community/maybe-extra
+elm install elm-community/list-extra
+elm install folkertdev/elm-paragraph
+```
 
 ## Imports
 

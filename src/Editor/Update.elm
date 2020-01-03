@@ -995,6 +995,7 @@ update buffer msg state =
 
         WrapText ->
             ( state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none )
+              |> recordHistory state buffer
 
         ToggleHelp ->
             if state.showHelp == True then

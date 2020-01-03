@@ -197,7 +197,7 @@ editorStyle =
     [ Event.on "keydown" (keyDecoder KeyPress)
     , HA.style "background-color" "#dddddd"
     , HA.style "border" "solid 0.5px"
-    , HA.style "width" "600px"
+    , HA.style "width" "500px"
     ]
 
 

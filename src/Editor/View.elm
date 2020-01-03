@@ -231,25 +231,25 @@ infoPanelStyle =
 
 
 searchPanel state =
-    let
-        ( opacity, top ) =
-            if state.showSearchPanel == True then
-                ( "0.7", "80px" )
+    if state.showSearchPanel == True then
+        searchPanel_ state
 
-            else
-                ( "0.0", "-1000px" )
-    in
+    else
+        div [] []
+
+
+searchPanel_ state =
     div
-        [ style "width" "600px"
+        [ style "width" "595px"
         , style "padding-top" "10px"
         , style "height" "36px"
         , style "padding-left" "8px"
         , style "background-color" "#bbb"
-        , style "opacity" opacity
+        , style "opacity" "0.8"
         , style "font-size" "14px"
         , style "position" "absolute"
-        , style "right" "8px"
-        , style "top" top
+        , style "left" "0px"
+        , style "top" "0px"
         ]
         [ searchTextButton
         , acceptSearchText
@@ -263,21 +263,20 @@ searchPanel state =
 
 
 goToLinePanel state =
-    let
-        ( opacity, top ) =
-            if state.showGoToLinePanel == True then
-                ( "0.8", "-1000px" )
+    if state.showGoToLinePanel == True then
+        goToLinePanel_
 
-            else
-                ( "0.0", "0px" )
-    in
+    else
+        div [] []
+        
+goToLinePanel_ =
     div
         [ style "width" "140px"
         , style "height" "36px"
         , style "padding" "ipx"
-        , style "opacity" opacity
+        , style "opacity" "0.8"
         , style "position" "absolute"
-        , style "right" "120px"
+        , style "left" "0px"
         , style "top" "0px"
         , style "background-color" "#aab"
         ]

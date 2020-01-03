@@ -277,7 +277,7 @@ goToLinePanel_ =
         , style "opacity" "0.8"
         , style "position" "absolute"
         , style "left" "0px"
-        , style "top" "0px"
+        , style "top" "-10px"
         , style "background-color" "#aab"
         ]
         [ goToLineButton

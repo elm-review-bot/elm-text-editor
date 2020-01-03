@@ -1,19 +1,19 @@
 module Editor.View exposing (view)
 
 import Char
+import Editor.Config exposing (WrapOption(..))
 import Editor.Keymap
-import Editor.Config exposing(WrapOption(..))
 import Editor.Model exposing (InternalState)
+import Editor.Style as Style
 import Editor.Update exposing (Msg(..))
 import Editor.Widget as Widget
 import Html exposing (Attribute, Html, div, span, text)
 import Html.Attributes as Attribute exposing (class, classList, style)
-import Html.Events as Event 
+import Html.Events as Event
 import Json.Decode as Decode
 import Position exposing (Position)
 import RollingList
 import Window exposing (Window)
-import Editor.Style as Style
 
 
 name : String
@@ -192,12 +192,16 @@ view attr lines state =
             ]
         ]
 
+
 infoPanel state lines =
     if state.showInfoPanel then
-      infoPanel_ state lines
-    else div [] []
+        infoPanel_ state lines
 
-infoPanel_  state lines =
+    else
+        div [] []
+
+
+infoPanel_ state lines =
     div infoPanelStyle
         [ toggleHelpButton state
         , scrollPosition state
@@ -208,26 +212,29 @@ infoPanel_  state lines =
         , dismissInfoPanel
         ]
 
+
 wrappingOption state =
     let
-        message = if state.config.wrapOption == DoWrap then
-                      "Wrap: ON"
-                  else
-                      "Wrap: OFF"
-    in
-       div [style "margin-top" "10px"] [text message]
+        message =
+            if state.config.wrapOption == DoWrap then
+                "Wrap: ON"
 
+            else
+                "Wrap: OFF"
+    in
+    div [ style "margin-top" "10px" ] [ text message ]
 
 
 infoPanelStyle =
-     [ style "width" "90px"
-     , style "position" "absolute"
-     , style "right" "8px"
-     , style "top" "34px"
-     , style "opacity" "1.0"
-     , style "border" "solid 0.5px #444"
-     , style "background-color" Style.lightBlue
-     , style "padding" "8px"]
+    [ style "width" "90px"
+    , style "position" "absolute"
+    , style "right" "8px"
+    , style "top" "34px"
+    , style "opacity" "1.0"
+    , style "border" "solid 0.5px #444"
+    , style "background-color" Style.lightBlue
+    , style "padding" "8px"
+    ]
 
 
 searchPanel state =
@@ -263,13 +270,13 @@ searchPanel_ state =
         ]
 
 
-
 goToLinePanel state =
     if state.showGoToLinePanel == True then
         goToLinePanel_
 
     else
         div [] []
+
 
 goToLinePanel_ =
     div
@@ -348,23 +355,27 @@ goToLineButton =
         , style "top" "6px"
         ]
 
+
 dismissInfoPanel =
     Widget.lightColumnButton 20
         ToggleInfoPanel
         "X"
-        [ ]
+        []
+
 
 dismissSearchPanel =
     Widget.lightRowButton 25
         ToggleSearchPanel
         "X"
-        [ ]
+        []
+
 
 openReplaceField =
     Widget.rowButton 25
         OpenReplaceField
         "R"
-        [ ]
+        []
+
 
 searchForwardButton =
     Widget.rowButton 30 RollSearchSelectionForward ">" [ style "float" "left" ]
@@ -386,20 +397,19 @@ acceptLineNumber =
     Widget.myInput 30
         AcceptLineNumber
         ""
-        [
-          style "position" "absolute"
+        [ style "position" "absolute"
         , style "left" "98px"
         , style "top" "6px"
         ]
-        [setHtmlId "line-number-input"]
+        [ setHtmlId "line-number-input" ]
 
 
 acceptSearchText =
-    Widget.myInput 130 AcceptSearchText "" [ style "float" "left" ] [setHtmlId "search-box"]
+    Widget.myInput 130 AcceptSearchText "" [ style "float" "left" ] [ setHtmlId "search-box" ]
 
 
 acceptReplaceText =
-    Widget.myInput 130 AcceptReplacementText "" [ style "float" "left" ] [setHtmlId "replacement-box"]
+    Widget.myInput 130 AcceptReplacementText "" [ style "float" "left" ] [ setHtmlId "replacement-box" ]
 
 
 setHtmlId : String -> Html.Attribute msg
@@ -409,4 +419,8 @@ setHtmlId id =
 
 showIf : Bool -> Html Msg -> Html Msg
 showIf flag h =
-    if flag then h else (div [] [])
+    if flag then
+        h
+
+    else
+        div [] []

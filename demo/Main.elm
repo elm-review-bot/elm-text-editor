@@ -1,15 +1,13 @@
-module Main exposing (main)
+module Main exposing (Msg(..), main)
+
 
 import Browser
 import Buffer exposing (Buffer)
-import Editor exposing (State)
-import Editor.Config exposing(WrapOption(..))
-import Editor.Styles
-import Editor.Widget as Widget
-import Html exposing (Html, div, text)
+import Editor exposing (EditorConfig, PEEditorMsg, State)
+import Editor.Config exposing (WrapOption(..))
+import Html exposing (Html, div, text, button)
 import Html.Attributes as HA exposing(style)
-import Html.Events as Event
-import Json.Decode as Decode exposing (Decoder)
+import Html.Events exposing(onClick)
 import SingleSlider as Slider
 import Text
 
@@ -29,8 +27,7 @@ main =
 
 
 type Msg
-    = EditorMsg Editor.Msg
-    | KeyPress String
+    = EditorMsg PEEditorMsg
     | Test
     | FindTreasure
     | GetSpeech
@@ -41,7 +38,6 @@ type Msg
 type alias Model =
     { editorBuffer : Buffer
     , editorState : State
-    , lastKeyPress : Maybe String
     }
 
 
@@ -53,16 +49,17 @@ init : () -> ( Model, Cmd Msg )
 init () =
     ( { editorBuffer = Buffer.init Text.jabberwocky
       , editorState = Editor.init config
-      , lastKeyPress = Nothing
       }
     , Cmd.none
     )
 
-config = {  lines = 30
-          , showInfoPanel = True
-          , wrapParams = { maximumWidth = 65, optimalWidth = 60, stringWidth = String.length }
-          , wrapOption = DontWrap
-         }
+
+config =
+    { lines = 30
+    , showInfoPanel = True
+    , wrapParams = { maximumWidth = 65, optimalWidth = 60, stringWidth = String.length }
+    , wrapOption = DontWrap
+    }
 
 
 
@@ -84,9 +81,6 @@ update msg model =
             , Cmd.map EditorMsg cmd
             )
 
-        KeyPress key ->
-            ( { model | lastKeyPress = Just key }, Cmd.none )
-
         Test ->
             load DontWrap Text.info model
 
@@ -100,38 +94,10 @@ update msg model =
             highlightText "treasure" model
 
         SliderMsg sliderMsg ->
-            let
-                editorState =
-                    model.editorState
-
-                ( newSlider, cmd, updateResults ) =
-                    Slider.update sliderMsg (Editor.slider editorState)
-
-                newEditorState_ =
-                    Editor.updateSlider newSlider editorState
-
-                numberOfLines =
-                    Buffer.lines model.editorBuffer
-                        |> List.length
-                        |> toFloat
-
-                line =
-                    newSlider.value
-                        / 100.0
-                        |> (\x -> x * numberOfLines)
-                        |> round
-
-                newEditorState =
-                    Editor.scrollToLine line newEditorState_ model.editorBuffer |> Tuple.first
-
-                newCmd =
-                    if updateResults then
-                        Cmd.batch [ Cmd.map SliderMsg cmd, Cmd.none ]
-
-                    else
-                        Cmd.none
-            in
-            ( { model | editorState = newEditorState }, newCmd )
+          let
+            (newEditorState, cmd) = Editor.sliderUpdate sliderMsg  model.editorState model.editorBuffer
+          in
+            ( { model | editorState = newEditorState }, cmd  |> Cmd.map SliderMsg )
 
 
 
@@ -176,41 +142,30 @@ view : Model -> Html Msg
 view model =
     div [ HA.style "position" "absolute", HA.style "top" "50px", HA.style "left" "50px" ]
         [ title
-        , embeddedEditor model
-        , div [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "440px", HA.style "left" "40px" ]
-            [ Editor.sliderView model.editorState |> Html.map SliderMsg ]
+        , Editor.embedded editorConfig model.editorState model.editorBuffer
         , footer model
         ]
+
+
+editorConfig =
+    { editorMsg = EditorMsg
+    , sliderMsg = SliderMsg
+    , editorStyle = editorStyle
+    }
+
+
+editorStyle : List (Html.Attribute msg)
+editorStyle =
+    [ HA.style "background-color" "#dddddd"
+    , HA.style "border" "solid 0.5px"
+    , HA.style "width" "600px"
+    ]
 
 
 title : Html Msg
 title =
     div [ HA.style "font-size" "16px", HA.style "font-style" "bold", HA.style "margin-bottom" "10px" ]
         [ text "A Pure Elm Text Editor" ]
-
-
-embeddedEditor : Model -> Html Msg
-embeddedEditor model =
-    div editorStyle
-        [ Editor.Styles.styles
-        , model.editorState
-            |> Editor.view [style "background-color" "#eeeeee"] model.editorBuffer
-            |> Html.map EditorMsg
-        ]
-
-
-editorStyle =
-    [ Event.on "keydown" (keyDecoder KeyPress)
-    , HA.style "background-color" "#dddddd"
-    , HA.style "border" "solid 0.5px"
-    , HA.style "width" "600px"
-    ]
-
-
-keyDecoder : (String -> msg) -> Decoder msg
-keyDecoder keyToMsg =
-    Decode.field "key" Decode.string
-        |> Decode.map keyToMsg
 
 
 footer : Model -> Html Msg
@@ -231,34 +186,42 @@ footer model =
 
 
 testButton =
-    Widget.rowButton 80 Test "Info" []
+    rowButton 80 Test "Info" []
 
 
 treasureButton =
-    Widget.rowButton 120 FindTreasure "Find treasure" []
+    rowButton 120 FindTreasure "Find treasure" []
 
 
 speechTextButton =
-    Widget.rowButton 160 GetSpeech "Gettysburg Address" []
+    rowButton 160 GetSpeech "Gettysburg Address" []
 
 
 resetButton =
-    Widget.rowButton 80 Reset "Reset" []
+    rowButton 80 Reset "Reset" []
 
 
+-- STYLE --
 
--- WIDGETS
+rowButtonStyle =
+    [ style "font-size" "12px"
+    , style "border" "none"
+    , style "margin-right" "8px"
+    , style "float" "left"
+    ]
 
 
-lastKeyDisplay : Maybe String -> Html Msg
-lastKeyDisplay ms =
-    let
-        report =
-            case ms of
-                Nothing ->
-                    "none"
+rowButtonLabelStyle width =
+    [ style "font-size" "12px"
+    , style "background-color" "#666"
+    , style "color" "#eee"
+    , style "width" (String.fromInt width ++ "px")
+    , style "height" "24px"
+    , style "border" "none"
+    ]
 
-                Just m ->
-                    m
-    in
-    div [ HA.style "margin-top" "10px" ] [ text <| "Last key pressed: " ++ report ]
+
+rowButton width msg str attr =
+    div (rowButtonStyle ++ attr)
+        [ button ([ onClick msg ] ++ rowButtonLabelStyle width) [ text str ] ]
+

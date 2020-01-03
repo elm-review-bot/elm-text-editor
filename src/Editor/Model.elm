@@ -35,7 +35,7 @@ type alias InternalState =
     , showSearchPanel : Bool
     , savedBuffer : Buffer
     , slider : Slider.Model
-    } 
+    }
 
 
 slider : Slider.Model
@@ -50,4 +50,3 @@ slider =
         , step = 0.01
         , value = 0
     }
-

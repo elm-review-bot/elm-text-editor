@@ -1,19 +1,36 @@
-module Editor exposing (Msg, State, init, load, scrollToLine, scrollToString, slider, sliderView, update, updateSlider, view)
+module Editor exposing
+    ( EditorConfig
+    , PEEditorMsg
+    , State
+    , embedded
+    , init
+    , load
+    , scrollToLine
+    , scrollToString
+    , slider
+    , sliderUpdate
+    , sliderView
+    , update
+    , updateSlider
+    , view
+    )
 
 import Buffer exposing (Buffer)
 import Editor.Config exposing (Config, WrapOption(..))
 import Editor.History
 import Editor.Model exposing (InternalState)
+import Editor.Styles
 import Editor.Text
 import Editor.Update
 import Editor.View
-import Html exposing (Html, Attribute)
+import Html exposing (Attribute, Html, div)
+import Html.Attributes as HA exposing (style)
 import Position exposing (Position)
 import RollingList
 import SingleSlider as Slider
 
 
-type alias Msg =
+type alias PEEditorMsg =
     Editor.Update.Msg
 
 
@@ -45,6 +62,83 @@ init config =
         }
 
 
+
+-- EMBEDDED EDITOR --
+
+
+type alias EditorConfig a =
+    { editorMsg : PEEditorMsg -> a
+    , sliderMsg : Slider.Msg -> a
+    , editorStyle : List (Html.Attribute a)
+    }
+
+
+embedded : EditorConfig a -> State -> Buffer -> Html a
+embedded editorConfig state buffer =
+    div editorConfig.editorStyle
+        [ Editor.Styles.styles
+        , state
+            |> view [ style "background-color" "#eeeeee" ] buffer
+            |> Html.map editorConfig.editorMsg
+        , div [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "440px", HA.style "left" "40px" ]
+            [ sliderView state |> Html.map editorConfig.sliderMsg ]
+        ]
+
+
+
+-- UPDATE --
+
+
+update : Buffer -> PEEditorMsg -> State -> ( State, Buffer, Cmd PEEditorMsg )
+update buffer msg (State state) =
+    Editor.Update.update buffer msg state
+        |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
+
+sliderUpdate : Slider.Msg -> State -> Buffer -> (State, Cmd Slider.Msg)
+sliderUpdate sliderMsg state buffer =
+   let
+        ( newSlider, cmd, updateResults ) =
+            Slider.update sliderMsg (slider state)
+
+        newEditorState_ =
+            updateSlider newSlider state
+
+        numberOfLines =
+            Buffer.lines buffer
+                |> List.length
+                |> toFloat
+
+        line =
+            newSlider.value
+                / 100.0
+                |> (\x -> x * numberOfLines)
+                |> round
+
+        newEditorState : State
+        newEditorState =
+            scrollToLine line newEditorState_ buffer |> Tuple.first
+
+        newCmd =
+            if updateResults then
+                 cmd
+
+            else
+                Cmd.none
+    in
+    ( newEditorState, newCmd )
+
+-- VIEW --
+
+
+view : List (Attribute PEEditorMsg) -> Buffer -> State -> Html PEEditorMsg
+view attr buffer (State state) =
+    Editor.View.view attr (Buffer.lines buffer) state
+
+
+
+-- SLIDER --
+
+
 slider : State -> Slider.Model
 slider (State s) =
     s.slider
@@ -55,17 +149,6 @@ updateSlider slider_ (State s) =
     State { s | slider = slider_ }
 
 
-update : Buffer -> Msg -> State -> ( State, Buffer, Cmd Msg )
-update buffer msg (State state) =
-    Editor.Update.update buffer msg state
-        |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
-
-
-view : List (Attribute Msg) -> Buffer -> State -> Html Msg
-view attr buffer (State state) =
-    Editor.View.view attr (Buffer.lines buffer) state
-
-
 sliderView : State -> Html Slider.Msg
 sliderView state =
     Html.div
@@ -73,12 +156,8 @@ sliderView state =
         [ Slider.view (toInternal state).slider ]
 
 
---  STATE HELPERS --
 
-
-toInternal : State -> InternalState
-toInternal (State s) =
-    s
+--  STATE FUNCTIONS --
 
 
 clearState : State -> State
@@ -99,7 +178,7 @@ load wrapOption content state =
             List.maximum lineLengths |> Maybe.withDefault 1000
 
         buffer =
-            if wrapOption == DoWrap && maxLineLength > config.wrapParams.maximumWidth  then
+            if wrapOption == DoWrap && maxLineLength > config.wrapParams.maximumWidth then
                 Buffer.fromString (Editor.Text.prepareLines config content)
 
             else
@@ -118,8 +197,13 @@ scrollToLine =
     \k state buffer -> lift (Editor.Update.scrollToLine k) state buffer
 
 
+toInternal : State -> InternalState
+toInternal (State s) =
+    s
 
--- FANCY HA HA --
+
+
+-- MAP AND LIFT: UTILITY --
 
 
 map : (InternalState -> InternalState) -> State -> State

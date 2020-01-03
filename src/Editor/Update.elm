@@ -1,8 +1,9 @@
-module Editor.Update exposing (Msg(..), clearInternalState, scrollToLine, scrollToText, scrollToText_, update, focus)
+module Editor.Update exposing (Msg(..), clearInternalState, focus, scrollToLine, scrollToText, scrollToText_, update)
 
 import Browser.Dom as Dom
 import Buffer exposing (Buffer)
 import Dict exposing (Dict)
+import Editor.Config as Config exposing (Config, WrapOption(..))
 import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
 import Editor.Text
@@ -11,7 +12,6 @@ import RollingList
 import Task
 import Text
 import Window
-import Editor.Config as Config exposing(Config, WrapOption(..))
 
 
 type Msg
@@ -999,14 +999,14 @@ update buffer msg state =
 
         WrapText ->
             ( state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none )
-              |> recordHistory state buffer
+                |> recordHistory state buffer
 
         ToggleWrapping ->
             if state.config.wrapOption == DoWrap then
                 ( setWrapOption DontWrap state, buffer, Cmd.none )
+
             else
                 ( setWrapOption DoWrap state, buffer, Cmd.none )
-
 
         ToggleHelp ->
             if state.showHelp == True then
@@ -1019,8 +1019,7 @@ update buffer msg state =
                 )
 
         ToggleInfoPanel ->
-                ( { state | showInfoPanel = not state.showInfoPanel }, buffer, Cmd.none )
-
+            ( { state | showInfoPanel = not state.showInfoPanel }, buffer, Cmd.none )
 
         ToggleGoToLinePanel ->
             if state.showGoToLinePanel == True then
@@ -1031,20 +1030,20 @@ update buffer msg state =
 
         ToggleSearchPanel ->
             if state.showSearchPanel == True then
-                 ( { state | showSearchPanel = False }, buffer, blur "search-box" )
+                ( { state | showSearchPanel = False }, buffer, blur "search-box" )
 
             else
                 ( { state | showSearchPanel = True }, buffer, focus "search-box" )
 
         ToggleReplacePanel ->
-           if state.showSearchPanel == True then
+            if state.showSearchPanel == True then
                 ( { state | showSearchPanel = False, canReplace = False }, buffer, blur "search-box" )
 
-           else
-               ( { state | showSearchPanel = True, canReplace = True }, buffer, focus "search-box" )
+            else
+                ( { state | showSearchPanel = True, canReplace = True }, buffer, focus "search-box" )
 
         OpenReplaceField ->
-            ( { state | canReplace = True} , buffer, Cmd.none )
+            ( { state | canReplace = True }, buffer, Cmd.none )
 
 
 scrollToLine : Int -> InternalState -> Buffer -> ( InternalState, Buffer )
@@ -1061,11 +1060,15 @@ scrollToLine k state buffer =
     in
     ( { state | cursor = cursor, window = window, selection = Nothing }, buffer )
 
+
+
 {-
 
-    TODO: Currently search on a string returns hits which are words.  They should be exact matches.
+   TODO: Currently search on a string returns hits which are words.  They should be exact matches.
 
 -}
+
+
 scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
 scrollToText str state buffer =
     let
@@ -1165,23 +1168,25 @@ rollSearchSelectionBackward state buffer =
             , Cmd.none
             )
 
+
 setMaximumWrapWidth : Int -> InternalState -> InternalState
 setMaximumWrapWidth k state =
     lift (Config.setMaximumWrapWidth k) state
+
 
 setOptimumWrapWidth : Int -> InternalState -> InternalState
 setOptimumWrapWidth k state =
     lift (Config.setOptimumWrapWidth k) state
 
 
-setWrapOption: WrapOption -> InternalState -> InternalState
+setWrapOption : WrapOption -> InternalState -> InternalState
 setWrapOption wrapOption state =
     lift (Config.setWrapOption wrapOption) state
 
 
 lift : (Config -> Config) -> (InternalState -> InternalState)
 lift f =
-    \is -> {is | config = f is.config}
+    \is -> { is | config = f is.config }
 
 
 clearInternalState : InternalState -> InternalState

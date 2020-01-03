@@ -1,4 +1,4 @@
-module Editor.Model exposing (InternalState, Snapshot, initialText, lastLine, slider)
+module Editor.Model exposing (InternalState, Snapshot, slider)
 
 import Buffer exposing (Buffer)
 import Editor.Config exposing (Config)
@@ -6,7 +6,6 @@ import Editor.History exposing (History)
 import Position exposing (Position)
 import RollingList exposing (RollingList)
 import SingleSlider as Slider exposing (..)
-import Text
 import Window exposing (Window)
 
 
@@ -34,7 +33,7 @@ type alias InternalState =
     , showSearchPanel : Bool
     , savedBuffer : Buffer
     , slider : Slider.Model
-    }
+    } 
 
 
 slider : Slider.Model
@@ -50,10 +49,3 @@ slider =
         , value = 0
     }
 
-
-lastLine =
-    23
-
-
-initialText =
-    Text.jabberwocky

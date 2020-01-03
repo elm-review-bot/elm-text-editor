@@ -1,7 +1,7 @@
 module Editor exposing (Msg, State, init, load, scrollToLine, scrollToString, slider, sliderView, update, updateSlider, view)
 
 import Buffer exposing (Buffer)
-import Editor.Config exposing (Config)
+import Editor.Config exposing (Config, WrapOption(..))
 import Editor.History
 import Editor.Model exposing (InternalState)
 import Editor.Text
@@ -85,8 +85,8 @@ clearState (State state) =
     State (Editor.Update.clearInternalState state)
 
 
-load : String -> State -> ( State, Buffer )
-load content state =
+load : WrapOption -> String -> State -> ( State, Buffer )
+load wrapOption content state =
     let
         config =
             (toInternal state).config
@@ -98,7 +98,7 @@ load content state =
             List.maximum lineLengths |> Maybe.withDefault 1000
 
         buffer =
-            if maxLineLength > config.wrapParams.maximumWidth then
+            if wrapOption == DoWrap && maxLineLength > config.wrapParams.maximumWidth  then
                 Buffer.fromString (Editor.Text.prepareLines config content)
 
             else

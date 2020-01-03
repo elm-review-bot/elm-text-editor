@@ -1,4 +1,4 @@
-module Editor.Config exposing (Config, default, setMaximumWrapWidth,setOptimumWrapWidth )
+module Editor.Config exposing (Config, WrapOption(..), default, setMaximumWrapWidth,setOptimumWrapWidth )
 
 
 type alias Config =

@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Buffer exposing (Buffer)
 import Editor exposing (State)
-import Editor.Config
+import Editor.Config exposing(WrapOption(..))
 import Editor.Styles
 import Editor.Widget as Widget
 import Html exposing (Html, div, text)
@@ -82,13 +82,13 @@ update msg model =
             ( { model | lastKeyPress = Just key }, Cmd.none )
 
         Test ->
-            load Text.info model
+            load DontWrap Text.info model
 
         GetSpeech ->
-            load Text.gettysburgAddress model
+            load DoWrap Text.gettysburgAddress model
 
         Reset ->
-            load Text.jabberwocky model
+            load DontWrap Text.jabberwocky model
 
         FindTreasure ->
             highlightText "treasure" model
@@ -132,11 +132,11 @@ update msg model =
 -- HELPER FUNCTIONS FOR UPDATE
 
 
-load : String -> Model -> ( Model, Cmd Msg )
-load str model =
+load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
+load wrapOption str model =
     let
         ( newEditorState, newEditorBuffer ) =
-            Editor.load str model.editorState
+            Editor.load wrapOption str model.editorState
     in
     ( { model | editorState = newEditorState, editorBuffer = newEditorBuffer }, Cmd.none )
 

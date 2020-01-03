@@ -41,9 +41,6 @@ type alias Model =
     }
 
 
-defaultConfig =
-    Editor.Config.default
-
 
 init : () -> ( Model, Cmd Msg )
 init () =
@@ -53,6 +50,9 @@ init () =
     , Cmd.none
     )
 
+
+defaultConfig =
+    Editor.Config.default
 
 config =
     { lines = 30

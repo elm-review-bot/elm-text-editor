@@ -1,5 +1,8 @@
 # Editor Installation
 
+To install the Editor in app, use the outline below, 
+consulting the code in `./demo` as needed.
+
 ## Imports
 
 ```
@@ -28,7 +31,20 @@ type alias Model =
     }
 ```
 
-For example:
+## Init
+
+```elm
+init : () -> ( Model, Cmd Msg )
+init () =
+    ( { editorBuffer = Buffer.init Text.jabberwocky
+      , editorState = Editor.init config
+      }
+    , Cmd.none
+    )
+```
+
+
+where (for example):
 
 ```elm
 config =
@@ -53,17 +69,7 @@ or just this
 config = Config.default
 ```
 
-## Init
 
-```elm
-init : () -> ( Model, Cmd Msg )
-init () =
-    ( { editorBuffer = Buffer.init Text.jabberwocky
-      , editorState = Editor.init config
-      }
-    , Cmd.none
-    )
-```
 
 ## Update
 

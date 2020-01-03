@@ -1070,7 +1070,7 @@ scrollToText str state buffer =
     in
     case List.head searchResults of
         Nothing ->
-            ( { state | searchResults = RollingList.fromList [], searchTerm = str }, buffer, Cmd.none )
+            ( { state | searchResults = RollingList.fromList [], searchTerm = str, selection = Nothing }, buffer, Cmd.none )
 
         Just ( cursor, end ) ->
             let

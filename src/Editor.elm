@@ -34,6 +34,7 @@ init config =
         , history = Editor.History.empty
         , searchTerm = ""
         , replacementText = ""
+        , canReplace = False
         , searchResults = RollingList.fromList []
         , showHelp = True
         , showInfoPanel = config.showInfoPanel

@@ -27,6 +27,7 @@ type alias InternalState =
     , history : History Snapshot
     , searchTerm : String
     , replacementText : String
+    , canReplace : Bool
     , searchResults : RollingList ( Position, Position )
     , showHelp : Bool
     , showInfoPanel : Bool

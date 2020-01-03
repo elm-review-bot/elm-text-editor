@@ -249,13 +249,13 @@ searchPanel_ state =
         , style "font-size" "14px"
         , style "position" "absolute"
         , style "left" "0px"
-        , style "top" "0px"
+        , style "top" "-20px"
         ]
         [ searchTextButton
         , acceptSearchText
         , numberOfHitsDisplay state
-        , replaceTextButton
-        , acceptReplaceText
+        , showIf state.canReplace replaceTextButton
+        , showIf state.canReplace acceptReplaceText
         , searchForwardButton
         , searchBackwardButton
         ]
@@ -393,4 +393,6 @@ setHtmlId id =
     Attribute.attribute "id" id
 
 
-
+showIf : Bool -> Html Msg -> Html Msg
+showIf flag h =
+    if flag then h else (div [] [])

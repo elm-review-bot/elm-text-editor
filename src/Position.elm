@@ -13,7 +13,6 @@ module Position exposing
     )
 
 
-
 type alias Position =
     { line : Int, column : Int }
 
@@ -92,6 +91,7 @@ previousLine : Position -> Position
 previousLine =
     addLine -1
 
+
 shift : Int -> Position -> Position
 shift k position =
-    {position | line = position.line + k}
+    { position | line = position.line + k }

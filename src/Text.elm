@@ -1,6 +1,8 @@
-module Text exposing (jabberwocky, long, help, info, gettysburgAddress, tolstoy)
+module Text exposing (gettysburgAddress, help, info, jabberwocky, long, tolstoy)
 
-help = """
+
+help =
+    """
 Help
 ====
 
@@ -37,7 +39,9 @@ ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text
 NOTE: The above list is far from complete.
 """
 
-gettysburgAddress = """
+
+gettysburgAddress =
+    """
 Below is Abraham Lincoln's Gettysburg Address.
 It was loaded as three long lines.  This example
 illustrates the current state of the text-wrap
@@ -50,7 +54,8 @@ Now we are engaged in a great civil war, testing whether that nation, or any nat
 But, in a larger sense, we can not dedicate—we can not consecrate—we can not hallow—this ground. The brave men, living and dead, who struggled here, have consecrated it, far above our poor power to add or detract. The world will little note, nor long remember what we say here, but it can never forget what they did here. It is for us the living, rather, to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced. It is rather for us to be here dedicated to the great task remaining before us—that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion—that we here highly resolve that these dead shall not have died in vain—that this nation, under God, shall have a new birth of freedom—and that government of the people, by the people, for the people, shall not perish from the earth."""
 
 
-tolstoy = """“Well, Prince, so Genoa and Lucca are now just family
+tolstoy =
+    """“Well, Prince, so Genoa and Lucca are now just family
 estates of the Buonapartes. But I warn you, if you don’t
 tell me that this means war, if you still try to defend
 the infamies and horrors perpetrated by that Antichrist—
@@ -62,7 +67,8 @@ sit down and tell me all the news.
  ”"""
 
 
-info = """This is a first test of how
+info =
+    """This is a first test of how
 the editor could be used as a package.
 The 'Info' button is a proxy for loading new
 content into the editor from an external
@@ -108,9 +114,12 @@ There is still a lot to do.
 """
 
 
-long = List.repeat 30 jabberwocky |> String.join  "\n----\n\n"
+long =
+    List.repeat 30 jabberwocky |> String.join "\n----\n\n"
 
-jabberwocky = """Jabberwocky
+
+jabberwocky =
+    """Jabberwocky
 
 By Lewis Carroll
 
@@ -165,5 +174,3 @@ should be preserved when scrolling.
 
 
 """
-
-

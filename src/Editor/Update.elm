@@ -1,21 +1,20 @@
-module Editor.Update exposing (Msg(..), update, scrollToText, scrollToText_, scrollToLine, clearInternalState)
+module Editor.Update exposing (Msg(..), clearInternalState, scrollToLine, scrollToText, scrollToText_, update)
 
+import Browser.Dom as Dom
 import Buffer exposing (Buffer)
 import Dict exposing (Dict)
 import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
-import Position exposing (Position)
-import Window
-import RollingList
 import Editor.Text
-import Text
+import Position exposing (Position)
+import RollingList
 import Task
-import Browser.Dom as Dom
-
+import Text
+import Window
 
 
 type Msg
-    =  NoOp
+    = NoOp
     | MouseDown Position
     | MouseOver Position
     | MouseUp
@@ -58,7 +57,7 @@ type Msg
     | Redo
     | ScrollUp Int
     | ScrollDown Int
-    | ScrollToSelection (Position, Position)
+    | ScrollToSelection ( Position, Position )
     | RollSearchSelectionForward
     | RollSearchSelectionBackward
     | Clear
@@ -66,7 +65,6 @@ type Msg
     | ToggleHelp
     | ToggleGoToLinePanel
     | ToggleSearchPanel
-
 
 
 autoclose : Dict String String
@@ -107,10 +105,11 @@ recordHistory oldState oldBuffer ( state, buffer, cmd ) =
     )
 
 
-update : Buffer -> Msg -> InternalState -> (  InternalState, Buffer, Cmd Msg )
+update : Buffer -> Msg -> InternalState -> ( InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
-        NoOp -> (state, buffer, Cmd.none)
+        NoOp ->
+            ( state, buffer, Cmd.none )
 
         MouseDown position ->
             ( { state
@@ -131,7 +130,7 @@ update buffer msg state =
                                 if selection == position then
                                     Nothing
 
-                                else 
+                                else
                                     Just selection
 
                             Nothing ->
@@ -204,33 +203,35 @@ update buffer msg state =
 
         CursorUp ->
             let
-               newCursor =
-                  let
-                    moveFrom =
-                        case state.selection of
-                            Just selection ->
-                                Position.order selection state.cursor
-                                    |> Tuple.first
+                newCursor =
+                    let
+                        moveFrom =
+                            case state.selection of
+                                Just selection ->
+                                    Position.order selection state.cursor
+                                        |> Tuple.first
 
-                            Nothing ->
-                                state.cursor
-                  in
+                                Nothing ->
+                                    state.cursor
+                    in
                     Position.previousLine moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer
-               newWindow = Window.scroll -1 state.window
+
+                newWindow =
+                    Window.scroll -1 state.window
             in
-             ( { state
-                 | cursor = newCursor
-                 , window = newWindow --  Window.scrollToIncludeCursor newCursor state.window
-                 , selection = Nothing
-               }
-             , buffer
-             , Cmd.none
-             )
+            ( { state
+                | cursor = newCursor
+                , window = newWindow --  Window.scrollToIncludeCursor newCursor state.window
+                , selection = Nothing
+              }
+            , buffer
+            , Cmd.none
+            )
 
         CursorDown ->
             let
-               newCursor =
+                newCursor =
                     let
                         moveFrom =
                             case state.selection of
@@ -243,17 +244,15 @@ update buffer msg state =
                     in
                     Position.nextLine moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer
-
             in
-             ( { state
-                 | cursor = newCursor
-                 , window = Window.scrollToIncludeCursor newCursor state.window
-                 , selection = Nothing
-               }
-             , buffer
-             , Cmd.none
-             )
-
+            ( { state
+                | cursor = newCursor
+                , window = Window.scrollToIncludeCursor newCursor state.window
+                , selection = Nothing
+              }
+            , buffer
+            , Cmd.none
+            )
 
         CursorToLineEnd ->
             ( { state
@@ -321,12 +320,13 @@ update buffer msg state =
             , Cmd.none
             )
 
-
         Paste ->
-            case  state.selectedText of
-                Nothing -> ( state, buffer, Cmd.none)
+            case state.selectedText of
+                Nothing ->
+                    ( state, buffer, Cmd.none )
+
                 Just text ->
-                      (state, Buffer.insert state.cursor text buffer, Cmd.none)
+                    ( state, Buffer.insert state.cursor text buffer, Cmd.none )
 
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of
@@ -394,74 +394,93 @@ update buffer msg state =
                             else
                                 string
                     in
-                      let
-                          newCursor =
+                    let
+                        newCursor =
                             if string == "\n" then
                                 { line = state.cursor.line + 1, column = 0 }
 
                             else
                                 Position.nextColumn state.cursor
-                      in
-                        ( { state
-                            | cursor = newCursor
-                              , window = if string == "\n" then
-                                    Window.scrollToIncludeCursor newCursor state.window
-                                  else
-                                    state.window
-                          }
-                        , Buffer.insert state.cursor insertString buffer
-                        , Cmd.none
-                        )
-                            |> recordHistory state buffer
+                    in
+                    ( { state
+                        | cursor = newCursor
+                        , window =
+                            if string == "\n" then
+                                Window.scrollToIncludeCursor newCursor state.window
+
+                            else
+                                state.window
+                      }
+                    , Buffer.insert state.cursor insertString buffer
+                    , Cmd.none
+                    )
+                        |> recordHistory state buffer
 
         FirstLine ->
-           let
-              cursor = {line = 0, column = 0}
-              window = Window.scrollToIncludeCursor cursor state.window
-           in
-             ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
+            let
+                cursor =
+                    { line = 0, column = 0 }
+
+                window =
+                    Window.scrollToIncludeCursor cursor state.window
+            in
+            ( { state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
 
         AcceptLineNumber nString ->
             case String.toInt nString of
-                Nothing -> (state, buffer, Cmd.none)
+                Nothing ->
+                    ( state, buffer, Cmd.none )
+
                 Just n_ ->
                     let
-                      n = clamp 0 ((List.length (Buffer.lines buffer)) - 1) (n_ - 1)
-                      cursor = {line = n, column = 0}
-                      window = Window.scrollToIncludeCursor cursor state.window
-                   in
-                     ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
+                        n =
+                            clamp 0 (List.length (Buffer.lines buffer) - 1) (n_ - 1)
+
+                        cursor =
+                            { line = n, column = 0 }
+
+                        window =
+                            Window.scrollToIncludeCursor cursor state.window
+                    in
+                    ( { state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
 
         AcceptSearchText str ->
             scrollToText str state buffer
 
-        ScrollToSelection (start, end) ->
-            (state, buffer,Cmd.none)
+        ScrollToSelection ( start, end ) ->
+            ( state, buffer, Cmd.none )
 
         RollSearchSelectionForward ->
-            rollSearchSelectionForward  state buffer
+            rollSearchSelectionForward state buffer
 
         RollSearchSelectionBackward ->
-            rollSearchSelectionBackward  state buffer
+            rollSearchSelectionBackward state buffer
 
         AcceptReplacementText str ->
-           ({state | replacementText = str} , buffer, Cmd.none)
+            ( { state | replacementText = str }, buffer, Cmd.none )
 
         ReplaceCurrentSelection ->
-          case state.selection of
-              Nothing -> (state, buffer, Cmd.none)
-              Just end ->
-                  let
-                    newBuffer = Buffer.replace state.cursor end state.replacementText buffer
-                  in
-                    (state, newBuffer, Cmd.none)
-                      |> recordHistory state buffer
+            case state.selection of
+                Nothing ->
+                    ( state, buffer, Cmd.none )
+
+                Just end ->
+                    let
+                        newBuffer =
+                            Buffer.replace state.cursor end state.replacementText buffer
+                    in
+                    ( state, newBuffer, Cmd.none )
+                        |> recordHistory state buffer
+
         LastLine ->
             let
-               cursor = {line = (List.length (Buffer.lines buffer)) - 1, column = 0}
-               window = Window.scrollToIncludeCursor cursor state.window
+                cursor =
+                    { line = List.length (Buffer.lines buffer) - 1, column = 0 }
+
+                window =
+                    Window.scrollToIncludeCursor cursor state.window
             in
-              ( {state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none) |> recordHistory state buffer
+            ( { state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
 
         RemoveCharAfter ->
             case state.selection of
@@ -546,27 +565,38 @@ update buffer msg state =
                     )
                         |> recordHistory state buffer
 
-
         Copy ->
-            case  state.selection of
-                Nothing -> ( {state | selectedText = Nothing}, buffer, Cmd.none) |> recordHistory state buffer
+            case state.selection of
+                Nothing ->
+                    ( { state | selectedText = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
+
                 Just sel ->
                     (let
-                      (start, end) = Position.order sel state.cursor
-                      selectedText = Buffer.between start end buffer
-                    in
-                      ({state | selectedText = Just selectedText}, buffer, Cmd.none))
+                        ( start, end ) =
+                            Position.order sel state.cursor
+
+                        selectedText =
+                            Buffer.between start end buffer
+                     in
+                     ( { state | selectedText = Just selectedText }, buffer, Cmd.none )
+                    )
                         |> recordHistory state buffer
 
         Cut ->
-            case  state.selection of
-                Nothing -> ( {state | selectedText = Nothing}, buffer, Cmd.none) |> recordHistory state buffer
+            case state.selection of
+                Nothing ->
+                    ( { state | selectedText = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
+
                 Just sel ->
                     (let
-                      (start, end) = Position.order sel state.cursor
-                      selectedText = Buffer.between start end buffer
-                    in
-                      ({state | selectedText = Just selectedText}, Buffer.replace start end "" buffer, Cmd.none))
+                        ( start, end ) =
+                            Position.order sel state.cursor
+
+                        selectedText =
+                            Buffer.between start end buffer
+                     in
+                     ( { state | selectedText = Just selectedText }, Buffer.replace start end "" buffer, Cmd.none )
+                    )
                         |> recordHistory state buffer
 
         RemoveGroupBefore ->
@@ -595,7 +625,6 @@ update buffer msg state =
                     , Cmd.none
                     )
                         |> recordHistory state buffer
-
 
         Indent ->
             case state.selection of
@@ -931,144 +960,200 @@ update buffer msg state =
 
                 Nothing ->
                     ( state, buffer, Cmd.none )
+
         ScrollUp k ->
-             let
-                  maxDelta = min (state.window.first) k
-                  (newCursor, newWindow) =
-                      (Position.shift -maxDelta state.cursor, Window.shift -maxDelta state.window)
-             in
-                ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
+            let
+                maxDelta =
+                    min state.window.first k
+
+                ( newCursor, newWindow ) =
+                    ( Position.shift -maxDelta state.cursor, Window.shift -maxDelta state.window )
+            in
+            ( { state | cursor = newCursor, window = newWindow, selection = Nothing }, buffer, Cmd.none )
 
         ScrollDown k ->
-          let
-             deltaMax = List.length (Buffer.lines buffer) - state.cursor.line
-             delta = min (deltaMax - 1) k
-             (newCursor, newWindow) =
-               -- if state.window.last < List.length (Buffer.lines buffer) - k then
---               if deltaMax > state.window.last - state.window.first then
-                 (Position.shift delta state.cursor, Window.shift delta state.window)
---               else
---                 (state.cursor, state.window)
-          in
-            ({state  | cursor = newCursor,  window = newWindow, selection = Nothing}, buffer, Cmd.none)
+            let
+                deltaMax =
+                    List.length (Buffer.lines buffer) - state.cursor.line
+
+                delta =
+                    min (deltaMax - 1) k
+
+                ( newCursor, newWindow ) =
+                    -- if state.window.last < List.length (Buffer.lines buffer) - k then
+                    --               if deltaMax > state.window.last - state.window.first then
+                    ( Position.shift delta state.cursor, Window.shift delta state.window )
+
+                --               else
+                --                 (state.cursor, state.window)
+            in
+            ( { state | cursor = newCursor, window = newWindow, selection = Nothing }, buffer, Cmd.none )
 
         Clear ->
-              ( clearInternalState state,  Buffer.init "", Cmd.none)
+            ( clearInternalState state, Buffer.init "", Cmd.none )
 
         WrapText ->
-            (state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none)
+            ( state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none )
 
         ToggleHelp ->
             if state.showHelp == True then
-              ({state | showHelp = False, savedBuffer =  buffer}, Buffer.init Text.help, Cmd.none)
+                ( { state | showHelp = False, savedBuffer = buffer }, Buffer.init Text.help, Cmd.none )
+
             else
-              ({state | showHelp = True, savedBuffer = Buffer.fromString ""}
-              , state.savedBuffer, Cmd.none)
+                ( { state | showHelp = True, savedBuffer = Buffer.fromString "" }
+                , state.savedBuffer
+                , Cmd.none
+                )
 
         ToggleGoToLinePanel ->
             if state.showGoToLinePanel == True then
-                ({state | showGoToLinePanel = False}, buffer, focus "line-number-input")
+                ( { state | showGoToLinePanel = False }, buffer, focus "line-number-input" )
+
             else
-              ({state | showGoToLinePanel = True}, buffer, blur "line-number-input")
+                ( { state | showGoToLinePanel = True }, buffer, blur "line-number-input" )
 
         ToggleSearchPanel ->
             if state.showSearchPanel == True then
-                ({state | showSearchPanel = False}, buffer, focus "search-box")
+                ( { state | showSearchPanel = False }, buffer, focus "search-box" )
+
             else
-              ({state | showSearchPanel = True}, buffer, blur "search-box")
+                ( { state | showSearchPanel = True }, buffer, blur "search-box" )
 
 
-scrollToLine : Int -> InternalState -> Buffer -> (InternalState, Buffer)
+scrollToLine : Int -> InternalState -> Buffer -> ( InternalState, Buffer )
 scrollToLine k state buffer =
-            let
-              n = clamp 0 ((List.length (Buffer.lines buffer)) - 1) (k - 1)
-              cursor = {line = n, column = 0}
-              window = Window.scrollToIncludeCursor cursor state.window
-           in
-             ( {state | cursor = cursor, window = window, selection = Nothing }, buffer)
+    let
+        n =
+            clamp 0 (List.length (Buffer.lines buffer) - 1) (k - 1)
 
-scrollToText : String -> InternalState -> Buffer -> (InternalState, Buffer, Cmd Msg)
+        cursor =
+            { line = n, column = 0 }
+
+        window =
+            Window.scrollToIncludeCursor cursor state.window
+    in
+    ( { state | cursor = cursor, window = window, selection = Nothing }, buffer )
+
+
+scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
 scrollToText str state buffer =
-     let
-        searchResults = Buffer.search str buffer
-      in
-      case List.head searchResults of
-           Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer, Cmd.none)
-           Just (cursor, end) ->
-              let
-                 window_ = Window.scrollToIncludeCursor cursor state.window
-                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
-              in
-                 ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer, Cmd.none)
+    let
+        searchResults =
+            Buffer.search str buffer
+    in
+    case List.head searchResults of
+        Nothing ->
+            ( { state | searchResults = RollingList.fromList [], searchTerm = str }, buffer, Cmd.none )
 
-scrollToText_ : String -> InternalState -> Buffer -> (InternalState, Buffer)
+        Just ( cursor, end ) ->
+            let
+                window_ =
+                    Window.scrollToIncludeCursor cursor state.window
+
+                ( cursor_, end_ ) =
+                    ( Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end )
+            in
+            ( { state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str }, buffer, Cmd.none )
+
+
+scrollToText_ : String -> InternalState -> Buffer -> ( InternalState, Buffer )
 scrollToText_ str state buffer =
-     let
-        searchResults = Buffer.search str buffer
-      in
-      case List.head searchResults of
-           Nothing -> ({state | searchResults = RollingList.fromList [], searchTerm = str}, buffer)
-           Just (cursor, end) ->
-              let
-                 window_ = Window.scrollToIncludeCursor cursor state.window
-                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
-              in
-                 ({state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str}, buffer)
-
-
-rollSearchSelectionForward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
-rollSearchSelectionForward  state buffer =
     let
-        searchResults_ = RollingList.roll state.searchResults
+        searchResults =
+            Buffer.search str buffer
+    in
+    case List.head searchResults of
+        Nothing ->
+            ( { state | searchResults = RollingList.fromList [], searchTerm = str }, buffer )
+
+        Just ( cursor, end ) ->
+            let
+                window_ =
+                    Window.scrollToIncludeCursor cursor state.window
+
+                ( cursor_, end_ ) =
+                    ( Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end )
+            in
+            ( { state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str }, buffer )
+
+
+rollSearchSelectionForward : InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
+rollSearchSelectionForward state buffer =
+    let
+        searchResults_ =
+            RollingList.roll state.searchResults
     in
     case RollingList.current searchResults_ of
-            Nothing -> (state, buffer, Cmd.none)
-            Just (cursor, end) ->
-              let
-                 window_ = Window.scrollToIncludeCursor cursor state.window
-                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
-              in
-                 ({state | cursor = cursor_
-                         , window = window_
-                         , selection = Just end_
-                         , searchResults = searchResults_
-                  }, buffer, Cmd.none)
+        Nothing ->
+            ( state, buffer, Cmd.none )
 
-rollSearchSelectionBackward  : InternalState ->  Buffer ->  (InternalState, Buffer, Cmd Msg)
-rollSearchSelectionBackward  state buffer =
+        Just ( cursor, end ) ->
+            let
+                window_ =
+                    Window.scrollToIncludeCursor cursor state.window
+
+                ( cursor_, end_ ) =
+                    ( Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end )
+            in
+            ( { state
+                | cursor = cursor_
+                , window = window_
+                , selection = Just end_
+                , searchResults = searchResults_
+              }
+            , buffer
+            , Cmd.none
+            )
+
+
+rollSearchSelectionBackward : InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
+rollSearchSelectionBackward state buffer =
     let
-        searchResults_ = RollingList.rollBack state.searchResults
+        searchResults_ =
+            RollingList.rollBack state.searchResults
     in
     case RollingList.current searchResults_ of
-            Nothing -> (state, buffer, Cmd.none)
-            Just (cursor, end) ->
-              let
-                 window_ = Window.scrollToIncludeCursor cursor state.window
-                 (cursor_, end_) = (Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end)
-              in
-                 ({state | cursor = cursor_
-                         , window = window_
-                         , selection = Just end_
-                         , searchResults = searchResults_
-                  }, buffer, Cmd.none)
+        Nothing ->
+            ( state, buffer, Cmd.none )
+
+        Just ( cursor, end ) ->
+            let
+                window_ =
+                    Window.scrollToIncludeCursor cursor state.window
+
+                ( cursor_, end_ ) =
+                    ( Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end )
+            in
+            ( { state
+                | cursor = cursor_
+                , window = window_
+                , selection = Just end_
+                , searchResults = searchResults_
+              }
+            , buffer
+            , Cmd.none
+            )
+
 
 clearInternalState : InternalState -> InternalState
 clearInternalState state =
-    {state |  window = {first = 0, last = state.config.lines - 1}
-            , cursor = {line = 0, column = 0}
-            , selection = Nothing
-            , selectedText = Nothing
-            , dragging = False
-            , searchTerm = ""
-            , replacementText = ""
-            , scrolledLine = 0
-            , searchResults = RollingList.fromList []
-       }
+    { state
+        | window = { first = 0, last = state.config.lines - 1 }
+        , cursor = { line = 0, column = 0 }
+        , selection = Nothing
+        , selectedText = Nothing
+        , dragging = False
+        , searchTerm = ""
+        , replacementText = ""
+        , scrolledLine = 0
+        , searchResults = RollingList.fromList []
+    }
 
 
 focus : String -> Cmd Msg
 focus id =
     Task.attempt (\_ -> NoOp) (Dom.focus id)
+
 
 blur : String -> Cmd Msg
 blur id =

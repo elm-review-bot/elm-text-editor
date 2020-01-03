@@ -4,16 +4,14 @@ import Char
 import Editor.Keymap
 import Editor.Model exposing (InternalState)
 import Editor.Update exposing (Msg(..))
-import Html exposing (Attribute, Html, div, span, text, button, input)
+import Editor.Widget as Widget
+import Html exposing (Attribute, Html, button, div, input, span, text)
 import Html.Attributes as Attribute exposing (class, classList, style)
-import Html.Events as Event exposing(onClick, onInput)
+import Html.Events as Event exposing (onClick, onInput)
 import Json.Decode as Decode
 import Position exposing (Position)
-import Window exposing(Window)
 import RollingList
-import Editor.Widget as Widget
-
-
+import Window exposing (Window)
 
 
 name : String
@@ -49,6 +47,7 @@ withTrue : a -> ( a, Bool )
 withTrue a =
     ( a, True )
 
+
 captureOnMouseDown : Msg -> Attribute Msg
 captureOnMouseDown msg =
     Event.stopPropagationOn
@@ -73,11 +72,11 @@ character window cursor selection position char =
               , selected cursor selection position
               )
             ]
-         , captureOnMouseDown (MouseDown (Window.shiftPosition_ window position))
-         , captureOnMouseOver (MouseOver (Window.shiftPosition_ window position))
+        , captureOnMouseDown (MouseDown (Window.shiftPosition_ window position))
+        , captureOnMouseOver (MouseOver (Window.shiftPosition_ window position))
         ]
         [ text <| String.fromChar <| ensureNonBreakingSpace char
-        , if  cursor ==  Window.shiftPosition_ window position then
+        , if cursor == Window.shiftPosition_ window position then
             span [ class <| name ++ "-cursor" ] [ text " " ]
 
           else
@@ -92,11 +91,13 @@ line window cursor selection index content =
             String.length content
 
         endPosition =
-            { line = index , column = length }
+            { line = index, column = length }
 
         {- Used below to correctly position and display the cursor -}
-        offset = window.first -- (Window.getOffset window cursor.line)
+        offset =
+            window.first
 
+        -- (Window.getOffset window cursor.line)
     in
     div
         [ class <| name ++ "-line"
@@ -113,9 +114,9 @@ line window cursor selection index content =
                     [ text <| String.fromChar nonBreakingSpace ]
               ]
             , List.indexedMap
-                ( Window.identity window index  >>  character window cursor selection)
+                (Window.identity window index >> character window cursor selection)
                 (String.toList content)
-            , if index  == (Window.shiftPosition__ window cursor).line && cursor.column >= length  then
+            , if index == (Window.shiftPosition__ window cursor).line && cursor.column >= length then
                 [ span
                     [ class <| name ++ "-line__character"
                     , class <| name ++ "-line__character--has-cursor"
@@ -164,193 +165,245 @@ gutter cursor window =
 
 linesContainer : List (Html Msg) -> Html Msg
 linesContainer =
-    div [ class <| name ++ "-lines"  ]
+    div [ class <| name ++ "-lines" ]
 
 
 view : List String -> InternalState -> Html Msg
 view lines state =
-    div [ Attribute.style "background-color" "#eeeeee",  Attribute.style "width" "700px" , Attribute.style "position" "absolute" ]
-     [
-        goToLinePanel state
-      ,  searchPanel state
-
-      , div
-        [ class <| name ++ "-container"
-        , Event.preventDefaultOn
-            "keydown"
-            (Decode.map withTrue Editor.Keymap.decoder)
-        , Event.onMouseUp MouseUp
-        , Event.onDoubleClick SelectGroup
-        , onTripleClick SelectLine
-        , Attribute.tabindex 0
-        , Attribute.style "width" "700px"
-        ]
-        [ gutter state.cursor state.window
-        , linesContainer <|
-            List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
-        , div [Attribute.style "width" "100px"] [
-               toggleHelpButton state
-              , scrollPosition state
-              , cursorPosition state
-              , lineCount lines
-              , wordCount lines
+    div [ Attribute.style "background-color" "#eeeeee", Attribute.style "width" "700px", Attribute.style "position" "absolute" ]
+        [ goToLinePanel state
+        , searchPanel state
+        , div
+            [ class <| name ++ "-container"
+            , Event.preventDefaultOn
+                "keydown"
+                (Decode.map withTrue Editor.Keymap.decoder)
+            , Event.onMouseUp MouseUp
+            , Event.onDoubleClick SelectGroup
+            , onTripleClick SelectLine
+            , Attribute.tabindex 0
+            , Attribute.style "width" "700px"
+            ]
+            [ gutter state.cursor state.window
+            , linesContainer <|
+                List.indexedMap (line state.window state.cursor state.selection) (Window.select state.window lines)
+            , div [ Attribute.style "width" "100px" ]
+                [ toggleHelpButton state
+                , scrollPosition state
+                , cursorPosition state
+                , lineCount lines
+                , wordCount lines
+                ]
             ]
         ]
-         ]
+
 
 searchPanel state =
     let
-      (opacity, top) = if state.showSearchPanel == True then
-        ("0.7", "80px")
-        else
-        ("0.0", "-1000px")
-    in
-    div [    Attribute.style "width" "600px"
-           , Attribute.style "padding-top" "10px"
-           , Attribute.style "height" "36px"
-           , Attribute.style "padding-left" "8px"
-           , Attribute.style "background-color" "#bbb"
-           , Attribute.style "opacity" opacity
-           , Attribute.style "font-size" "14px"
-           , Attribute.style "position" "absolute"
-           , Attribute.style "right" "8px"
-           , Attribute.style "top" top
-       ]
-       [
-           searchTextButton
-         , acceptSearchText
-         , numberOfHitsDisplay state
-         , replaceTextButton
-         , acceptReplaceText
-         , searchForwardButton
-         , searchBackwardButton
-       ]
+        ( opacity, top ) =
+            if state.showSearchPanel == True then
+                ( "0.7", "80px" )
 
- --  [text <| "Matches : " ++ (searchResultDisplay state)]
+            else
+                ( "0.0", "-1000px" )
+    in
+    div
+        [ Attribute.style "width" "600px"
+        , Attribute.style "padding-top" "10px"
+        , Attribute.style "height" "36px"
+        , Attribute.style "padding-left" "8px"
+        , Attribute.style "background-color" "#bbb"
+        , Attribute.style "opacity" opacity
+        , Attribute.style "font-size" "14px"
+        , Attribute.style "position" "absolute"
+        , Attribute.style "right" "8px"
+        , Attribute.style "top" top
+        ]
+        [ searchTextButton
+        , acceptSearchText
+        , numberOfHitsDisplay state
+        , replaceTextButton
+        , acceptReplaceText
+        , searchForwardButton
+        , searchBackwardButton
+        ]
+
+
+
+--  [text <| "Matches : " ++ (searchResultDisplay state)]
 --         , div [ Attribute.style "float" "left", Attribute.style "width" "200px" ]
 
 
 goToLinePanel state =
     let
-      (opacity, top) = if state.showGoToLinePanel == True then
-         ("0.8", "-1000px")
-        else
-         ("0.0", "0px" )
-    in
-    div [  Attribute.style "width" "140px"
-         , Attribute.style "height" "36px"
-         ,  Attribute.style "padding" "ipx"
-         ,  Attribute.style "opacity" opacity
-         ,  Attribute.style "position" "absolute"
-         ,  Attribute.style "right" "120px"
-         ,  Attribute.style "top" "0px"
-         ,  Attribute.style "background-color" "#aab"
-       ]
-       [       goToLineButton
-             , acceptLineNumber
+        ( opacity, top ) =
+            if state.showGoToLinePanel == True then
+                ( "0.8", "-1000px" )
 
+            else
+                ( "0.0", "0px" )
+    in
+    div
+        [ Attribute.style "width" "140px"
+        , Attribute.style "height" "36px"
+        , Attribute.style "padding" "ipx"
+        , Attribute.style "opacity" opacity
+        , Attribute.style "position" "absolute"
+        , Attribute.style "right" "120px"
+        , Attribute.style "top" "0px"
+        , Attribute.style "background-color" "#aab"
         ]
+        [ goToLineButton
+        , acceptLineNumber
+        ]
+
 
 numberOfHitsDisplay : InternalState -> Html Msg
 numberOfHitsDisplay state =
     let
-       n = state.searchResults
-            |> RollingList.toList
-            |> List.length
-            |> String.fromInt
-
+        n =
+            state.searchResults
+                |> RollingList.toList
+                |> List.length
+                |> String.fromInt
     in
-       Widget.rowButton 40 NoOp n []
+    Widget.rowButton 40 NoOp n []
 
 
 searchResultDisplay : InternalState -> String
 searchResultDisplay state =
     let
-      lines = state.searchResults
-            |> RollingList.toList
-            |> List.map (Tuple.first >> .line)
-            |> List.map ((\i -> i + 1) >> String.fromInt)
+        lines =
+            state.searchResults
+                |> RollingList.toList
+                |> List.map (Tuple.first >> .line)
+                |> List.map ((\i -> i + 1) >> String.fromInt)
 
-      fewerLines =
-             List.take 5 lines
+        fewerLines =
+            List.take 5 lines
     in
-      if List.length lines > List.length fewerLines then
-        (String.join ", " fewerLines) ++ " ..."
-      else
+    if List.length lines > List.length fewerLines then
+        String.join ", " fewerLines ++ " ..."
+
+    else
         String.join ", " lines
 
 
 lineCount : List String -> Html Msg
 lineCount lines =
-    div Widget.columnButtonStyle  [text ("Lines: " ++ String.fromInt (List.length lines))]
+    div Widget.columnButtonStyle [ text ("Lines: " ++ String.fromInt (List.length lines)) ]
+
 
 wordCount : List String -> Html Msg
 wordCount lines =
-  let
-      words = List.map String.words lines |> List.concat
-  in
-   div Widget.columnButtonStyle  [text ("Words: " ++ String.fromInt (List.length words))]
-
-
+    let
+        words =
+            List.map String.words lines |> List.concat
+    in
+    div Widget.columnButtonStyle [ text ("Words: " ++ String.fromInt (List.length words)) ]
 
 
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =
-    div Widget.columnButtonStyle  [text ("Cursor: " ++ String.fromInt (state.cursor.line + 1))]
+    div Widget.columnButtonStyle [ text ("Cursor: " ++ String.fromInt (state.cursor.line + 1)) ]
+
 
 scrollPosition : InternalState -> Html Msg
 scrollPosition state =
-    div Widget.columnButtonStyle  [text ("Scroll: " ++ String.fromInt state.window.first)]
+    div Widget.columnButtonStyle [ text ("Scroll: " ++ String.fromInt state.window.first) ]
 
 
 
 -- BUTTONS --
 
+
 toggleHelpButton state =
-  let
-      label = if state.showHelp == True then
+    let
+        label =
+            if state.showHelp == True then
                 "Help"
-              else
-                 "Back"
-  in
-   Widget.columnButton 80 ToggleHelp label []
+
+            else
+                "Back"
+    in
+    Widget.columnButton 80 ToggleHelp label []
 
 
+upButton =
+    Widget.columnButton 80 (ScrollUp 1) "Line Up" []
 
 
-upButton = Widget.columnButton 80 (ScrollUp 1) "Line Up" []
+downButton =
+    Widget.columnButton 80 (ScrollDown 1) "Line Down" []
 
-downButton = Widget.columnButton 80 (ScrollDown 1) "Line Down" []
 
-jumpUpButton = Widget.columnButton 80 (ScrollUp 20) "Page Up" []
+jumpUpButton =
+    Widget.columnButton 80 (ScrollUp 20) "Page Up" []
 
-jumpDownButton = Widget.columnButton 80 (ScrollDown 20) "Page Down" []
 
-clearButton = Widget.columnButton 80 Clear "Clear" []
+jumpDownButton =
+    Widget.columnButton 80 (ScrollDown 20) "Page Down" []
 
-firstLineButton = Widget.columnButton 80 FirstLine "First" []
 
-lastLineButton = Widget.columnButton 80 LastLine "Last" []
+clearButton =
+    Widget.columnButton 80 Clear "Clear" []
 
-wrapTextButton = Widget.columnButton 80 WrapText "Wrap" []
 
-goToLineButton = Widget.rowButton 80 NoOp "Go to line" [
-    Attribute.style "position" "absolute", Attribute.style "left" "8px",  Attribute.style "top" "6px"]
+firstLineButton =
+    Widget.columnButton 80 FirstLine "First" []
 
-searchForwardButton = Widget.rowButton 30 RollSearchSelectionForward ">" [Attribute.style "float" "left"]
 
-searchBackwardButton = Widget.rowButton 30 RollSearchSelectionBackward "<" [Attribute.style "float" "left"]
+lastLineButton =
+    Widget.columnButton 80 LastLine "Last" []
 
-searchTextButton = Widget.rowButton 60 NoOp "Search" [Attribute.style "float" "left"]
 
-replaceTextButton = Widget.rowButton 70 ReplaceCurrentSelection "Replace" [Attribute.style "float" "left"]
+wrapTextButton =
+    Widget.columnButton 80 WrapText "Wrap" []
 
-acceptLineNumber = Widget.myInput 30 AcceptLineNumber "" [ setHtmlId "line-number-input",
-                              Attribute.style "position" "absolute", Attribute.style "left" "98px",  Attribute.style "top" "6px"]
 
-acceptSearchText = Widget.myInput 130 AcceptSearchText "" [ setHtmlId "search-box", Attribute.style "float" "left" ]
+goToLineButton =
+    Widget.rowButton 80
+        NoOp
+        "Go to line"
+        [ Attribute.style "position" "absolute"
+        , Attribute.style "left" "8px"
+        , Attribute.style "top" "6px"
+        ]
 
-acceptReplaceText = Widget.myInput 130  AcceptReplacementText "" [ Attribute.style "float" "left" ]
+
+searchForwardButton =
+    Widget.rowButton 30 RollSearchSelectionForward ">" [ Attribute.style "float" "left" ]
+
+
+searchBackwardButton =
+    Widget.rowButton 30 RollSearchSelectionBackward "<" [ Attribute.style "float" "left" ]
+
+
+searchTextButton =
+    Widget.rowButton 60 NoOp "Search" [ Attribute.style "float" "left" ]
+
+
+replaceTextButton =
+    Widget.rowButton 70 ReplaceCurrentSelection "Replace" [ Attribute.style "float" "left" ]
+
+
+acceptLineNumber =
+    Widget.myInput 30
+        AcceptLineNumber
+        ""
+        [ setHtmlId "line-number-input"
+        , Attribute.style "position" "absolute"
+        , Attribute.style "left" "98px"
+        , Attribute.style "top" "6px"
+        ]
+
+
+acceptSearchText =
+    Widget.myInput 130 AcceptSearchText "" [ setHtmlId "search-box", Attribute.style "float" "left" ]
+
+
+acceptReplaceText =
+    Widget.myInput 130 AcceptReplacementText "" [ Attribute.style "float" "left" ]
 
 
 setHtmlId : String -> Html.Attribute msg

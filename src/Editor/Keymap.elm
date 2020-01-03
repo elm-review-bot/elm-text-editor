@@ -27,16 +27,16 @@ modifier ctrl shift option =
         ( True, True, False ) ->
             ControlAndShift
 
-        ( False, True , False) ->
+        ( False, True, False ) ->
             Shift
 
         ( True, False, False ) ->
             Control
 
         ( False, False, True ) ->
-              Option
+            Option
 
-        ( True, False, True) ->
+        ( True, False, True ) ->
             ControlAndOption
 
         ( _, _, _ ) ->
@@ -115,15 +115,15 @@ keymaps =
             , ( "End", SelectToLineEnd )
             ]
     , option =
-         Dict.fromList
-             [ ( "ArrowUp", ScrollUp 20 )
-             , ( "ArrowDown", ScrollDown 20 )
-             ]
+        Dict.fromList
+            [ ( "ArrowUp", ScrollUp 20 )
+            , ( "ArrowDown", ScrollDown 20 )
+            ]
     , controlAndOption =
-             Dict.fromList
-                 [ ( "ArrowUp", FirstLine )
-                 , ( "ArrowDown", LastLine )
-                 ]
+        Dict.fromList
+            [ ( "ArrowUp", FirstLine )
+            , ( "ArrowDown", LastLine )
+            ]
     , control =
         Dict.fromList
             [ ( "ArrowRight", CursorToGroupEnd )
@@ -132,24 +132,23 @@ keymaps =
             , ( "Delete", RemoveGroupAfter )
             , ( "a", SelectAll )
             , ( "d", SelectGroup )
-            , ( "c", Copy)
-            , ( "g", ToggleGoToLinePanel)
-            , ( ".", RollSearchSelectionForward)
-            , ( ",", RollSearchSelectionBackward)
-            , ( "h", ToggleHelp)
-            , ( "x", Cut)
-            , ( "s", ToggleSearchPanel)
+            , ( "c", Copy )
+            , ( "g", ToggleGoToLinePanel )
+            , ( ".", RollSearchSelectionForward )
+            , ( ",", RollSearchSelectionBackward )
+            , ( "h", ToggleHelp )
+            , ( "x", Cut )
+            , ( "s", ToggleSearchPanel )
             , ( "v", Paste )
             , ( "z", Undo )
-            , ( "w", WrapText)
+            , ( "w", WrapText )
             , ( "y", Redo )
             ]
     , controlAndShift =
         Dict.fromList
             [ ( "ArrowRight", SelectToGroupEnd )
             , ( "ArrowLeft", SelectToGroupStart )
-
-            , ("c", Clear)
+            , ( "c", Clear )
             ]
     }
 
@@ -185,7 +184,7 @@ keyToMsg event =
             keyFrom keymaps.controlAndShift
 
         ControlAndOption ->
-                    keyFrom keymaps.controlAndOption
+            keyFrom keymaps.controlAndOption
 
         Option ->
             keyFrom keymaps.option

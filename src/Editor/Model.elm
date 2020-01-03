@@ -1,14 +1,13 @@
-module Editor.Model exposing (InternalState, Snapshot, lastLine, initialText, slider)
+module Editor.Model exposing (InternalState, Snapshot, initialText, lastLine, slider)
 
 import Buffer exposing (Buffer)
+import Editor.Config exposing (Config)
 import Editor.History exposing (History)
 import Position exposing (Position)
-import Window exposing (Window)
-import Text
-import RollingList exposing(RollingList)
-import Editor.Config exposing (Config)
+import RollingList exposing (RollingList)
 import SingleSlider as Slider exposing (..)
-
+import Text
+import Window exposing (Window)
 
 
 type alias Snapshot =
@@ -17,18 +16,19 @@ type alias Snapshot =
     , buffer : Buffer
     }
 
+
 type alias InternalState =
     { config : Config
     , scrolledLine : Int
     , window : Window
     , cursor : Position
     , selection : Maybe Position
-    , selectedText : Maybe String 
+    , selectedText : Maybe String
     , dragging : Bool
     , history : History Snapshot
     , searchTerm : String
     , replacementText : String
-    , searchResults : RollingList (Position, Position)
+    , searchResults : RollingList ( Position, Position )
     , showHelp : Bool
     , showGoToLinePanel : Bool
     , showSearchPanel : Bool
@@ -36,12 +36,13 @@ type alias InternalState =
     , slider : Slider.Model
     }
 
+
 slider : Slider.Model
 slider =
-  let
-    initialSlider =
-      Slider.defaultModel
-  in
+    let
+        initialSlider =
+            Slider.defaultModel
+    in
     { initialSlider
         | min = 0
         , max = 100
@@ -49,6 +50,10 @@ slider =
         , value = 0
     }
 
-lastLine = 23
 
-initialText = Text.jabberwocky
+lastLine =
+    23
+
+
+initialText =
+    Text.jabberwocky

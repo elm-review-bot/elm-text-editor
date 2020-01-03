@@ -107,3 +107,5 @@ lift : (InternalState -> Buffer -> (InternalState, Buffer)) -> (State -> Buffer 
 lift f =
     \s b -> f (toInternal s) b |> (\(is, b_) -> (State is, b_))
 
+
+

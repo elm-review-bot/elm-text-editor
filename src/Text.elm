@@ -68,14 +68,9 @@ The 'Info' button is a proxy for loading new
 content into the editor from an external
 source.
 
-The API will change a lot as I experiment
-with it.  The goal is to have as few
-exposed functions as possible.
-
-Everything in the 0.5 px bordered region
-you see here comes from Editor code.  All
-the rest (below, beginning with "Source ...")
-is from the code in Main.
+Everything in this window is from `Editor.view`.  All
+the rest is in `Main`, though of course it uses
+functions exported by `Editor`, e.g., the slider.
 
 The "Reset" button loads the initial text.
 The "Gettysburg address" button loads

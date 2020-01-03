@@ -47,7 +47,7 @@ type alias Model =
 ```elm
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editorBuffer = Buffer.init Text.jabberwocky
+    ( { editorBuffer = Buffer.init "Some text"
       , editorState = Editor.init config
       }
     , Cmd.none
@@ -92,6 +92,11 @@ update msg model =
             let
                 ( editor, content, cmd ) =
                     Editor.update model.editorBuffer msg_ model.editorState
+                 
+                -- Use a line line the below to do something
+                -- with new content flowing out of the editor
+                updatedContent = Buffer.toString content
+
             in
             ( { model
                 | editorState = editor
@@ -131,4 +136,31 @@ view model =
         , Editor.embedded editorConfig model.editorState model.editorBuffer
         , footer model
         ]
+
+
+editorConfig =
+    { editorMsg = EditorMsg
+    , sliderMsg = SliderMsg
+    , editorStyle = editorStyle
+    }
+
+
+editorStyle : List (Html.Attribute msg)
+editorStyle =
+    [ HA.style "background-color" "#dddddd"
+    , HA.style "border" "solid 0.5px"
+    , HA.style "width" "600px"
+    ]
+```
+
+## CSS
+
+Add the following:
+
+```css
+.input-range-labels-container { visibility: hidden }
+
+.input-range-container {
+     transform: rotate(-270deg) translateY(-410px) translateX(-84px)
+  }
 ```

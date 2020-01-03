@@ -31,8 +31,6 @@ automatically sort the provided positions.
 -}
 
 import Array exposing (Array)
-import Editor.Config exposing (default)
-import Editor.Text
 import List.Extra
 import Maybe.Extra
 import Position exposing (Position)

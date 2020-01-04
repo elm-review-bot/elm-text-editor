@@ -3,6 +3,7 @@ module Editor exposing
     , PEEditorMsg
     , State
     , embedded
+    , getSmallConfig
     , init
     , load
     , scrollToLine
@@ -38,6 +39,11 @@ type State
     = State InternalState
 
 
+getSmallConfig : State -> SmallEditorConfig
+getSmallConfig (State s) =
+    s.config
+
+
 init : EditorConfig a -> State
 init editorConfig =
     State
@@ -66,33 +72,35 @@ init editorConfig =
 -- EMBEDDED EDITOR --
 
 
-type alias EditorConfig  a =  {
-       editorMsg : PEEditorMsg -> a
-     , sliderMsg : Slider.Msg -> a
-     , editorStyle : List (Html.Attribute a)
-     , width : Int
-     , lines : Int
-     , lineHeight : Float
-     , showInfoPanel : Bool
-     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
-     , wrapOption : WrapOption
-   }
-
-type alias SmallEditorConfig =  {
-       lines : Int
-      , showInfoPanel : Bool
-      , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
-      , wrapOption : WrapOption
+type alias EditorConfig a =
+    { editorMsg : PEEditorMsg -> a
+    , sliderMsg : Slider.Msg -> a
+    , editorStyle : List (Html.Attribute a)
+    , width : Int
+    , lines : Int
+    , lineHeight : Float
+    , showInfoPanel : Bool
+    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
+    , wrapOption : WrapOption
     }
+
+
+type alias SmallEditorConfig =
+    { lines : Int
+    , showInfoPanel : Bool
+    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
+    , wrapOption : WrapOption
+    }
+
 
 smallConfig : EditorConfig a -> SmallEditorConfig
 smallConfig c =
-    {
-       lines = c.lines
-     , showInfoPanel = c.showInfoPanel
-     , wrapParams = c.wrapParams
-     , wrapOption = c.wrapOption
+    { lines = c.lines
+    , showInfoPanel = c.showInfoPanel
+    , wrapParams = c.wrapParams
+    , wrapOption = c.wrapOption
     }
+
 
 embedded : EditorConfig a -> State -> Buffer -> Html a
 embedded editorConfig state buffer =

@@ -11,24 +11,26 @@ style =
 
 styleText : { width : Int, numberOfLines : Int, lineHeight : Float } -> String
 styleText data =
-    interpolate styleTemplate [
-      String.fromInt data.width
-    , String.fromFloat ( slider1Offset data.width)
-    , String.fromFloat (0.8 * data.lineHeight)
-    , String.fromFloat data.lineHeight
-    , String.fromFloat <| (slider4Offset data.numberOfLines data.lineHeight)
-  ]
+    interpolate styleTemplate
+        [ String.fromInt data.width
+        , String.fromFloat (slider1Offset data.width)
+        , String.fromFloat (0.8 * data.lineHeight)
+        , String.fromFloat data.lineHeight
+        , String.fromFloat <| slider4Offset data.numberOfLines data.lineHeight
+        ]
 
 
 slider1Offset : Int -> Float
 slider1Offset k =
     (k + 50)
-      |> toFloat
-      |> (\x -> 1.0*x)
+        |> toFloat
+        |> (\x -> 1.0 * x)
+
 
 slider4Offset : Int -> Float -> Float
 slider4Offset numberOfLines lineHeight =
-    0.8 * (toFloat numberOfLines) * lineHeight
+    0.8 * toFloat numberOfLines * lineHeight
+
 
 styleTemplate : String
 styleTemplate =
@@ -44,6 +46,7 @@ body { font-size: {2}px;
   user-select: none;
   -webkit-user-select: none;
   display: flex;
+  overflow : scroll;
 }
 
 .elm-editor-container:focus {
@@ -108,6 +111,26 @@ body { font-size: {2}px;
   }
 }
 
+
+body {
+    font-family: sans-serif;
+    background-color : #cccccc;
+
+    }
+
+.center-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color : #eeeeee;
+    }
+
+#editor {
+    text-align: left;
+    background-color : #eeeeee;
+    }
+
+.input-range-labels-container { visibility: hidden }
 
 
 

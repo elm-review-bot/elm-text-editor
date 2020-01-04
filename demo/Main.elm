@@ -1,13 +1,12 @@
 module Main exposing (Msg(..), main)
 
-
 import Browser
 import Buffer exposing (Buffer)
 import Editor exposing (EditorConfig, PEEditorMsg, State)
 import Editor.Config exposing (WrapOption(..))
-import Html exposing (Html, div, text, button)
-import Html.Attributes as HA exposing(style)
-import Html.Events exposing(onClick)
+import Html exposing (Html, button, div, text)
+import Html.Attributes as HA exposing (style)
+import Html.Events exposing (onClick)
 import SingleSlider as Slider
 import Text
 
@@ -41,7 +40,6 @@ type alias Model =
     }
 
 
-
 init : () -> ( Model, Cmd Msg )
 init () =
     ( { editorBuffer = Buffer.init Text.jabberwocky
@@ -49,6 +47,7 @@ init () =
       }
     , Cmd.none
     )
+
 
 
 -- config : { editorMsg : PEEditorMsg -> Msg, sliderMsg : Slider.Msg -> Msg, editorStyle : List (Html.Attribute msg), width : Int, lines : Int, showInfoPanel : Bool, wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }, wrapOption : WrapOption }
@@ -72,6 +71,7 @@ editorStyle =
     [ HA.style "background-color" "#dddddd"
     , HA.style "border" "solid 0.5px"
     ]
+
 
 
 -- UPDATE
@@ -105,10 +105,11 @@ update msg model =
             highlightText "treasure" model
 
         SliderMsg sliderMsg ->
-          let
-            (newEditorState, cmd) = Editor.sliderUpdate sliderMsg  model.editorState model.editorBuffer
-          in
-            ( { model | editorState = newEditorState }, cmd  |> Cmd.map SliderMsg )
+            let
+                ( newEditorState, cmd ) =
+                    Editor.sliderUpdate sliderMsg model.editorState model.editorBuffer
+            in
+            ( { model | editorState = newEditorState }, cmd |> Cmd.map SliderMsg )
 
 
 
@@ -151,12 +152,11 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [HA.style "margin" "60px"]
+    div [ HA.style "margin" "60px" ]
         [ title
-        , Editor.embedded config  model.editorState model.editorBuffer
+        , Editor.embedded config model.editorState model.editorBuffer
         , footer model
         ]
-
 
 
 title : Html Msg
@@ -169,10 +169,11 @@ footer : Model -> Html Msg
 footer model =
     div
         [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "590px", HA.style "left" "80px" ]
-        [ div [  ]
+        [ div []
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress) Dec 27, 2009 — present" ]
             ]
         , div [ HA.style "margin-top" "10px" ] [ text "This is an unpublished fork of work of Sydney Nemzer: ", Html.a [ HA.href "https://github.com/SidneyNemzer/elm-text-editor" ] [ text "Source code" ] ]
+        , div [ HA.style "margin-top" "10px" ] [ text "An app that uses this editor: ", Html.a [ HA.href "https://jxxcarlson.github.io/app/minilatex3/index.html" ] [ text "MiniLaTeX Demo" ] ]
         , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands." ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
         , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton ]
@@ -199,7 +200,9 @@ resetButton =
     rowButton 80 Reset "Reset" []
 
 
+
 -- STYLE --
+
 
 rowButtonStyle =
     [ style "font-size" "12px"
@@ -222,4 +225,3 @@ rowButtonLabelStyle width =
 rowButton width msg str attr =
     div (rowButtonStyle ++ attr)
         [ button ([ onClick msg ] ++ rowButtonLabelStyle width) [ text str ] ]
-

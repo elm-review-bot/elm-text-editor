@@ -1010,7 +1010,11 @@ update buffer msg state =
 
         ToggleHelp ->
             if state.showHelp == True then
-                ( { state | showHelp = False, savedBuffer = buffer }, Buffer.init Text.help, Cmd.none )
+                let
+                    ( newState, newBuffer ) =
+                        load state.config.wrapOption Text.help state
+                in
+                ( { newState | showHelp = False, savedBuffer = buffer }, newBuffer, Cmd.none )
 
             else
                 ( { state | showHelp = True, savedBuffer = Buffer.fromString "" }
@@ -1067,6 +1071,28 @@ scrollToLine k state buffer =
    TODO: Currently search on a string returns hits which are words.  They should be exact matches.
 
 -}
+
+
+load : WrapOption -> String -> InternalState -> ( InternalState, Buffer )
+load wrapOption content state =
+    let
+        config =
+            state.config
+
+        lineLengths =
+            String.lines content |> List.map String.length
+
+        maxLineLength =
+            List.maximum lineLengths |> Maybe.withDefault 1000
+
+        buffer =
+            if wrapOption == DoWrap && maxLineLength > config.wrapParams.maximumWidth then
+                Buffer.fromString (Editor.Text.prepareLines config content)
+
+            else
+                Buffer.fromString content
+    in
+    ( clearInternalState state, buffer )
 
 
 scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )

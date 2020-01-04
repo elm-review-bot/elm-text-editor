@@ -18,10 +18,4 @@ body {
 
 .input-range-labels-container { visibility: hidden }
 
-.input-range-container11 {
-     transform: rotate(-270deg);
-}
 
-.input-range-container {
-     transform: rotate(-270deg) translateY(-745px) translateX(315px)
-}

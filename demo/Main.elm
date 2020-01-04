@@ -58,8 +58,9 @@ config =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg
     , editorStyle = editorStyle
-    , width = 550
+    , width = 500
     , lines = 30
+    , lineHeight = 16.0
     , showInfoPanel = True
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
@@ -167,7 +168,7 @@ title =
 footer : Model -> Html Msg
 footer model =
     div
-        [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "520px", HA.style "left" "80px" ]
+        [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "590px", HA.style "left" "80px" ]
         [ div [  ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress) Dec 27, 2009 — present" ]
             ]

@@ -9,14 +9,34 @@ style =
     Html.node "style"
 
 
-styleText : { width : Int } -> String
+styleText : { width : Int, numberOfLines : Int, lineHeight : Float } -> String
 styleText data =
-    interpolate styleTemplate [ String.fromInt data.width, String.fromInt (data.width + 50) ]
+    interpolate styleTemplate [
+      String.fromInt data.width
+    , String.fromFloat ( slider1Offset data.width)
+    , String.fromFloat (0.8 * data.lineHeight)
+    , String.fromFloat data.lineHeight
+    , String.fromFloat <| (slider4Offset data.numberOfLines data.lineHeight)
+  ]
 
+
+slider1Offset : Int -> Float
+slider1Offset k =
+    (k + 50)
+      |> toFloat
+      |> (\x -> 1.0*x)
+
+slider4Offset : Int -> Float -> Float
+slider4Offset numberOfLines lineHeight =
+    0.8 * (toFloat numberOfLines) * lineHeight
 
 styleTemplate : String
 styleTemplate =
     """
+
+body { font-size: {2}px;
+       line-height: {3}px;}
+
 .elm-editor-container {
   font-family: monospace;
   border: 1px solid lightgray;
@@ -84,16 +104,20 @@ styleTemplate =
     opacity: 0;
   }
   50% {
-    opacity: 1;
+    opacity: 1;s
   }
 }
 
+
+
+
 .input-range-container {
-     transform: rotate(-270deg) translateY(-{1}px) translateX(315px)
+     transform: rotate(-270deg) translateY(-{1}px) translateX({4}px)
+}
 
 """
 
 
-styles : { width : Int } -> Html msg
+styles : { width : Int, lineHeight : Float, numberOfLines : Int } -> Html msg
 styles data =
     style [] [ text (styleText data) ]

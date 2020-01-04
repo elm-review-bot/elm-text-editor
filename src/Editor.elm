@@ -72,6 +72,7 @@ type alias EditorConfig  a =  {
      , editorStyle : List (Html.Attribute a)
      , width : Int
      , lines : Int
+     , lineHeight : Float
      , showInfoPanel : Bool
      , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
      , wrapOption : WrapOption
@@ -97,7 +98,7 @@ embedded : EditorConfig a -> State -> Buffer -> Html a
 embedded editorConfig state buffer =
     div [ style "position" "absolute" ]
         [ div editorConfig.editorStyle
-            [ Editor.Styles.styles { width = editorConfig.width }
+            [ Editor.Styles.styles { width = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
             , state
                 |> view [ style "background-color" "#eeeeee" ] buffer
                 |> Html.map editorConfig.editorMsg

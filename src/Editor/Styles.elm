@@ -1,6 +1,7 @@
 module Editor.Styles exposing (styles)
 
 import Html exposing (Html, text)
+import String.Interpolate exposing (interpolate)
 
 
 style : List (Html.Attribute msg) -> List (Html msg) -> Html msg
@@ -8,13 +9,18 @@ style =
     Html.node "style"
 
 
-styleText : String
-styleText =
+styleText : { width : Int } -> String
+styleText data =
+    interpolate styleTemplate [ String.fromInt data.width, String.fromInt (data.width + 50) ]
+
+
+styleTemplate : String
+styleTemplate =
     """
 .elm-editor-container {
   font-family: monospace;
   border: 1px solid lightgray;
-  width: 700px;
+  width: {0}px;
   user-select: none;
   -webkit-user-select: none;
   display: flex;
@@ -81,9 +87,13 @@ styleText =
     opacity: 1;
   }
 }
+
+.input-range-container {
+     transform: rotate(-270deg) translateY(-{1}px) translateX(315px)
+
 """
 
 
-styles : Html msg
-styles =
-    style [] [ text styleText ]
+styles : { width : Int } -> Html msg
+styles data =
+    style [] [ text (styleText data) ]

@@ -51,16 +51,26 @@ init () =
     )
 
 
-defaultConfig =
-    Editor.Config.default
+-- config : { editorMsg : PEEditorMsg -> Msg, sliderMsg : Slider.Msg -> Msg, editorStyle : List (Html.Attribute msg), width : Int, lines : Int, showInfoPanel : Bool, wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }, wrapOption : WrapOption }
+
 
 config =
-    { lines = 30
+    { editorMsg = EditorMsg
+    , sliderMsg = SliderMsg
+    , editorStyle = editorStyle
+    , width = 450
+    , lines = 30
     , showInfoPanel = True
     , wrapParams = { maximumWidth = 65, optimalWidth = 60, stringWidth = String.length }
     , wrapOption = DontWrap
     }
 
+
+editorStyle : List (Html.Attribute msg)
+editorStyle =
+    [ HA.style "background-color" "#dddddd"
+    , HA.style "border" "solid 0.5px"
+    ]
 
 
 -- UPDATE
@@ -142,24 +152,10 @@ view : Model -> Html Msg
 view model =
     div []
         [ title
-        , Editor.embedded editorConfig model.editorState model.editorBuffer
+        , Editor.embedded config  model.editorState model.editorBuffer
         , footer model
         ]
 
-
-editorConfig =
-    { editorMsg = EditorMsg
-    , sliderMsg = SliderMsg
-    , editorStyle = editorStyle
-    , width = 300
-    }
-
-
-editorStyle : List (Html.Attribute msg)
-editorStyle =
-    [ HA.style "background-color" "#dddddd"
-    , HA.style "border" "solid 0.5px"
-    ]
 
 
 title : Html Msg

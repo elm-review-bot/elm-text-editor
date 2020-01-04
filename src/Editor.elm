@@ -16,7 +16,7 @@ module Editor exposing
     )
 
 import Buffer exposing (Buffer)
-import Editor.Config exposing (Config, WrapOption(..))
+import Editor.Config exposing (Config, WrapOption(..), WrapParams)
 import Editor.History
 import Editor.Model exposing (InternalState)
 import Editor.Styles
@@ -38,13 +38,13 @@ type State
     = State InternalState
 
 
-init : Config -> State
-init config =
+init : EditorConfig a -> State
+init editorConfig =
     State
-        { config = config
+        { config = smallConfig editorConfig
         , scrolledLine = 0
         , cursor = Position 0 0
-        , window = { first = 0, last = config.lines - 1 }
+        , window = { first = 0, last = editorConfig.lines - 1 }
         , selection = Nothing
         , selectedText = Nothing
         , dragging = False
@@ -54,7 +54,7 @@ init config =
         , canReplace = False
         , searchResults = RollingList.fromList []
         , showHelp = True
-        , showInfoPanel = config.showInfoPanel
+        , showInfoPanel = editorConfig.showInfoPanel
         , showGoToLinePanel = False
         , showSearchPanel = False
         , savedBuffer = Buffer.fromString ""
@@ -66,31 +66,51 @@ init config =
 -- EMBEDDED EDITOR --
 
 
-type alias EditorConfig a =
-    { editorMsg : PEEditorMsg -> a
-    , sliderMsg : Slider.Msg -> a
-    , width : Int
-    , editorStyle : List (Html.Attribute a)
+type alias EditorConfig  a =  {
+       editorMsg : PEEditorMsg -> a
+     , sliderMsg : Slider.Msg -> a
+     , editorStyle : List (Html.Attribute a)
+     , width : Int
+     , lines : Int
+     , showInfoPanel : Bool
+     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
+     , wrapOption : WrapOption
+   }
+
+type alias SmallEditorConfig =  {
+       lines : Int
+      , showInfoPanel : Bool
+      , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
+      , wrapOption : WrapOption
     }
 
+smallConfig : EditorConfig a -> SmallEditorConfig
+smallConfig c =
+    {
+       lines = c.lines
+     , showInfoPanel = c.showInfoPanel
+     , wrapParams = c.wrapParams
+     , wrapOption = c.wrapOption
+    }
 
 embedded : EditorConfig a -> State -> Buffer -> Html a
 embedded editorConfig state buffer =
-  div [style "position" "absolute"] [
-    div ((elementWidth editorConfig.width) ::  editorConfig.editorStyle)
-        [ Editor.Styles.styles
-        , state
-            |> view [ style "background-color" "#eeeeee" ] buffer
-            |> Html.map editorConfig.editorMsg
-        -- , div [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "440px", HA.style "left" "40px" ]
-        , div [ HA.style "position" "absolute"]
-            [ sliderView state |> Html.map editorConfig.sliderMsg ]
+    div [ style "position" "absolute" ]
+        [ div editorConfig.editorStyle
+            [ Editor.Styles.styles { width = editorConfig.width }
+            , state
+                |> view [ style "background-color" "#eeeeee" ] buffer
+                |> Html.map editorConfig.editorMsg
+            , div [ HA.style "position" "absolute" ]
+                [ sliderView state |> Html.map editorConfig.sliderMsg ]
+            ]
         ]
-    ]
+
 
 elementWidth : Int -> Attribute msg
 elementWidth k =
-   style "width" ((String.fromInt k) ++ "px")
+    style "width" (String.fromInt k ++ "px")
+
 
 
 -- UPDATE --
@@ -101,9 +121,10 @@ update buffer msg (State state) =
     Editor.Update.update buffer msg state
         |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
 
-sliderUpdate : Slider.Msg -> State -> Buffer -> (State, Cmd Slider.Msg)
+
+sliderUpdate : Slider.Msg -> State -> Buffer -> ( State, Cmd Slider.Msg )
 sliderUpdate sliderMsg state buffer =
-   let
+    let
         ( newSlider, cmd, updateResults ) =
             Slider.update sliderMsg (slider state)
 
@@ -127,12 +148,14 @@ sliderUpdate sliderMsg state buffer =
 
         newCmd =
             if updateResults then
-                 cmd
+                cmd
 
             else
                 Cmd.none
     in
     ( newEditorState, newCmd )
+
+
 
 -- VIEW --
 
@@ -159,7 +182,7 @@ updateSlider slider_ (State s) =
 sliderView : State -> Html Slider.Msg
 sliderView state =
     Html.div
-         [style "position" "absolute", style "right" "0px", style "top" "0px"]
+        [ style "position" "absolute", style "right" "0px", style "top" "0px" ]
         --[]
         [ Slider.view (toInternal state).slider ]
 

@@ -172,7 +172,7 @@ linesContainer =
 
 view : List (Attribute Msg) -> List String -> InternalState -> Html Msg
 view attr lines state =
-    div (attr ++ [style "position" "absolute"])
+    div (attr ++ [ style "position" "absolute" ])
         [ goToLinePanel state
         , searchPanel state
         , infoPanel state lines

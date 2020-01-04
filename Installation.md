@@ -6,6 +6,7 @@ consulting the code in `./demo`
 ## Installation
 
 ```bash
+elm install lukewestby/elm-string-interpolate
 elm install bemyak/elm-slider
 elm install lovasoa/elm-rolling-list
 elm install elm-community/string-extra

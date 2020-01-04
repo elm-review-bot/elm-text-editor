@@ -228,7 +228,7 @@ wrappingOption state =
 infoPanelStyle =
     [ style "width" "90px"
     , style "position" "absolute"
-    , style "right" "38px"
+    , style "right" "8px"
     , style "top" "8px"
     , style "opacity" "1.0"
     , style "border" "solid 0.5px #444"

@@ -58,10 +58,10 @@ config =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg
     , editorStyle = editorStyle
-    , width = 450
+    , width = 550
     , lines = 30
     , showInfoPanel = True
-    , wrapParams = { maximumWidth = 65, optimalWidth = 60, stringWidth = String.length }
+    , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
     }
 
@@ -150,7 +150,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [HA.style "margin" "60px"]
         [ title
         , Editor.embedded config  model.editorState model.editorBuffer
         , footer model
@@ -166,8 +166,9 @@ title =
 
 footer : Model -> Html Msg
 footer model =
-    div [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "460px", HA.style "left" "40px" ]
-        [ div [ HA.style "margin-top" "30px" ]
+    div
+        [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "520px", HA.style "left" "80px" ]
+        [ div [  ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress) Dec 27, 2009 — present" ]
             ]
         , div [ HA.style "margin-top" "10px" ] [ text "This is an unpublished fork of work of Sydney Nemzer: ", Html.a [ HA.href "https://github.com/SidneyNemzer/elm-text-editor" ] [ text "Source code" ] ]

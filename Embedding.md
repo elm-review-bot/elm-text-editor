@@ -18,8 +18,7 @@ elm install folkertdev/elm-paragraph
 ## Imports
 
 ```
-import Buffer exposing (Buffer)
-import Editor exposing (EditorConfig, PEEditorMsg, State)
+import Editor exposing (EditorConfig, Editor, EditorMsg)
 import Editor.Config exposing (WrapOption(..))   
 import SingleSlider as Slider
 ```
@@ -28,7 +27,7 @@ import SingleSlider as Slider
 
 ```elm
 type Msg
-    = EditorMsg PEEditorMsg
+    = EditorMsg EditorMsg
     | SliderMsg Slider.Msg
     | ...
 ```
@@ -37,8 +36,7 @@ type Msg
 
 ```elm
 type alias Model =
-    { editorBuffer : Buffer
-    , editorState : State
+    { editor : Editor
     , ...
     }
 ```
@@ -48,8 +46,8 @@ type alias Model =
 ```elm
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editorBuffer = Buffer.init "Some text"
-      , editorState = Editor.init config
+    ( { editor = Editor.init config "Some text ..."
+      , clipboard = ""
       }
     , Cmd.none
     )
@@ -60,27 +58,25 @@ where (for example):
 
 ```elm
 config =
-    { lines = 30
+    { editorMsg = EditorMsg
+    , sliderMsg = SliderMsg
+    , editorStyle = editorStyle
+    , width = 500
+    , lines = 30
+    , lineHeight = 16.0
     , showInfoPanel = True
-    , wrapParams = { maximumWidth = 65, optimalWidth = 60, stringWidth = String.length }
+    , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
     }
 ```
 
-Or you could do this:
-
-```elm
-defaultConfing = Config.default
-
-config = { defaultConfing | lines = 40}
 ```
-
-or just this
-
-```elm
-config = Config.default
+editorStyle : List (Html.Attribute msg)
+editorStyle =
+    [ HA.style "background-color" "#dddddd"
+    , HA.style "border" "solid 0.5px"
+    ]
 ```
-
 
 
 ## Update
@@ -88,42 +84,48 @@ config = Config.default
 ```elm
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
+      case msg of
         EditorMsg msg_ ->
             let
-                ( editor, content, cmd ) =
-                    Editor.update model.editorBuffer msg_ model.editorState
-                 
-                -- Use a line line the below to do something
-                -- with new content flowing out of the editor
-                updatedContent = Buffer.toString content
-
+               (editor, cmd) = Editor.update msg_ model.editor
             in
-            ( { model
-                | editorState = editor
-                , editorBuffer = content
-              }
-            , Cmd.map EditorMsg cmd
-            )
+              ({ model | editor = editor }, Cmd.map EditorMsg cmd)
+
 
         SliderMsg sliderMsg ->
-          let
-            (newEditorState, cmd) = Editor.sliderUpdate sliderMsg  model.editorState model.editorBuffer
-          in
-            ( { model | editorState = newEditorState }, cmd  |> Cmd.map SliderMsg )
+            let
+                ( newEditor, cmd ) =
+                    Editor.sliderUpdate sliderMsg model.editor
+            in
+            ( { model | editor = newEditor }, cmd |> Cmd.map SliderMsg )
 
+        -- The below are optional, and used for external copy/pastes
+        -- See module `Outside` and also `index.html` for additional
+        -- information
+        
+        Outside infoForElm ->
+            case infoForElm of
+
+                Outside.GotClipboard clipboard ->
+                    ({model | clipboard = clipboard}, Cmd.none)
+
+        AskForClipBoard ->
+            (model, Outside.sendInfo (Outside.AskForClipBoard E.null))
+
+        PasteClipboard ->
+                    pasteToClipboard model
+ 
         Other cases ...
 ```
 
 ## Subscriptions
 
 ```elm
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Sub.map SliderMsg <|
-            Slider.subscriptions (Editor.slider model.editorState)
+            Slider.subscriptions (Editor.slider model.editor)
         ]
 ```
 
@@ -132,36 +134,10 @@ subscriptions model =
 ```elm
 view : Model -> Html Msg
 view model =
-    div [ HA.style "position" "absolute", HA.style "top" "50px", HA.style "left" "50px" ]
-        [ title
-        , Editor.embedded editorConfig model.editorState model.editorBuffer
-        , footer model
+    div [ HA.style "margin" "60px" ]
+        [ title -- for example
+        , Editor.embedded config model.editor
+        , footer model -- for example
         ]
-
-
-editorConfig =
-    { editorMsg = EditorMsg
-    , sliderMsg = SliderMsg
-    , editorStyle = editorStyle
-    }
-
-
-editorStyle : List (Html.Attribute msg)
-editorStyle =
-    [ HA.style "background-color" "#dddddd"
-    , HA.style "border" "solid 0.5px"
-    , HA.style "width" "600px"
-    ]
 ```
 
-## CSS
-
-Add the following:
-
-```css
-.input-range-labels-container { visibility: hidden }
-
-.input-range-container {
-     transform: rotate(-270deg) translateY(-410px) translateX(-84px)
-  }
-```

@@ -1,8 +1,7 @@
 module Main exposing (Msg(..), main)
 
 import Browser
-import Buffer exposing (Buffer)
-import Editor exposing (EditorConfig, PEEditorMsg, State)
+import Editor exposing (EditorConfig, Editor, PEEditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
@@ -40,16 +39,14 @@ type Msg
 
 
 type alias Model =
-    { editorBuffer : Buffer
-    , editorState : State
+    { editor: Editor
     , clipboard : String
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editorBuffer = Buffer.init Text.jabberwocky
-      , editorState = Editor.init config
+    ( { editor = Editor.init config Text.jabberwocky
       , clipboard = ""
       }
     , Cmd.none
@@ -89,15 +86,10 @@ update msg model =
     case msg of
         EditorMsg msg_ ->
             let
-                ( editor, content, cmd ) =
-                    Editor.update model.editorBuffer msg_ model.editorState
+               (editor, cmd) = Editor.update msg_ model.editor
             in
-            ( { model
-                | editorState = editor
-                , editorBuffer = content
-              }
-            , Cmd.map EditorMsg cmd
-            )
+              ({ model | editor = editor }, Cmd.map EditorMsg cmd)
+
 
         Test ->
             load DontWrap Text.info model
@@ -113,10 +105,10 @@ update msg model =
 
         SliderMsg sliderMsg ->
             let
-                ( newEditorState, cmd ) =
-                    Editor.sliderUpdate sliderMsg model.editorState model.editorBuffer
+                ( newEditor, cmd ) =
+                    Editor.sliderUpdate sliderMsg model.editor
             in
-            ( { model | editorState = newEditorState }, cmd |> Cmd.map SliderMsg )
+            ( { model | editor = newEditor }, cmd |> Cmd.map SliderMsg )
 
         Outside infoForElm ->
             case infoForElm of
@@ -135,28 +127,26 @@ update msg model =
 
 pasteToClipboard : Model -> (Model, Cmd msg)
 pasteToClipboard model =
-   let
-     newBuffer = Buffer.insert (Editor.getCursor model.editorState) model.clipboard model.editorBuffer
-   in
-     ({ model | editorBuffer = newBuffer} , Cmd.none)
+     ({ model | editor = Editor.insert (Editor.getCursor model.editor) model.clipboard model.editor} , Cmd.none)
 
 
 load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
 load wrapOption str model =
     let
-        ( newEditorState, newEditorBuffer ) =
-            Editor.load wrapOption str model.editorState
+        newEditor = Editor.load wrapOption str model.editor
     in
-    ( { model | editorState = newEditorState, editorBuffer = newEditorBuffer }, Cmd.none )
+      ( { model | editor = newEditor }, Cmd.none )
+
+
 
 
 highlightText : String -> Model -> ( Model, Cmd Msg )
 highlightText str model =
     let
-        ( newEditorState, newEditorBuffer ) =
-            Editor.scrollToString str model.editorState model.editorBuffer
+        newEditor  =
+            Editor.scrollToString str model.editor
     in
-    ( { model | editorState = newEditorState, editorBuffer = newEditorBuffer }, Cmd.none )
+    ( { model | editor = newEditor }, Cmd.none )
 
 
 
@@ -167,7 +157,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Sub.map SliderMsg <|
-            Slider.subscriptions (Editor.slider model.editorState)
+            Slider.subscriptions (Editor.slider model.editor)
         ]
 
 
@@ -179,7 +169,7 @@ view : Model -> Html Msg
 view model =
     div [ HA.style "margin" "60px" ]
         [ title
-        , Editor.embedded config model.editorState model.editorBuffer
+        , Editor.embedded config model.editor
         , footer model
         ]
 

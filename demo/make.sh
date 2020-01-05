@@ -1,1 +1,1 @@
-elm make --debug Main.elm --output=Demo.js
+elm make  Main.elm --output=Demo.js

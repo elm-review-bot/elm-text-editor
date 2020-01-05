@@ -1,5 +1,6 @@
 module Editor exposing
-    ( EditorConfig
+    ( Editor
+    , EditorConfig
     , PEEditorMsg
     , State
     , embedded
@@ -7,6 +8,7 @@ module Editor exposing
     , getSelectedText
     , getSmallConfig
     , init
+    , insert
     , load
     , scrollToLine
     , scrollToString
@@ -38,13 +40,21 @@ type alias PEEditorMsg =
     Editor.Update.Msg
 
 
+type alias Editor =
+    { buffer : Buffer
+    , state : State
+    }
+
+
 type State
     = State InternalState
 
 
-getCursor : State -> Position
-getCursor (State s) =
-    s.cursor
+getCursor : Editor -> Position
+getCursor editor =
+    editor.state
+        |> toInternal
+        |> .cursor
 
 
 getSelectedText : State -> Maybe String
@@ -62,28 +72,31 @@ getSmallConfig (State s) =
     s.config
 
 
-init : EditorConfig a -> State
-init editorConfig =
-    State
-        { config = smallConfig editorConfig
-        , scrolledLine = 0
-        , cursor = Position 0 0
-        , window = { first = 0, last = editorConfig.lines - 1 }
-        , selection = Nothing
-        , selectedText = Nothing
-        , dragging = False
-        , history = Editor.History.empty
-        , searchTerm = ""
-        , replacementText = ""
-        , canReplace = False
-        , searchResults = RollingList.fromList []
-        , showHelp = True
-        , showInfoPanel = editorConfig.showInfoPanel
-        , showGoToLinePanel = False
-        , showSearchPanel = False
-        , savedBuffer = Buffer.fromString ""
-        , slider = Editor.Model.slider
-        }
+init : EditorConfig a -> String -> Editor
+init editorConfig text =
+    { buffer = Buffer.init text
+    , state =
+        State
+            { config = smallConfig editorConfig
+            , scrolledLine = 0
+            , cursor = Position 0 0
+            , window = { first = 0, last = editorConfig.lines - 1 }
+            , selection = Nothing
+            , selectedText = Nothing
+            , dragging = False
+            , history = Editor.History.empty
+            , searchTerm = ""
+            , replacementText = ""
+            , canReplace = False
+            , searchResults = RollingList.fromList []
+            , showHelp = True
+            , showInfoPanel = editorConfig.showInfoPanel
+            , showGoToLinePanel = False
+            , showSearchPanel = False
+            , savedBuffer = Buffer.fromString ""
+            , slider = Editor.Model.slider
+            }
+    }
 
 
 
@@ -111,6 +124,19 @@ type alias SmallEditorConfig =
     }
 
 
+
+-- NEW STUFF --
+
+
+insert : Position -> String -> Editor -> Editor
+insert position string editor =
+    { editor | buffer = Buffer.insert position string editor.buffer }
+
+
+
+-- /NEW STUFF --
+
+
 smallConfig : EditorConfig a -> SmallEditorConfig
 smallConfig c =
     { lines = c.lines
@@ -120,16 +146,16 @@ smallConfig c =
     }
 
 
-embedded : EditorConfig a -> State -> Buffer -> Html a
-embedded editorConfig state buffer =
+embedded : EditorConfig a -> Editor -> Html a
+embedded editorConfig editor =
     div [ style "position" "absolute" ]
         [ div editorConfig.editorStyle
             [ Editor.Styles.styles { width = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
-            , state
-                |> view [ style "background-color" "#eeeeee" ] buffer
+            , editor.state
+                |> view [ style "background-color" "#eeeeee" ] editor.buffer
                 |> Html.map editorConfig.editorMsg
             , div [ HA.style "position" "absolute" ]
-                [ sliderView state |> Html.map editorConfig.sliderMsg ]
+                [ sliderView editor |> Html.map editorConfig.sliderMsg ]
             ]
         ]
 
@@ -143,23 +169,26 @@ elementWidth k =
 -- UPDATE --
 
 
-update : Buffer -> PEEditorMsg -> State -> ( State, Buffer, Cmd PEEditorMsg )
-update buffer msg (State state) =
-    Editor.Update.update buffer msg state
-        |> (\( newState, newBuffer, cmd ) -> ( State newState, newBuffer, cmd ))
+update : PEEditorMsg -> Editor -> ( Editor, Cmd PEEditorMsg )
+update msg editor =
+    let
+        ( is, b, cmd ) =
+            Editor.Update.update editor.buffer msg (toInternal editor.state)
+    in
+    ( { state = State is, buffer = b }, cmd )
 
 
-sliderUpdate : Slider.Msg -> State -> Buffer -> ( State, Cmd Slider.Msg )
-sliderUpdate sliderMsg state buffer =
+sliderUpdate : Slider.Msg -> Editor -> ( Editor, Cmd Slider.Msg )
+sliderUpdate sliderMsg editor =
     let
         ( newSlider, cmd, updateResults ) =
-            Slider.update sliderMsg (slider state)
+            Slider.update sliderMsg (slider editor)
 
         newEditorState_ =
-            updateSlider newSlider state
+            updateSlider newSlider editor
 
         numberOfLines =
-            Buffer.lines buffer
+            Buffer.lines editor.buffer
                 |> List.length
                 |> toFloat
 
@@ -169,10 +198,6 @@ sliderUpdate sliderMsg state buffer =
                 |> (\x -> x * numberOfLines)
                 |> round
 
-        newEditorState : State
-        newEditorState =
-            scrollToLine line newEditorState_ buffer |> Tuple.first
-
         newCmd =
             if updateResults then
                 cmd
@@ -180,7 +205,7 @@ sliderUpdate sliderMsg state buffer =
             else
                 Cmd.none
     in
-    ( newEditorState, newCmd )
+    ( scrollToLine line editor, newCmd )
 
 
 
@@ -196,38 +221,42 @@ view attr buffer (State state) =
 -- SLIDER --
 
 
-slider : State -> Slider.Model
-slider (State s) =
-    s.slider
+slider : Editor -> Slider.Model
+slider editor =
+    editor
+        |> (.state >> toInternal >> .slider)
 
 
-updateSlider : Slider.Model -> State -> State
-updateSlider slider_ (State s) =
-    State { s | slider = slider_ }
+updateSlider : Slider.Model -> Editor -> Editor
+updateSlider slider_ editor =
+    let
+        is =
+            toInternal editor.state
+    in
+    { editor | state = State { is | slider = slider_ } }
 
 
-sliderView : State -> Html Slider.Msg
-sliderView state =
+sliderView : Editor -> Html Slider.Msg
+sliderView editor =
     Html.div
         [ style "position" "absolute", style "right" "0px", style "top" "0px" ]
-        --[]
-        [ Slider.view (toInternal state).slider ]
+        [ Slider.view (toInternal editor.state).slider ]
 
 
 
 --  STATE FUNCTIONS --
 
 
-clearState : State -> State
-clearState (State state) =
-    State (Editor.Update.clearInternalState state)
+clearState : Editor -> Editor
+clearState editor =
+    { editor | state = State (Editor.Update.clearInternalState (toInternal editor.state)) }
 
 
-load : WrapOption -> String -> State -> ( State, Buffer )
-load wrapOption content state =
+load : WrapOption -> String -> Editor -> Editor
+load wrapOption content editor =
     let
         config =
-            (toInternal state).config
+            (toInternal editor.state).config
 
         lineLengths =
             String.lines content |> List.map String.length
@@ -241,18 +270,29 @@ load wrapOption content state =
 
             else
                 Buffer.fromString content
+
+        newEditor =
+            clearState editor
     in
-    ( clearState state, buffer )
+    { newEditor | buffer = buffer }
 
 
-scrollToString : String -> State -> Buffer -> ( State, Buffer )
-scrollToString =
-    \str state buffer -> lift (Editor.Update.scrollToText_ str) state buffer
+scrollToString : String -> Editor -> Editor
+scrollToString str editor =
+    let
+        ( is, b ) =
+            Editor.Update.scrollToText_ str (toInternal editor.state) editor.buffer
+    in
+    { state = State is, buffer = b }
 
 
-scrollToLine : Int -> State -> Buffer -> ( State, Buffer )
-scrollToLine =
-    \k state buffer -> lift (Editor.Update.scrollToLine k) state buffer
+scrollToLine : Int -> Editor -> Editor
+scrollToLine k editor =
+    let
+        ( is, b ) =
+            Editor.Update.scrollToLine k (toInternal editor.state) editor.buffer
+    in
+    { state = State is, buffer = b }
 
 
 toInternal : State -> InternalState

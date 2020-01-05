@@ -16,8 +16,8 @@ Go to line        ctrl-g         (Toggle)
 First line        ctrl-option up-arrow
 Last line         ctrl-option down-arrow
 
-Page Up           ctrl-option up-arrow
-Page Down         ctrl-option down-arrow
+Page Up           option up-arrow
+Page Down         option down-arrow
 
 Line Up           up-arrow
 Line Down         down-arrow

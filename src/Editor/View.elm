@@ -71,7 +71,7 @@ character window cursor selection position char =
             [ ( name ++ "-line__character", True )
             , ( name ++ "-line__character--has-cursor", cursor == Window.shiftPosition_ window position )
             , ( name ++ "-line__character--selected"
-              , selected cursor selection position
+              , selected cursor (Maybe.map (Window.shiftPosition__ window) selection) position
               )
             ]
         , captureOnMouseDown (MouseDown (Window.shiftPosition_ window position))

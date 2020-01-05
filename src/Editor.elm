@@ -1,12 +1,11 @@
 module Editor exposing
     ( Editor
     , EditorConfig
-    , PEEditorMsg
-    , State
+    , EditorMsg
     , embedded
     , getCursor
     , getSelectedText
-    , getSmallConfig
+    , getSource
     , init
     , insert
     , load
@@ -36,7 +35,7 @@ import RollingList
 import SingleSlider as Slider
 
 
-type alias PEEditorMsg =
+type alias EditorMsg =
     Editor.Update.Msg
 
 
@@ -50,6 +49,11 @@ type State
     = State InternalState
 
 
+getSource : Editor -> String
+getSource editor =
+    Buffer.toString editor.buffer
+
+
 getCursor : Editor -> Position
 getCursor editor =
     editor.state
@@ -57,14 +61,18 @@ getCursor editor =
         |> .cursor
 
 
-getSelectedText : State -> Maybe String
-getSelectedText (State s) =
-    s.selectedText
+getSelectedText : Editor -> Maybe String
+getSelectedText editor =
+    editor |> .state |> toInternal |> .selectedText
 
 
-setSelectedText : String -> State -> State
-setSelectedText str (State s) =
-    State { s | selectedText = Just str }
+setSelectedText : String -> Editor -> Editor
+setSelectedText str editor =
+    let
+        is =
+            toInternal editor.state
+    in
+    { editor | state = State { is | selectedText = Just str } }
 
 
 getSmallConfig : State -> SmallEditorConfig
@@ -104,7 +112,7 @@ init editorConfig text =
 
 
 type alias EditorConfig a =
-    { editorMsg : PEEditorMsg -> a
+    { editorMsg : EditorMsg -> a
     , sliderMsg : Slider.Msg -> a
     , editorStyle : List (Html.Attribute a)
     , width : Int
@@ -151,8 +159,7 @@ embedded editorConfig editor =
     div [ style "position" "absolute" ]
         [ div editorConfig.editorStyle
             [ Editor.Styles.styles { width = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
-            , editor.state
-                |> view [ style "background-color" "#eeeeee" ] editor.buffer
+            , view [ style "background-color" "#eeeeee" ] editor
                 |> Html.map editorConfig.editorMsg
             , div [ HA.style "position" "absolute" ]
                 [ sliderView editor |> Html.map editorConfig.sliderMsg ]
@@ -169,7 +176,7 @@ elementWidth k =
 -- UPDATE --
 
 
-update : PEEditorMsg -> Editor -> ( Editor, Cmd PEEditorMsg )
+update : EditorMsg -> Editor -> ( Editor, Cmd EditorMsg )
 update msg editor =
     let
         ( is, b, cmd ) =
@@ -184,7 +191,7 @@ sliderUpdate sliderMsg editor =
         ( newSlider, cmd, updateResults ) =
             Slider.update sliderMsg (slider editor)
 
-        newEditorState_ =
+        newEditor =
             updateSlider newSlider editor
 
         numberOfLines =
@@ -205,16 +212,16 @@ sliderUpdate sliderMsg editor =
             else
                 Cmd.none
     in
-    ( scrollToLine line editor, newCmd )
+    ( scrollToLine line newEditor, newCmd )
 
 
 
 -- VIEW --
 
 
-view : List (Attribute PEEditorMsg) -> Buffer -> State -> Html PEEditorMsg
-view attr buffer (State state) =
-    Editor.View.view attr (Buffer.lines buffer) state
+view : List (Attribute EditorMsg) -> Editor -> Html EditorMsg
+view attr editor =
+    Editor.View.view attr (Buffer.lines editor.buffer) (toInternal editor.state)
 
 
 

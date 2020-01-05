@@ -1132,7 +1132,7 @@ scrollToText_ str state buffer =
                     Window.scrollToIncludeCursor cursor state.window
 
                 ( cursor_, end_ ) =
-                    ( Window.shiftPosition__ window_ cursor, Window.shiftPosition__ window_ end )
+                    ( cursor, end )
             in
             ( { state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str }, buffer )
 

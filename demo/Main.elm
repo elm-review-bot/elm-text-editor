@@ -1,7 +1,7 @@
 module Main exposing (Msg(..), main)
 
 import Browser
-import Editor exposing (EditorConfig, Editor, PEEditorMsg)
+import Editor exposing (EditorConfig, Editor, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
@@ -27,7 +27,7 @@ main =
 
 
 type Msg
-    = EditorMsg PEEditorMsg
+    = EditorMsg EditorMsg
     | Test
     | FindTreasure
     | GetSpeech
@@ -52,9 +52,6 @@ init () =
     , Cmd.none
     )
 
-
-
--- config : { editorMsg : PEEditorMsg -> Msg, sliderMsg : Slider.Msg -> Msg, editorStyle : List (Html.Attribute msg), width : Int, lines : Int, showInfoPanel : Bool, wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }, wrapOption : WrapOption }
 
 
 config =

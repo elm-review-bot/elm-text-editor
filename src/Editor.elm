@@ -4,11 +4,13 @@ module Editor exposing
     , State
     , embedded
     , getCursor
+    , getSelectedText
     , getSmallConfig
     , init
     , load
     , scrollToLine
     , scrollToString
+    , setSelectedText
     , slider
     , sliderUpdate
     , sliderView
@@ -43,6 +45,16 @@ type State
 getCursor : State -> Position
 getCursor (State s) =
     s.cursor
+
+
+getSelectedText : State -> Maybe String
+getSelectedText (State s) =
+    s.selectedText
+
+
+setSelectedText : String -> State -> State
+setSelectedText str (State s) =
+    State { s | selectedText = Just str }
 
 
 getSmallConfig : State -> SmallEditorConfig

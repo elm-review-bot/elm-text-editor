@@ -3,6 +3,7 @@ module Editor exposing
     , PEEditorMsg
     , State
     , embedded
+    , getCursor
     , getSmallConfig
     , init
     , load
@@ -37,6 +38,11 @@ type alias PEEditorMsg =
 
 type State
     = State InternalState
+
+
+getCursor : State -> Position
+getCursor (State s) =
+    s.cursor
 
 
 getSmallConfig : State -> SmallEditorConfig

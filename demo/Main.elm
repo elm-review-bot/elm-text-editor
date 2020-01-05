@@ -8,7 +8,9 @@ import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
 import SingleSlider as Slider
+import Json.Encode as E
 import Text
+import Outside
 
 
 main : Program () Model Msg
@@ -32,11 +34,15 @@ type Msg
     | GetSpeech
     | Reset
     | SliderMsg Slider.Msg
+    | Outside Outside.InfoForElm
+    | AskForClipBoard
+    | PasteClipboard
 
 
 type alias Model =
     { editorBuffer : Buffer
     , editorState : State
+    , clipboard : String
     }
 
 
@@ -44,6 +50,7 @@ init : () -> ( Model, Cmd Msg )
 init () =
     ( { editorBuffer = Buffer.init Text.jabberwocky
       , editorState = Editor.init config
+      , clipboard = ""
       }
     , Cmd.none
     )
@@ -111,9 +118,27 @@ update msg model =
             in
             ( { model | editorState = newEditorState }, cmd |> Cmd.map SliderMsg )
 
+        Outside infoForElm ->
+            case infoForElm of
+
+                Outside.GotClipboard clipboard ->
+                    ({model | clipboard = clipboard}, Cmd.none)
+
+        AskForClipBoard ->
+            (model, Outside.sendInfo (Outside.AskForClipBoard E.null))
+
+        PasteClipboard ->
+                    pasteToClipboard model
 
 
 -- HELPER FUNCTIONS FOR UPDATE
+
+pasteToClipboard : Model -> (Model, Cmd msg)
+pasteToClipboard model =
+   let
+     newBuffer = Buffer.insert (Editor.getCursor model.editorState) model.clipboard model.editorBuffer
+   in
+     ({ model | editorBuffer = newBuffer} , Cmd.none)
 
 
 load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
@@ -176,7 +201,7 @@ footer model =
         , div [ HA.style "margin-top" "10px" ] [ text "An app that uses this editor: ", Html.a [ HA.href "https://jxxcarlson.github.io/app/minilatex3/index.html" ] [ text "MiniLaTeX Demo" ] ]
         , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands." ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton ]
+        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton, getClipboardButton, pasteClipboardButton ]
         ]
 
 
@@ -198,6 +223,15 @@ speechTextButton =
 
 resetButton =
     rowButton 80 Reset "Reset" []
+
+
+
+getClipboardButton =
+    rowButton 50 AskForClipBoard "Copy" []
+
+
+pasteClipboardButton =
+    rowButton 50 PasteClipboard "Paste" []
 
 
 

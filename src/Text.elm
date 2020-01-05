@@ -11,34 +11,64 @@ Partial list of key commands
 
 Show help         ctrl-h         (Toggle)
 Show info panel   ctrl-shift-i   (Toggle)
-Go to line        ctrl-g         (Toggle)
 
-First line        ctrl-option up-arrow
-Last line         ctrl-option down-arrow
+Lines
+-----
 
-Page Up           option up-arrow
-Page Down         option down-arrow
+Start of line     Home
+End of line       End
 
 Line Up           up-arrow
 Line Down         down-arrow
 
+First line        ctrl-option up-arrow
+Last line         ctrl-option down-arrow
+
+Go to line        ctrl-g         (Toggle)
+
+Moves
+-----
+Page Up           option up-arrow
+Page Down         option down-arrow
+
+Selection
+---------
+Select word       Double-click
+Select line       Triple-click
+Select group      ctrl-d
+
+Extend selection  shift-arrow: up | down | left | right
+
 Copy selection    ctrl-c
 Cut selection     ctrl-x
 Paste selection   ctrl-v
+
+
+Text
+------------
+
+Indent            Tab
+De-indent         shift-Tab
+
 Wrap text         ctrl-w
 Toggle wrap       ctrl-shift w   (for wrap on load)
-Clear text        ctrl-shift c
+
+Clear all        ctrl-shift c
+
+Search
+------
 
 Search panel      ctrl-s (Toggle)
+Replace panel     ctrl-r (Toggle)
 Next search hit   ctrl-. (Think >)
 Prev search hit   ctrl-. (Think <)
+
+Undo/Redo
+----------
 
 Undo              ctrl-z
 Redo              ctrl-y
 
-ctrl-c to copy selection; ctrl-x to cut; ctrl-v to paste copied text
-
-NOTE: The above list is far from complete.
 """
 
 

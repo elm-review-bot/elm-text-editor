@@ -4,27 +4,8 @@ module Editor.Strings exposing (help, info)
 help =
     """
 -----------------------------------------------
-                     Help
+                     Key commands
 -----------------------------------------------
-NEW: the Copy Button, lower right.  Pressing it
-copies the computer's clipboard the editor's
-clipboard.  Use ctrl-shift v to paste
-the editor's clipboard to the current document
-at the location of the cursor.  Right now this
-is a clunky process: (1) use cmd-C (Mac) to
-copy text to OS clipboard (2) use "Copy" button
-to copy the text to the Editor keyboard,
-(3) use ctrl-shift-v to paste the clipboard
-into the Editor.  I am working on simplifying
-it.
-
-This works in Chrome 79 but not Firefox.
------------------------------------------------
-
-
-
-Partial list of key commands
-----------------------------
 
 Show help         ctrl-h         (Toggle)
 Show info panel   ctrl-shift-i   (Toggle)
@@ -59,7 +40,22 @@ Extend selection  shift-arrow: up | down | left | right
 Copy selection    ctrl-c
 Cut selection     ctrl-x
 Paste selection   ctrl-v
-Paste clipboard   ctrl-shift v
+
+External copy-paste
+-------------------
+
+- ctrl-shift-u copies text from the system
+  clipboard and pastes the content to the
+  editor at current cursor.  The copied
+  text remains in the Editor clipboard.
+
+- ctrl-shift-v pastes text from Editor
+  clipboard
+
+This works in Chrome 79 but not Firefox.
+In Chrome you have to respond to a permission
+dialog each time.  I'll see if this can
+be reduced to once per session.
 
 
 Text

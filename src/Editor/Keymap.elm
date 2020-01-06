@@ -152,6 +152,7 @@ keymaps =
             , ( "C", Clear )
             , ( "I", ToggleInfoPanel )
             , ( "V", PasteFromClipboard )
+            , ( "U", CopyPasteClipboard )
             , ( "W", ToggleWrapping )
             ]
     }

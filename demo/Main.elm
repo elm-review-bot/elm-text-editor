@@ -111,10 +111,6 @@ update msg model =
         Outside infoForElm ->
             case infoForElm of
                 Outside.GotClipboard clipboard ->
-                    let
-                        _ =
-                            Debug.log "(U) clipboard" clipboard
-                    in
                     pasteToEditorClipboard model clipboard
 
         LogErr _ ->
@@ -212,7 +208,7 @@ footer model =
         , div [ HA.style "margin-top" "10px" ] [ text "An app that uses this editor: ", Html.a [ HA.href "https://jxxcarlson.github.io/app/minilatex3/index.html" ] [ text "MiniLaTeX Demo" ] ]
         , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands." ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton, getClipboardButton ]
+        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton ]
         ]
 
 
@@ -234,10 +230,6 @@ speechTextButton =
 
 resetButton =
     rowButton 80 Reset "Reset" []
-
-
-getClipboardButton =
-    rowButton 50 AskForClipBoard "Copy" []
 
 
 

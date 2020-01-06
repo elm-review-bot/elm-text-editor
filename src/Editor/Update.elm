@@ -8,6 +8,8 @@ import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
 import Editor.Strings
 import Editor.Text
+import Json.Encode as E
+import Outside
 import Position exposing (Position)
 import RollingList
 import Search
@@ -21,6 +23,7 @@ type Msg
     | MouseOver Position
     | MouseUp
     | Copy
+    | CopyPasteClipboard
     | Cut
     | CursorLeft
     | CursorRight
@@ -337,6 +340,9 @@ update buffer msg state =
 
         PasteFromClipboard ->
             ( state, Buffer.insert state.cursor state.clipboard buffer, Cmd.none )
+
+        CopyPasteClipboard ->
+            ( state, buffer, Outside.sendInfo (Outside.AskForClipBoard E.null) )
 
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of

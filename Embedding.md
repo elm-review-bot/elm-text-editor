@@ -37,6 +37,7 @@ type Msg
 ```elm
 type alias Model =
     { editor : Editor
+    , clipboard : String
     , ...
     }
 ```
@@ -57,6 +58,7 @@ init () =
 where (for example):
 
 ```elm
+config : EditorConfig Msg
 config =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg

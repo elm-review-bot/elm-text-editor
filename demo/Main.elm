@@ -35,6 +35,7 @@ type Msg
     | Reset
     | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
+    | LogErr String
     | AskForClipBoard
     | PasteClipboard
 
@@ -113,6 +114,9 @@ update msg model =
                 Outside.GotClipboard clipboard ->
                     ( { model | clipboard = clipboard }, Cmd.none )
 
+        LogErr _ ->
+            ( model, Cmd.none )
+
         AskForClipBoard ->
             ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
 
@@ -162,6 +166,7 @@ subscriptions model =
     Sub.batch
         [ Sub.map SliderMsg <|
             Slider.subscriptions (Editor.slider model.editor)
+        , Outside.getInfo Outside LogErr
         ]
 
 

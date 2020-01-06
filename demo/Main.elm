@@ -37,7 +37,6 @@ type Msg
     | Outside Outside.InfoForElm
     | LogErr String
     | AskForClipBoard
-    | PasteClipboard
 
 
 type alias Model =
@@ -116,7 +115,6 @@ update msg model =
                         _ =
                             Debug.log "(U) clipboard" clipboard
                     in
-                    --( { model | clipboard = clipboard }, Cmd.none )
                     pasteToEditorClipboard model clipboard
 
         LogErr _ ->
@@ -124,9 +122,6 @@ update msg model =
 
         AskForClipBoard ->
             ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
-
-        PasteClipboard ->
-            pasteToClipboard model "FOO"
 
 
 
@@ -142,7 +137,14 @@ pasteToClipboard model str =
 
 pasteToEditorClipboard : Model -> String -> ( Model, Cmd msg )
 pasteToEditorClipboard model str =
-    ( { model | editor = Editor.placeInClipboard str model.editor }, Cmd.none )
+    let
+        cursor =
+            Editor.getCursor model.editor
+
+        editor2 =
+            Editor.placeInClipboard str model.editor
+    in
+    ( { model | editor = Editor.insert cursor str editor2 }, Cmd.none )
 
 
 {-| Load text into Editor
@@ -236,10 +238,6 @@ resetButton =
 
 getClipboardButton =
     rowButton 50 AskForClipBoard "Copy" []
-
-
-pasteClipboardButton =
-    rowButton 50 PasteClipboard "Paste" []
 
 
 

@@ -9,6 +9,7 @@ module Editor exposing
     , init
     , insert
     , load
+    , pasteFromClipBoard
     , placeInClipboard
     , scrollToLine
     , scrollToString
@@ -259,6 +260,11 @@ placeInClipboard str (Editor data) =
             { oldState | clipboard = str }
     in
     Editor { data | state = newState }
+
+
+pasteFromClipBoard : Editor -> Editor
+pasteFromClipBoard (Editor data) =
+    Editor { data | buffer = Buffer.insert data.state.cursor data.state.clipboard data.buffer }
 
 
 clearState : Editor -> Editor

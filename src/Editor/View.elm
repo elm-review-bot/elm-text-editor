@@ -98,8 +98,6 @@ line window cursor selection index content =
         {- Used below to correctly position and display the cursor -}
         offset =
             window.first
-
-        -- (Window.getOffset window cursor.line)
     in
     div
         [ class <| name ++ "-line"
@@ -394,7 +392,7 @@ replaceTextButton =
 
 
 acceptLineNumber =
-    Widget.myInput 30
+    Widget.textField 30
         AcceptLineNumber
         ""
         [ style "position" "absolute"
@@ -405,11 +403,11 @@ acceptLineNumber =
 
 
 acceptSearchText =
-    Widget.myInput 130 AcceptSearchText "" [ style "float" "left" ] [ setHtmlId "search-box" ]
+    Widget.textField 130 AcceptSearchText "" [ style "float" "left" ] [ setHtmlId "search-box" ]
 
 
 acceptReplaceText =
-    Widget.myInput 130 AcceptReplacementText "" [ style "float" "left" ] [ setHtmlId "replacement-box" ]
+    Widget.textField 130 AcceptReplacementText "" [ style "float" "left" ] [ setHtmlId "replacement-box" ]
 
 
 setHtmlId : String -> Html.Attribute msg

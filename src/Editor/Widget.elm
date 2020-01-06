@@ -1,54 +1,61 @@
-module Editor.Widget exposing (..)
+module Editor.Widget exposing
+    ( columnButton
+    , columnButtonStyle
+    , lightColumnButton
+    , lightRowButton
+    , rowButton
+    , textField
+    )
 
-import Html exposing (Attribute, Html, button, div, input, span, text)
-import Html.Attributes as Attribute exposing (class, classList)
-import Html.Events as Event exposing (onClick, onInput)
+import Html exposing (Attribute, Html, button, div, input, text)
+import Html.Attributes exposing (placeholder, style, type_)
+import Html.Events exposing (onClick, onInput)
 
 
 columnButtonStyle =
-    [ Attribute.style "margin-top" "10px"
-    , Attribute.style "font-size" "12px"
-    , Attribute.style "border" "none"
-    , Attribute.style "margin-right" "8px"
+    [ style "margin-top" "10px"
+    , style "font-size" "12px"
+    , style "border" "none"
+    , style "margin-right" "8px"
     ]
 
 
 rowButtonStyle =
-    [ Attribute.style "font-size" "12px"
-    , Attribute.style "border" "none"
-    , Attribute.style "margin-right" "8px"
-    , Attribute.style "float" "left"
+    [ style "font-size" "12px"
+    , style "border" "none"
+    , style "margin-right" "8px"
+    , style "float" "left"
     ]
 
 
 buttonLabelStyle width =
-    [ Attribute.style "font-size" "12px"
-    , Attribute.style "background-color" "#666"
-    , Attribute.style "color" "#eee"
-    , Attribute.style "width" (String.fromInt width ++ "px")
-    , Attribute.style "height" "24px"
-    , Attribute.style "border" "none"
-    , Attribute.style "text-align" "left"
+    [ style "font-size" "12px"
+    , style "background-color" "#666"
+    , style "color" "#eee"
+    , style "width" (String.fromInt width ++ "px")
+    , style "height" "24px"
+    , style "border" "none"
+    , style "text-align" "left"
     ]
 
 
 lightButtonLabelStyle width =
-    [ Attribute.style "font-size" "12px"
-    , Attribute.style "color" "#444"
-    , Attribute.style "width" (String.fromInt width ++ "px")
-    , Attribute.style "height" "24px"
-    , Attribute.style "border" "none"
-    , Attribute.style "text-align" "left"
+    [ style "font-size" "12px"
+    , style "color" "#444"
+    , style "width" (String.fromInt width ++ "px")
+    , style "height" "24px"
+    , style "border" "none"
+    , style "text-align" "left"
     ]
 
 
 rowButtonLabelStyle width =
-    [ Attribute.style "font-size" "12px"
-    , Attribute.style "background-color" "#666"
-    , Attribute.style "color" "#eee"
-    , Attribute.style "width" (String.fromInt width ++ "px")
-    , Attribute.style "height" "24px"
-    , Attribute.style "border" "none"
+    [ style "font-size" "12px"
+    , style "background-color" "#666"
+    , style "color" "#eee"
+    , style "width" (String.fromInt width ++ "px")
+    , style "height" "24px"
+    , style "border" "none"
     ]
 
 
@@ -72,30 +79,17 @@ rowButton width msg str attr =
         [ button ([ onClick msg ] ++ rowButtonLabelStyle width) [ text str ] ]
 
 
-myInput width msg str attr innerAttr =
-    div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
+textField width msg str attr innerAttr =
+    div ([ style "margin-bottom" "10px" ] ++ attr)
         [ input
-            ([ Attribute.style "height" "18px"
-             , Attribute.style "width" (String.fromInt width ++ "px")
-             , Attribute.type_ "text"
-             , Attribute.placeholder str
-             , Attribute.style "margin-right" "8px"
+            ([ style "height" "18px"
+             , style "width" (String.fromInt width ++ "px")
+             , type_ "text"
+             , placeholder str
+             , style "margin-right" "8px"
              , onInput msg
              ]
                 ++ innerAttr
             )
-            []
-        ]
-
-
-myInput2 width msg str attr =
-    div ([ Attribute.style "margin-bottom" "10px" ] ++ attr)
-        [ input
-            [ Attribute.style "height" "18px"
-            , Attribute.style "width" (String.fromInt width ++ "px")
-            , Attribute.type_ "text"
-            , Attribute.placeholder str
-            , onInput msg
-            ]
             []
         ]

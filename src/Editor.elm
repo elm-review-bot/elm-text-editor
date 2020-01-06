@@ -21,7 +21,7 @@ module Editor exposing
     )
 
 import Buffer exposing (Buffer)
-import Editor.Config exposing (Config, WrapOption(..), WrapParams)
+import Editor.Config exposing (WrapOption(..), WrapParams)
 import Editor.History
 import Editor.Model exposing (InternalState)
 import Editor.Styles
@@ -46,29 +46,32 @@ type Editor
         }
 
 
-toBuffer : Editor -> Buffer
-toBuffer (Editor data) =
-    data.buffer
 
-
-toState : Editor -> InternalState
-toState (Editor data) =
-    data.state
+-- GETTERS --
 
 
 getSource : Editor -> String
-getSource editor =
-    editor |> toBuffer |> Buffer.toString
+getSource (Editor data) =
+    Buffer.toString data.buffer
 
 
 getCursor : Editor -> Position
-getCursor editor =
-    editor |> toState |> .cursor
+getCursor (Editor data) =
+    data.state.cursor
 
 
 getSelectedText : Editor -> Maybe String
-getSelectedText editor =
-    editor |> toState |> .selectedText
+getSelectedText (Editor data) =
+    data.state.selectedText
+
+
+getSmallConfig : InternalState -> SmallEditorConfig
+getSmallConfig s =
+    s.config
+
+
+
+-- SETTERS --
 
 
 setSelectedText : String -> Editor -> Editor
@@ -80,9 +83,55 @@ setSelectedText str (Editor data) =
     Editor { data | state = { is | selectedText = Just str } }
 
 
-getSmallConfig : InternalState -> SmallEditorConfig
-getSmallConfig s =
-    s.config
+
+-- CONFIG --
+
+
+type alias EditorConfig a =
+    { editorMsg : EditorMsg -> a
+    , sliderMsg : Slider.Msg -> a
+    , editorStyle : List (Html.Attribute a)
+    , width : Int
+    , lines : Int
+    , lineHeight : Float
+    , showInfoPanel : Bool
+    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
+    , wrapOption : WrapOption
+    }
+
+
+type alias SmallEditorConfig =
+    { lines : Int
+    , showInfoPanel : Bool
+    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
+    , wrapOption : WrapOption
+    }
+
+
+smallConfig : EditorConfig a -> SmallEditorConfig
+smallConfig c =
+    { lines = c.lines
+    , showInfoPanel = c.showInfoPanel
+    , wrapParams = c.wrapParams
+    , wrapOption = c.wrapOption
+    }
+
+
+
+-- EMBEDDED EDITOR --
+
+
+embedded : EditorConfig a -> Editor -> Html a
+embedded editorConfig editor =
+    div [ style "position" "absolute" ]
+        [ div editorConfig.editorStyle
+            [ Editor.Styles.styles { width = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
+            , view [ style "background-color" "#eeeeee" ] editor
+                |> Html.map editorConfig.editorMsg
+            , div [ HA.style "position" "absolute" ]
+                [ sliderView editor |> Html.map editorConfig.sliderMsg ]
+            ]
+        ]
 
 
 init : EditorConfig a -> String -> Editor
@@ -110,71 +159,6 @@ init editorConfig text =
             , slider = Editor.Model.slider
             }
         }
-
-
-
--- EMBEDDED EDITOR --
-
-
-type alias EditorConfig a =
-    { editorMsg : EditorMsg -> a
-    , sliderMsg : Slider.Msg -> a
-    , editorStyle : List (Html.Attribute a)
-    , width : Int
-    , lines : Int
-    , lineHeight : Float
-    , showInfoPanel : Bool
-    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
-    , wrapOption : WrapOption
-    }
-
-
-type alias SmallEditorConfig =
-    { lines : Int
-    , showInfoPanel : Bool
-    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
-    , wrapOption : WrapOption
-    }
-
-
-
--- NEW STUFF --
-
-
-insert : Position -> String -> Editor -> Editor
-insert position string (Editor data) =
-    Editor { data | buffer = Buffer.insert position string data.buffer }
-
-
-
--- /NEW STUFF --
-
-
-smallConfig : EditorConfig a -> SmallEditorConfig
-smallConfig c =
-    { lines = c.lines
-    , showInfoPanel = c.showInfoPanel
-    , wrapParams = c.wrapParams
-    , wrapOption = c.wrapOption
-    }
-
-
-embedded : EditorConfig a -> Editor -> Html a
-embedded editorConfig editor =
-    div [ style "position" "absolute" ]
-        [ div editorConfig.editorStyle
-            [ Editor.Styles.styles { width = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
-            , view [ style "background-color" "#eeeeee" ] editor
-                |> Html.map editorConfig.editorMsg
-            , div [ HA.style "position" "absolute" ]
-                [ sliderView editor |> Html.map editorConfig.sliderMsg ]
-            ]
-        ]
-
-
-elementWidth : Int -> Attribute msg
-elementWidth k =
-    style "width" (String.fromInt k ++ "px")
 
 
 
@@ -255,12 +239,17 @@ sliderView (Editor data) =
 
 
 
---  STATE FUNCTIONS --
+--  EDITOR FUNCTIONS --
+
+
+insert : Position -> String -> Editor -> Editor
+insert position string (Editor data) =
+    Editor { data | buffer = Buffer.insert position string data.buffer }
 
 
 clearState : Editor -> Editor
 clearState (Editor data) =
-    Editor { data | state = Editor.Update.clearInternalState data.state }
+    Editor { data | state = Editor.Update.clearState data.state }
 
 
 load : WrapOption -> String -> Editor -> Editor
@@ -292,7 +281,7 @@ scrollToString : String -> Editor -> Editor
 scrollToString str (Editor data) =
     let
         ( is, b ) =
-            Editor.Update.scrollToText_ str data.state data.buffer
+            Editor.Update.scrollToText str data.state data.buffer
     in
     Editor { state = is, buffer = b }
 

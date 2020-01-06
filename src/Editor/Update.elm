@@ -1,4 +1,4 @@
-module Editor.Update exposing (Msg(..), clearInternalState, focus, scrollToLine, scrollToText, scrollToText_, update)
+module Editor.Update exposing (Msg(..), blur, clearState, focus, scrollToLine, scrollToText, update)
 
 import Browser.Dom as Dom
 import Buffer exposing (Buffer)
@@ -6,11 +6,12 @@ import Dict exposing (Dict)
 import Editor.Config as Config exposing (Config, WrapOption(..))
 import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
+import Editor.Strings
 import Editor.Text
 import Position exposing (Position)
 import RollingList
+import Search
 import Task
-import Text
 import Window
 
 
@@ -450,7 +451,7 @@ update buffer msg state =
                     ( { state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
 
         AcceptSearchText str ->
-            scrollToText str state buffer
+            scrollToTextInternal str state buffer
 
         ScrollToSelection ( start, end ) ->
             ( state, buffer, Cmd.none )
@@ -995,7 +996,7 @@ update buffer msg state =
             ( { state | cursor = newCursor, window = newWindow, selection = Nothing }, buffer, Cmd.none )
 
         Clear ->
-            ( clearInternalState state, Buffer.init "", Cmd.none )
+            ( clearState state, Buffer.init "", Cmd.none )
 
         WrapText ->
             ( state, Buffer.init (Editor.Text.prepareLines state.config (Buffer.toString buffer)), Cmd.none )
@@ -1012,7 +1013,7 @@ update buffer msg state =
             if state.showHelp == True then
                 let
                     ( newState, newBuffer ) =
-                        load state.config.wrapOption Text.help state
+                        load state.config.wrapOption Editor.Strings.help state
                 in
                 ( { newState | showHelp = False, savedBuffer = buffer }, newBuffer, Cmd.none )
 
@@ -1050,6 +1051,10 @@ update buffer msg state =
             ( { state | canReplace = True }, buffer, Cmd.none )
 
 
+
+-- HELPERS --
+
+
 scrollToLine : Int -> InternalState -> Buffer -> ( InternalState, Buffer )
 scrollToLine k state buffer =
     let
@@ -1073,6 +1078,8 @@ scrollToLine k state buffer =
 -}
 
 
+{-| Load string into editor with option to wrap it.
+-}
 load : WrapOption -> String -> InternalState -> ( InternalState, Buffer )
 load wrapOption content state =
     let
@@ -1092,14 +1099,16 @@ load wrapOption content state =
             else
                 Buffer.fromString content
     in
-    ( clearInternalState state, buffer )
+    ( clearState state, buffer )
 
 
-scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
-scrollToText str state buffer =
+{-| Search for str and scroll to first hit. Used internally.
+-}
+scrollToTextInternal : String -> InternalState -> Buffer -> ( InternalState, Buffer, Cmd Msg )
+scrollToTextInternal str state buffer =
     let
         searchResults =
-            Buffer.search str buffer
+            Search.search str buffer
     in
     case List.head searchResults of
         Nothing ->
@@ -1116,11 +1125,11 @@ scrollToText str state buffer =
             ( { state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str }, buffer, Cmd.none )
 
 
-scrollToText_ : String -> InternalState -> Buffer -> ( InternalState, Buffer )
-scrollToText_ str state buffer =
+scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer )
+scrollToText str state buffer =
     let
         searchResults =
-            Buffer.search str buffer
+            Search.search str buffer
     in
     case List.head searchResults of
         Nothing ->
@@ -1215,8 +1224,8 @@ lift f =
     \is -> { is | config = f is.config }
 
 
-clearInternalState : InternalState -> InternalState
-clearInternalState state =
+clearState : InternalState -> InternalState
+clearState state =
     { state
         | window = { first = 0, last = state.config.lines - 1 }
         , cursor = { line = 0, column = 0 }

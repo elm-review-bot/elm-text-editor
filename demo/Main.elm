@@ -1,15 +1,16 @@
 module Main exposing (Msg(..), main)
 
+import AppText
 import Browser
-import Editor exposing (EditorConfig, Editor, EditorMsg)
+import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
+import Editor.Strings
 import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
-import SingleSlider as Slider
 import Json.Encode as E
-import Text
 import Outside
+import SingleSlider as Slider
 
 
 main : Program () Model Msg
@@ -39,21 +40,21 @@ type Msg
 
 
 type alias Model =
-    { editor: Editor
+    { editor : Editor
     , clipboard : String
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editor = Editor.init config Text.jabberwocky
+    ( { editor = Editor.init config AppText.jabberwocky
       , clipboard = ""
       }
     , Cmd.none
     )
 
 
-
+config : EditorConfig Msg
 config =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg
@@ -83,19 +84,19 @@ update msg model =
     case msg of
         EditorMsg msg_ ->
             let
-               (editor, cmd) = Editor.update msg_ model.editor
+                ( editor, cmd ) =
+                    Editor.update msg_ model.editor
             in
-              ({ model | editor = editor }, Cmd.map EditorMsg cmd)
-
+            ( { model | editor = editor }, Cmd.map EditorMsg cmd )
 
         Test ->
-            load DontWrap Text.info model
+            load DontWrap Editor.Strings.info model
 
         GetSpeech ->
-            load DoWrap Text.gettysburgAddress model
+            load DoWrap AppText.gettysburgAddress model
 
         Reset ->
-            load DontWrap Text.jabberwocky model
+            load DontWrap AppText.jabberwocky model
 
         FindTreasure ->
             highlightText "treasure" model
@@ -109,38 +110,44 @@ update msg model =
 
         Outside infoForElm ->
             case infoForElm of
-
                 Outside.GotClipboard clipboard ->
-                    ({model | clipboard = clipboard}, Cmd.none)
+                    ( { model | clipboard = clipboard }, Cmd.none )
 
         AskForClipBoard ->
-            (model, Outside.sendInfo (Outside.AskForClipBoard E.null))
+            ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
 
         PasteClipboard ->
-                    pasteToClipboard model
+            pasteToClipboard model
+
 
 
 -- HELPER FUNCTIONS FOR UPDATE
 
-pasteToClipboard : Model -> (Model, Cmd msg)
+
+{-| Paste contents of clipboard into Editor
+-}
+pasteToClipboard : Model -> ( Model, Cmd msg )
 pasteToClipboard model =
-     ({ model | editor = Editor.insert (Editor.getCursor model.editor) model.clipboard model.editor} , Cmd.none)
+    ( { model | editor = Editor.insert (Editor.getCursor model.editor) model.clipboard model.editor }, Cmd.none )
 
 
+{-| Load text into Editor
+-}
 load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
 load wrapOption str model =
     let
-        newEditor = Editor.load wrapOption str model.editor
+        newEditor =
+            Editor.load wrapOption str model.editor
     in
-      ( { model | editor = newEditor }, Cmd.none )
+    ( { model | editor = newEditor }, Cmd.none )
 
 
-
-
+{-| Find str and highlight it
+-}
 highlightText : String -> Model -> ( Model, Cmd Msg )
 highlightText str model =
     let
-        newEditor  =
+        newEditor =
             Editor.scrollToString str model.editor
     in
     ( { model | editor = newEditor }, Cmd.none )
@@ -210,7 +217,6 @@ speechTextButton =
 
 resetButton =
     rowButton 80 Reset "Reset" []
-
 
 
 getClipboardButton =

@@ -1,5 +1,8 @@
 module Editor.Text exposing (prepare, prepareLines, prepareLinesWithWrapping, wrapLines)
 
+{-| Code for wrapping text. This needs more thought/work.
+-}
+
 import Editor.Config exposing (Config)
 import Paragraph
 

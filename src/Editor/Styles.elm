@@ -13,22 +13,22 @@ styleText : { width : Int, numberOfLines : Int, lineHeight : Float } -> String
 styleText data =
     interpolate styleTemplate
         [ String.fromInt data.width
-        , String.fromFloat (slider1Offset data.width)
+        , String.fromFloat (sliderOffsetX data.width)
         , String.fromFloat (0.8 * data.lineHeight)
         , String.fromFloat data.lineHeight
-        , String.fromFloat <| slider4Offset data.numberOfLines data.lineHeight
+        , String.fromFloat <| sliderOffsetY data.numberOfLines data.lineHeight
         ]
 
 
-slider1Offset : Int -> Float
-slider1Offset k =
+sliderOffsetX : Int -> Float
+sliderOffsetX k =
     (k + 50)
         |> toFloat
         |> (\x -> 1.0 * x)
 
 
-slider4Offset : Int -> Float -> Float
-slider4Offset numberOfLines lineHeight =
+sliderOffsetY : Int -> Float -> Float
+sliderOffsetY numberOfLines lineHeight =
     0.8 * toFloat numberOfLines * lineHeight
 
 

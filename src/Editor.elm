@@ -39,52 +39,57 @@ type alias EditorMsg =
     Editor.Update.Msg
 
 
-type alias Editor =
-    { buffer : Buffer
-    , state : State
-    }
+type Editor
+    = Editor
+        { buffer : Buffer
+        , state : InternalState
+        }
 
 
-type State
-    = State InternalState
+toBuffer : Editor -> Buffer
+toBuffer (Editor data) =
+    data.buffer
+
+
+toState : Editor -> InternalState
+toState (Editor data) =
+    data.state
 
 
 getSource : Editor -> String
 getSource editor =
-    Buffer.toString editor.buffer
+    editor |> toBuffer |> Buffer.toString
 
 
 getCursor : Editor -> Position
 getCursor editor =
-    editor.state
-        |> toInternal
-        |> .cursor
+    editor |> toState |> .cursor
 
 
 getSelectedText : Editor -> Maybe String
 getSelectedText editor =
-    editor |> .state |> toInternal |> .selectedText
+    editor |> toState |> .selectedText
 
 
 setSelectedText : String -> Editor -> Editor
-setSelectedText str editor =
+setSelectedText str (Editor data) =
     let
         is =
-            toInternal editor.state
+            data.state
     in
-    { editor | state = State { is | selectedText = Just str } }
+    Editor { data | state = { is | selectedText = Just str } }
 
 
-getSmallConfig : State -> SmallEditorConfig
-getSmallConfig (State s) =
+getSmallConfig : InternalState -> SmallEditorConfig
+getSmallConfig s =
     s.config
 
 
 init : EditorConfig a -> String -> Editor
 init editorConfig text =
-    { buffer = Buffer.init text
-    , state =
-        State
+    Editor
+        { buffer = Buffer.init text
+        , state =
             { config = smallConfig editorConfig
             , scrolledLine = 0
             , cursor = Position 0 0
@@ -104,7 +109,7 @@ init editorConfig text =
             , savedBuffer = Buffer.fromString ""
             , slider = Editor.Model.slider
             }
-    }
+        }
 
 
 
@@ -137,8 +142,8 @@ type alias SmallEditorConfig =
 
 
 insert : Position -> String -> Editor -> Editor
-insert position string editor =
-    { editor | buffer = Buffer.insert position string editor.buffer }
+insert position string (Editor data) =
+    Editor { data | buffer = Buffer.insert position string data.buffer }
 
 
 
@@ -177,16 +182,16 @@ elementWidth k =
 
 
 update : EditorMsg -> Editor -> ( Editor, Cmd EditorMsg )
-update msg editor =
+update msg (Editor data) =
     let
         ( is, b, cmd ) =
-            Editor.Update.update editor.buffer msg (toInternal editor.state)
+            Editor.Update.update data.buffer msg data.state
     in
-    ( { state = State is, buffer = b }, cmd )
+    ( Editor { state = is, buffer = b }, cmd )
 
 
 sliderUpdate : Slider.Msg -> Editor -> ( Editor, Cmd Slider.Msg )
-sliderUpdate sliderMsg editor =
+sliderUpdate sliderMsg ((Editor data) as editor) =
     let
         ( newSlider, cmd, updateResults ) =
             Slider.update sliderMsg (slider editor)
@@ -195,7 +200,7 @@ sliderUpdate sliderMsg editor =
             updateSlider newSlider editor
 
         numberOfLines =
-            Buffer.lines editor.buffer
+            Buffer.lines data.buffer
                 |> List.length
                 |> toFloat
 
@@ -220,8 +225,8 @@ sliderUpdate sliderMsg editor =
 
 
 view : List (Attribute EditorMsg) -> Editor -> Html EditorMsg
-view attr editor =
-    Editor.View.view attr (Buffer.lines editor.buffer) (toInternal editor.state)
+view attr (Editor data) =
+    Editor.View.view attr (Buffer.lines data.buffer) data.state
 
 
 
@@ -229,25 +234,24 @@ view attr editor =
 
 
 slider : Editor -> Slider.Model
-slider editor =
-    editor
-        |> (.state >> toInternal >> .slider)
+slider (Editor data) =
+    data.state.slider
 
 
 updateSlider : Slider.Model -> Editor -> Editor
-updateSlider slider_ editor =
+updateSlider slider_ (Editor data) =
     let
-        is =
-            toInternal editor.state
+        oldState =
+            data.state
     in
-    { editor | state = State { is | slider = slider_ } }
+    Editor { data | state = { oldState | slider = slider_ } }
 
 
 sliderView : Editor -> Html Slider.Msg
-sliderView editor =
+sliderView (Editor data) =
     Html.div
         [ style "position" "absolute", style "right" "0px", style "top" "0px" ]
-        [ Slider.view (toInternal editor.state).slider ]
+        [ Slider.view data.state.slider ]
 
 
 
@@ -255,15 +259,15 @@ sliderView editor =
 
 
 clearState : Editor -> Editor
-clearState editor =
-    { editor | state = State (Editor.Update.clearInternalState (toInternal editor.state)) }
+clearState (Editor data) =
+    Editor { data | state = Editor.Update.clearInternalState data.state }
 
 
 load : WrapOption -> String -> Editor -> Editor
-load wrapOption content editor =
+load wrapOption content ((Editor data) as editor) =
     let
         config =
-            (toInternal editor.state).config
+            data.state.config
 
         lineLengths =
             String.lines content |> List.map String.length
@@ -278,44 +282,25 @@ load wrapOption content editor =
             else
                 Buffer.fromString content
 
-        newEditor =
+        (Editor newData) =
             clearState editor
     in
-    { newEditor | buffer = buffer }
+    Editor { newData | buffer = buffer }
 
 
 scrollToString : String -> Editor -> Editor
-scrollToString str editor =
+scrollToString str (Editor data) =
     let
         ( is, b ) =
-            Editor.Update.scrollToText_ str (toInternal editor.state) editor.buffer
+            Editor.Update.scrollToText_ str data.state data.buffer
     in
-    { state = State is, buffer = b }
+    Editor { state = is, buffer = b }
 
 
 scrollToLine : Int -> Editor -> Editor
-scrollToLine k editor =
+scrollToLine k (Editor data) =
     let
         ( is, b ) =
-            Editor.Update.scrollToLine k (toInternal editor.state) editor.buffer
+            Editor.Update.scrollToLine k data.state data.buffer
     in
-    { state = State is, buffer = b }
-
-
-toInternal : State -> InternalState
-toInternal (State s) =
-    s
-
-
-
--- MAP AND LIFT: UTILITY --
-
-
-map : (InternalState -> InternalState) -> State -> State
-map f (State s) =
-    State (f s)
-
-
-lift : (InternalState -> Buffer -> ( InternalState, Buffer )) -> (State -> Buffer -> ( State, Buffer ))
-lift f =
-    \s b -> f (toInternal s) b |> (\( is, b_ ) -> ( State is, b_ ))
+    Editor { state = is, buffer = b }

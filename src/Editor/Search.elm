@@ -1,4 +1,4 @@
-module Search exposing (search)
+module Editor.Search exposing (search)
 
 import Buffer exposing (Buffer, lines)
 import Position exposing (Position)

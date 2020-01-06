@@ -3,7 +3,7 @@
 To install the Editor in app, use the outline below, 
 consulting the code in `./demo` 
 
-## Installation
+## Installations
 
 ```bash
 elm install lukewestby/elm-string-interpolate
@@ -102,7 +102,7 @@ update msg model =
             ( { model | editor = newEditor }, cmd |> Cmd.map SliderMsg )
 
         -- The below are optional, and used for external copy/pastes
-        -- See module `Outside` and also `index.html` for additional
+        -- See module `Outside` and also `outside.js` and `index.html` for additional
         -- information
         
         Outside infoForElm ->
@@ -114,8 +114,6 @@ update msg model =
         AskForClipBoard ->
             (model, Outside.sendInfo (Outside.AskForClipBoard E.null))
 
-        PasteClipboard ->
-                    pasteToClipboard model
  
         Other cases ...
 ```
@@ -143,3 +141,7 @@ view model =
         ]
 ```
 
+## Files
+
+- Use the `index.html` file in `./demo` as a starting point for your `index.html`
+- Copy the files `outside.js` and `Outside.elm`

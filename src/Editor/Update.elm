@@ -6,13 +6,13 @@ import Dict exposing (Dict)
 import Editor.Config as Config exposing (Config, WrapOption(..))
 import Editor.History
 import Editor.Model exposing (InternalState, Snapshot)
+import Editor.Search
 import Editor.Strings
 import Editor.Text
 import Json.Encode as E
 import Outside
 import Position exposing (Position)
 import RollingList
-import Search
 import Task
 import Window
 
@@ -1118,7 +1118,7 @@ scrollToTextInternal : String -> InternalState -> Buffer -> ( InternalState, Buf
 scrollToTextInternal str state buffer =
     let
         searchResults =
-            Search.search str buffer
+            Editor.Search.search str buffer
     in
     case List.head searchResults of
         Nothing ->
@@ -1139,7 +1139,7 @@ scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer )
 scrollToText str state buffer =
     let
         searchResults =
-            Search.search str buffer
+            Editor.Search.search str buffer
     in
     case List.head searchResults of
         Nothing ->

@@ -6,6 +6,7 @@ module Editor exposing
     , getCursor
     , getSelectedText
     , getSource
+    , getWrapOption
     , init
     , insert
     , load
@@ -50,6 +51,11 @@ type Editor
 
 
 -- GETTERS --
+
+
+getWrapOption : Editor -> WrapOption
+getWrapOption (Editor data) =
+    data.state.config.wrapOption
 
 
 getSource : Editor -> String
@@ -245,9 +251,18 @@ sliderView (Editor data) =
 --  EDITOR FUNCTIONS --
 
 
-insert : Position -> String -> Editor -> Editor
-insert position string (Editor data) =
-    Editor { data | buffer = Buffer.insert position string data.buffer }
+insert : WrapOption -> Position -> String -> Editor -> Editor
+insert wrapOption position string (Editor data) =
+    let
+        textToInsert =
+            case wrapOption of
+                DoWrap ->
+                    Editor.Text.prepareLinesWithWrapping data.state.config string
+
+                DontWrap ->
+                    string
+    in
+    Editor { data | buffer = Buffer.insert position textToInsert data.buffer }
 
 
 placeInClipboard : String -> Editor -> Editor

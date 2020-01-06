@@ -128,7 +128,7 @@ update msg model =
 -}
 pasteToClipboard : Model -> String -> ( Model, Cmd msg )
 pasteToClipboard model str =
-    ( { model | editor = Editor.insert (Editor.getCursor model.editor) str model.editor }, Cmd.none )
+    ( { model | editor = Editor.insert (Editor.getWrapOption model.editor) (Editor.getCursor model.editor) str model.editor }, Cmd.none )
 
 
 pasteToEditorClipboard : Model -> String -> ( Model, Cmd msg )
@@ -137,10 +137,13 @@ pasteToEditorClipboard model str =
         cursor =
             Editor.getCursor model.editor
 
+        wrapOption =
+            Editor.getWrapOption model.editor
+
         editor2 =
             Editor.placeInClipboard str model.editor
     in
-    ( { model | editor = Editor.insert cursor str editor2 }, Cmd.none )
+    ( { model | editor = Editor.insert wrapOption cursor str editor2 }, Cmd.none )
 
 
 {-| Load text into Editor

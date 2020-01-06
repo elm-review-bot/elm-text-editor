@@ -52,6 +52,9 @@ External copy-paste
 - ctrl-shift-v pastes text from Editor
   clipboard
 
+The pasted text will be wrapped if the
+the WrapOption is on.
+
 This works in Chrome 79 but not Firefox.
 In Chrome you have to respond to a permission
 dialog each time.  I'll see if this can

@@ -39,6 +39,10 @@ getInfo tagger onError =
                 "GotClipboard" ->
                     case D.decodeValue clipboardDecoder outsideInfo.data of
                         Ok result ->
+                            let
+                                _ =
+                                    Debug.log "clip, result" result
+                            in
                             tagger <| GotClipboard result
 
                         Err e ->

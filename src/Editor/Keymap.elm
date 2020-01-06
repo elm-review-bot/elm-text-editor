@@ -123,7 +123,6 @@ keymaps =
         Dict.fromList
             [ ( "ArrowUp", FirstLine )
             , ( "ArrowDown", LastLine )
-            , ( "v", Paste )
             ]
     , control =
         Dict.fromList
@@ -152,6 +151,7 @@ keymaps =
             , ( "ArrowLeft", SelectToGroupStart )
             , ( "C", Clear )
             , ( "I", ToggleInfoPanel )
+            , ( "V", PasteFromClipboard )
             , ( "W", ToggleWrapping )
             ]
     }

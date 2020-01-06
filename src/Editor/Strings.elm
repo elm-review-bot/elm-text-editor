@@ -3,17 +3,24 @@ module Editor.Strings exposing (help, info)
 
 help =
     """
-Help
-====
-
-----------------------------------------------
-New: the Copy Button, lower right.  Pressing it
+-----------------------------------------------
+                     Help
+-----------------------------------------------
+NEW: the Copy Button, lower right.  Pressing it
 copies the computer's clipboard the editor's
-clipboard.  Use ctrl-option v to paste
+clipboard.  Use ctrl-shift v to paste
 the editor's clipboard to the current document
-at the location of the cursor.
+at the location of the cursor.  Right now this
+is a clunky process: (1) use cmd-C (Mac) to
+copy text to OS clipboard (2) use "Copy" button
+to copy the text to the Editor keyboard,
+(3) use ctrl-shift-v to paste the clipboard
+into the Editor.  I am working on simplifying
+it.
 
 This works in Chrome 79 but not Firefox.
+-----------------------------------------------
+
 
 
 Partial list of key commands
@@ -52,6 +59,7 @@ Extend selection  shift-arrow: up | down | left | right
 Copy selection    ctrl-c
 Cut selection     ctrl-x
 Paste selection   ctrl-v
+Paste clipboard   ctrl-shift v
 
 
 Text

@@ -9,6 +9,7 @@ module Editor exposing
     , init
     , insert
     , load
+    , placeInClipboard
     , scrollToLine
     , scrollToString
     , setSelectedText
@@ -246,6 +247,18 @@ sliderView (Editor data) =
 insert : Position -> String -> Editor -> Editor
 insert position string (Editor data) =
     Editor { data | buffer = Buffer.insert position string data.buffer }
+
+
+placeInClipboard : String -> Editor -> Editor
+placeInClipboard str (Editor data) =
+    let
+        oldState =
+            data.state
+
+        newState =
+            { oldState | clipboard = str }
+    in
+    Editor { data | state = newState }
 
 
 clearState : Editor -> Editor

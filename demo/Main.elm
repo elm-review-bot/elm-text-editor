@@ -112,7 +112,12 @@ update msg model =
         Outside infoForElm ->
             case infoForElm of
                 Outside.GotClipboard clipboard ->
-                    ( { model | clipboard = clipboard }, Cmd.none )
+                    let
+                        _ =
+                            Debug.log "(U) clipboard" clipboard
+                    in
+                    --( { model | clipboard = clipboard }, Cmd.none )
+                    pasteToEditorClipboard model clipboard
 
         LogErr _ ->
             ( model, Cmd.none )
@@ -121,7 +126,7 @@ update msg model =
             ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
 
         PasteClipboard ->
-            pasteToClipboard model
+            pasteToClipboard model "FOO"
 
 
 
@@ -130,9 +135,14 @@ update msg model =
 
 {-| Paste contents of clipboard into Editor
 -}
-pasteToClipboard : Model -> ( Model, Cmd msg )
-pasteToClipboard model =
-    ( { model | editor = Editor.insert (Editor.getCursor model.editor) model.clipboard model.editor }, Cmd.none )
+pasteToClipboard : Model -> String -> ( Model, Cmd msg )
+pasteToClipboard model str =
+    ( { model | editor = Editor.insert (Editor.getCursor model.editor) str model.editor }, Cmd.none )
+
+
+pasteToEditorClipboard : Model -> String -> ( Model, Cmd msg )
+pasteToEditorClipboard model str =
+    ( { model | editor = Editor.placeInClipboard str model.editor }, Cmd.none )
 
 
 {-| Load text into Editor
@@ -200,7 +210,7 @@ footer model =
         , div [ HA.style "margin-top" "10px" ] [ text "An app that uses this editor: ", Html.a [ HA.href "https://jxxcarlson.github.io/app/minilatex3/index.html" ] [ text "MiniLaTeX Demo" ] ]
         , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands." ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton, getClipboardButton, pasteClipboardButton ]
+        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton, getClipboardButton ]
         ]
 
 

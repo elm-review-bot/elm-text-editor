@@ -6,6 +6,16 @@ help =
 Help
 ====
 
+----------------------------------------------
+New: the Copy Button, lower right.  Pressing it
+copies the computer's clipboard the editor's
+clipboard.  Use ctrl-option v to paste
+the editor's clipboard to the current document
+at the location of the cursor.
+
+This works in Chrome 79 but not Firefox.
+
+
 Partial list of key commands
 ----------------------------
 

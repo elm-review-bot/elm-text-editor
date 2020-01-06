@@ -38,6 +38,7 @@ type Msg
     | ReplaceCurrentSelection
     | LastLine
     | Paste
+    | PasteFromClipboard
     | RemoveCharAfter
     | RemoveCharBefore
     | RemoveGroupAfter
@@ -333,6 +334,9 @@ update buffer msg state =
 
                 Just text ->
                     ( state, Buffer.insert state.cursor text buffer, Cmd.none )
+
+        PasteFromClipboard ->
+            ( state, Buffer.insert state.cursor state.clipboard buffer, Cmd.none )
 
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of

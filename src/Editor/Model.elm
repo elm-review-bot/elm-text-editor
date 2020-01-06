@@ -23,6 +23,7 @@ type alias InternalState =
     , cursor : Position
     , selection : Maybe Position
     , selectedText : Maybe String
+    , clipboard : String
     , dragging : Bool
     , history : History Snapshot
     , searchTerm : String

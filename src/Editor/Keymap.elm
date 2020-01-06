@@ -123,6 +123,7 @@ keymaps =
         Dict.fromList
             [ ( "ArrowUp", FirstLine )
             , ( "ArrowDown", LastLine )
+            , ( "v", Paste )
             ]
     , control =
         Dict.fromList

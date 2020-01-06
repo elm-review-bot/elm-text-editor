@@ -145,6 +145,7 @@ init editorConfig text =
             , window = { first = 0, last = editorConfig.lines - 1 }
             , selection = Nothing
             , selectedText = Nothing
+            , clipboard = ""
             , dragging = False
             , history = Editor.History.empty
             , searchTerm = ""

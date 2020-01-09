@@ -32,6 +32,7 @@ type Msg
     | Test
     | FindTreasure
     | GetSpeech
+    | GetLongLongLines
     | Reset
     | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
@@ -94,6 +95,9 @@ update msg model =
 
         GetSpeech ->
             load DoWrap AppText.gettysburgAddress model
+
+        GetLongLongLines ->
+            load DontWrap AppText.longLines model
 
         Reset ->
             load DontWrap AppText.jabberwocky model
@@ -211,7 +215,7 @@ footer model =
         , div [ HA.style "margin-top" "10px" ] [ text "An app that uses this editor: ", Html.a [ HA.href "https://jxxcarlson.github.io/app/minilatex3/index.html" ] [ text "MiniLaTeX Demo" ] ]
         , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands." ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton ]
+        , div [ HA.style "margin-top" "10px" ] [ testButton, resetButton, treasureButton, speechTextButton, longLinesTextButton ]
         ]
 
 
@@ -229,6 +233,10 @@ treasureButton =
 
 speechTextButton =
     rowButton 160 GetSpeech "Gettysburg Address" []
+
+
+longLinesTextButton =
+    rowButton 160 GetLongLongLines "Long lines" []
 
 
 resetButton =

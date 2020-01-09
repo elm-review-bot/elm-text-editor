@@ -1,4 +1,4 @@
-module AppText exposing (gettysburgAddress, jabberwocky, long, tolstoy)
+module AppText exposing (gettysburgAddress, jabberwocky, long, longLines, tolstoy)
 
 
 gettysburgAddress =
@@ -26,6 +26,57 @@ no longer my ‘faithful slave,’ as you call yourself!
 But how do you do? I see I have frightened you—
 sit down and tell me all the news.
  ”"""
+
+
+longLines =
+    """
+Bioluminescence might seem uncommon, even alien. But biologists think organisms evolved the ability to light up the dark as many as 50 different times, sending tendrils of self-powered luminosity coursing through the tree of life, from fireflies and vampire squids to lantern sharks and foxfire, a fungus found in rotting wood.
+
+Despite all this diversity, the general rules stay the same. Glowing in the dark or the deep takes two ingredients. You need some sort of luciferin, a molecule that can emit light. And you need an enzyme, luciferase, to trigger that reaction like the snapping of a glowstick.
+
+Some creatures delegate this chemistry to symbiotic bacteria. Others possess the genes to make their own versions of luciferin and luciferase. But then there’s the golden sweeper, a reef fish that evolved a trick that hasn’t been seen anywhere else, according to a study published Wednesday in Science Advances: It just gobbles up bioluminescent prey and borrows the entire kit.
+
+“If you can steal an already established, sophisticated system by eating somebody else, that’s way easier,” said Manabu Bessho-Uehara, a postdoctoral scholar at the Monterey Bay Aquarium Research Institute.
+
+```elm
+update : Buffer -> Msg -> InternalState -> ( InternalState, Buffer, Cmd Msg )
+update buffer msg state =
+    case msg of
+        NoOp ->
+            ( state, buffer, Cmd.none )
+
+        FirstLine ->
+            let
+                cursor =
+                    { line = 0, column = 0 }
+
+                window =
+                    Window.scrollToIncludeCursor cursor state.window
+            in
+            ( { state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
+
+        AcceptLineNumber nString ->
+            case String.toInt nString of
+                Nothing ->
+                    ( state, buffer, Cmd.none )
+
+                Just n_ ->
+                    let
+                        n =
+                            clamp 0 (List.length (Buffer.lines buffer) - 1) (n_ - 1)
+
+                        cursor =
+                            { line = n, column = 0 }
+
+                        window =
+                            Window.scrollToIncludeCursor cursor state.window
+                    in
+                    ( { state | cursor = cursor, window = window, selection = Nothing }, buffer, Cmd.none ) |> recordHistory state buffer
+```
+
+
+The End
+"""
 
 
 long =

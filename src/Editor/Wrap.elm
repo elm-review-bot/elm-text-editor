@@ -59,8 +59,8 @@ nextState line ( state, data ) =
         ( newState, action ) =
             nextStateAndAction line state
 
-        _ =
-            Debug.log "line" ( state, line, data.currentParagraph )
+        --        _ =
+        --            Debug.log "line" ( state, line, data.currentParagraph )
     in
     ( newState, action line data )
 

@@ -1,4 +1,4 @@
-module Editor.Text exposing (prepare, prepareLines, prepareLinesWithWrapping, wrapLines)
+module Editor.Wrap exposing (paragraphs)
 
 {-| Code for wrapping text. This needs more thought/work.
 -}
@@ -7,16 +7,10 @@ import Editor.Config exposing (Config)
 import Paragraph
 
 
-prepare : Config -> String -> String
-prepare config str =
-    str
-        |> String.lines
-        |> List.map (wrapParagraph config)
-        |> String.join "\n\n"
-
-
-prepareLines : Config -> String -> String
-prepareLines config str =
+{-| Wrap text preserving paragraph structure.
+-}
+paragraphs : Config -> String -> String
+paragraphs config str =
     str
         |> String.split "\n\n"
         |> List.filter (\line -> line /= "\n")
@@ -24,18 +18,23 @@ prepareLines config str =
         |> String.join "\n\n"
 
 
-prepareLinesWithWrapping : Config -> String -> String
-prepareLinesWithWrapping config str =
+wrapParagraph : Config -> String -> String
+wrapParagraph config str =
+    Paragraph.lines config.wrapParams str |> String.join "\n"
+
+
+{-| Wrap without respecting paragraph structure.
+
+Used (now) for wrapping a selection.
+
+-}
+lines : Config -> String -> String
+lines config str =
     str
         |> String.lines
         |> wrapLines
         |> List.map (wrapParagraph config)
         |> String.join "\n\n"
-
-
-wrapParagraph : Config -> String -> String
-wrapParagraph config str =
-    Paragraph.lines config.wrapParams str |> String.join "\n"
 
 
 {-|
@@ -60,7 +59,7 @@ munch : String -> ( State, Data ) -> ( State, Data )
 munch line ( state, data ) =
     let
         nextState =
-            if line == "\n" then
+            if String.replace " " "" line == "\n" then
                 BlankLine
 
             else

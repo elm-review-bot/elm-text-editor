@@ -1,6 +1,6 @@
 module Editor exposing
     ( embedded, init
-    , insert, load, update, view
+    , load, update, insert
     , Editor, EditorConfig, EditorMsg
     , getCursor, getWrapOption
     , placeInClipboard
@@ -16,9 +16,9 @@ module Editor exposing
 @docs embedded, init
 
 
-## Main
+## Using the editor
 
-@docs insert, load, update, view
+@docs load, update, insert
 
 
 ## Types
@@ -62,13 +62,26 @@ import RollingList
 import SingleSlider as Slider
 
 
-{-| xxx
+{-| Example:
+
+    type Msg
+        = EditorMsg EditorMsg
+        | SliderMsg Slider.Msg
+        | LogErr String
+        ...
+
 -}
 type alias EditorMsg =
     Editor.Update.Msg
 
 
-{-| xxx
+{-| Embed the editor in an app like this:
+
+    type alias Model =
+        { editor : Editor
+        , ...
+        }
+
 -}
 type Editor
     = Editor
@@ -81,7 +94,7 @@ type Editor
 -- GETTERS --
 
 
-{-| xxx
+{-| Get the options for wrapping text. See the example for `insert`.
 -}
 getWrapOption : Editor -> WrapOption
 getWrapOption (Editor data) =
@@ -95,7 +108,7 @@ getSource (Editor data) =
     Buffer.toString data.buffer
 
 
-{-| xxx
+{-| Get the cursor position. See the example for `insert`.
 -}
 getCursor : Editor -> Position
 getCursor (Editor data) =
@@ -135,7 +148,21 @@ setSelectedText str (Editor data) =
 -- CONFIG --
 
 
-{-| xxx
+{-| A typical configuration:
+
+    config : EditorConfig Msg
+    config =
+        { editorMsg = EditorMsg
+        , sliderMsg = SliderMsg
+        , editorStyle = editorStyle
+        , width = 500
+        , lines = 30
+        , lineHeight = 16.0
+        , showInfoPanel = True
+        , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
+        , wrapOption = DontWrap
+        }
+
 -}
 type alias EditorConfig a =
     { editorMsg : EditorMsg -> a
@@ -175,7 +202,16 @@ smallConfig c =
 -- EMBEDDED EDITOR --
 
 
-{-| xxx
+{-| Embed the editor in the host app:
+
+    view : Model -> Html Msg
+    view model =
+        div [ HA.style "margin" "60px" ]
+            [ ...
+            , Editor.embedded config model.editor
+            , ...
+            ]
+
 -}
 embedded : EditorConfig a -> Editor -> Html a
 embedded editorConfig editor =
@@ -190,7 +226,16 @@ embedded editorConfig editor =
         ]
 
 
-{-| xxx
+{-| Initialize the embedded editor:
+
+    init : () -> ( Model, Cmd Msg )
+    init () =
+        ( { editor = Editor.init config AppText.jabberwocky
+          , ...
+          }
+        , Cmd.none
+        )
+
 -}
 init : EditorConfig a -> String -> Editor
 init editorConfig text =
@@ -224,7 +269,20 @@ init editorConfig text =
 -- UPDATE --
 
 
-{-| xxx
+{-| Respond to updates in the editor:
+
+    update : Msg -> Model -> ( Model, Cmd Msg )
+    update msg model =
+        case msg of
+            EditorMsg editorMsg ->
+                let
+                    ( editor, cmd ) =
+                        Editor.update editorMsg model.editor
+                in
+                ( { model | editor = editor }, Cmd.map EditorMsg cmd )
+
+            ...
+
 -}
 update : EditorMsg -> Editor -> ( Editor, Cmd EditorMsg )
 update msg (Editor data) =
@@ -235,7 +293,23 @@ update msg (Editor data) =
     ( Editor { state = is, buffer = b }, cmd )
 
 
-{-| xxx
+{-| Update the slider frm the hosting app:
+
+    update : Msg -> Model -> ( Model, Cmd Msg )
+    update msg model =
+        case msg of
+            ...
+
+            SliderMsg sliderMsg ->
+                let
+                    ( newEditor, cmd ) =
+                        Editor.sliderUpdate
+                           sliderMsg
+                           model.editor
+                in
+                ( { model | editor = newEditor }
+                , cmd |> Cmd.map SliderMsg )
+
 -}
 sliderUpdate : Slider.Msg -> Editor -> ( Editor, Cmd Slider.Msg )
 sliderUpdate sliderMsg ((Editor data) as editor) =
@@ -282,7 +356,16 @@ view attr (Editor data) =
 -- SLIDER --
 
 
-{-| xxx
+{-| Subscribe to the slider:
+
+    subscriptions : Model -> Sub Msg
+    subscriptions model =
+        Sub.batch
+            [ Sub.map SliderMsg <|
+                Slider.subscriptions (Editor.slider model.editor)
+              , ...
+            ]
+
 -}
 slider : Editor -> Slider.Model
 slider (Editor data) =
@@ -348,7 +431,21 @@ wrapSelection ((Editor data) as editor) =
 -- ?? -- |> recordHistory state buffer
 
 
-{-| xxx
+{-| Use to insert text into the editor at a given position, e.g.,
+
+    pasteToClipboard : Model -> String -> ( Model, Cmd msg )
+    pasteToClipboard model editor =
+        ( { model
+            | editor =
+                Editor.insert
+                    (Editor.getWrapOption model.editor)
+                    (Editor.getCursor model.editor)
+                    editor
+                    model.editor
+          }
+        , Cmd.none
+        )
+
 -}
 insert : WrapOption -> Position -> String -> Editor -> Editor
 insert wrapOption position string (Editor data) =
@@ -364,7 +461,7 @@ insert wrapOption position string (Editor data) =
     Editor { data | buffer = Buffer.insert position textToInsert data.buffer }
 
 
-{-| xxx
+{-| Place string in the editor's clipboard
 -}
 placeInClipboard : String -> Editor -> Editor
 placeInClipboard str (Editor data) =
@@ -392,7 +489,16 @@ clearState (Editor data) =
     Editor { data | state = Editor.Update.clearState data.state }
 
 
-{-| xxx
+{-| Load text into the embedded editor.
+
+    load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
+    load wrapOption text model =
+        let
+            newEditor =
+                Editor.load wrapOption text model.editor
+        in
+        ( { model | editor = newEditor }, Cmd.none )
+
 -}
 load : WrapOption -> String -> Editor -> Editor
 load wrapOption content ((Editor data) as editor) =
@@ -419,7 +525,7 @@ load wrapOption content ((Editor data) as editor) =
     Editor { newData | buffer = buffer }
 
 
-{-| xxx
+{-| Scroll the editor to the first occurrence of a given string
 -}
 scrollToString : String -> Editor -> Editor
 scrollToString str (Editor data) =
@@ -430,7 +536,7 @@ scrollToString str (Editor data) =
     Editor { state = is, buffer = b }
 
 
-{-| xxx
+{-| Scroll the editor to a given line
 -}
 scrollToLine : Int -> Editor -> Editor
 scrollToLine k (Editor data) =

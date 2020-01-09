@@ -79,10 +79,10 @@ editorStyle =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        EditorMsg msg_ ->
+        EditorMsg editorMsg ->
             let
                 ( editor, cmd ) =
-                    Editor.update msg_ model.editor
+                    Editor.update editorMsg model.editor
             in
             ( { model | editor = editor }, Cmd.map EditorMsg cmd )
 
@@ -119,8 +119,17 @@ update msg model =
 {-| Paste contents of clipboard into Editor
 -}
 pasteToClipboard : Model -> String -> ( Model, Cmd msg )
-pasteToClipboard model str =
-    ( { model | editor = Editor.insert (Editor.getWrapOption model.editor) (Editor.getCursor model.editor) str model.editor }, Cmd.none )
+pasteToClipboard model editor =
+    ( { model
+        | editor =
+            Editor.insert
+                (Editor.getWrapOption model.editor)
+                (Editor.getCursor model.editor)
+                editor
+                model.editor
+      }
+    , Cmd.none
+    )
 
 
 pasteToEditorClipboard : Model -> String -> ( Model, Cmd msg )
@@ -141,10 +150,10 @@ pasteToEditorClipboard model str =
 {-| Load text into Editor
 -}
 load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
-load wrapOption str model =
+load wrapOption text model =
     let
         newEditor =
-            Editor.load wrapOption str model.editor
+            Editor.load wrapOption text model.editor
     in
     ( { model | editor = newEditor }, Cmd.none )
 

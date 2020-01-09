@@ -7,7 +7,8 @@ module Editor.Strings exposing (help, info)
 -}
 
 
-{-| -}
+{-| Help text for the editor
+-}
 help : String
 help =
     """
@@ -78,7 +79,8 @@ Redo              ctrl-y
 """
 
 
-{-| -}
+{-| Information about the Pure Elm Editor project.
+-}
 info : String
 info =
     """This is a first test of how

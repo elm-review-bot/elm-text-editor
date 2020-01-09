@@ -1,27 +1,51 @@
 module Editor exposing
-    ( Editor
-    , EditorConfig
-    , EditorMsg
-    , embedded
-    , getCursor
-    , getSelectedText
-    , getSource
-    , getWrapOption
-    , init
-    , insert
-    , load
-    , pasteFromClipBoard
+    ( embedded, init
+    , insert, load, update, view
+    , Editor, EditorConfig, EditorMsg
+    , getCursor, getWrapOption
     , placeInClipboard
-    , scrollToLine
-    , scrollToString
-    , setSelectedText
-    , slider
-    , sliderUpdate
-    , sliderView
-    , update
-    , updateSlider
-    , view
+    , scrollToLine, scrollToString
+    , slider, sliderUpdate
     )
+
+{-| Use this module to embed this text editor in an Elm app.
+
+
+## Embedding the Editor
+
+@docs embedded, init
+
+
+## Main
+
+@docs insert, load, update, view
+
+
+## Types
+
+@docs Editor, EditorConfig, EditorMsg
+
+
+## Getters
+
+@docs getCursor, getWrapOption
+
+
+## Clipboard
+
+@docs placeInClipboard
+
+
+## Scroll
+
+@docs scrollToLine, scrollToString
+
+
+## Slider
+
+@docs slider, sliderUpdate
+
+-}
 
 import Buffer exposing (Buffer)
 import Editor.Config exposing (WrapOption(..), WrapParams)
@@ -38,10 +62,14 @@ import RollingList
 import SingleSlider as Slider
 
 
+{-| xxx
+-}
 type alias EditorMsg =
     Editor.Update.Msg
 
 
+{-| xxx
+-}
 type Editor
     = Editor
         { buffer : Buffer
@@ -53,26 +81,36 @@ type Editor
 -- GETTERS --
 
 
+{-| xxx
+-}
 getWrapOption : Editor -> WrapOption
 getWrapOption (Editor data) =
     data.state.config.wrapOption
 
 
+{-| xxx
+-}
 getSource : Editor -> String
 getSource (Editor data) =
     Buffer.toString data.buffer
 
 
+{-| xxx
+-}
 getCursor : Editor -> Position
 getCursor (Editor data) =
     data.state.cursor
 
 
+{-| xxx
+-}
 getSelectedText : Editor -> Maybe String
 getSelectedText (Editor data) =
     data.state.selectedText
 
 
+{-| xxx
+-}
 getSmallConfig : InternalState -> SmallEditorConfig
 getSmallConfig s =
     s.config
@@ -82,6 +120,8 @@ getSmallConfig s =
 -- SETTERS --
 
 
+{-| xxx
+-}
 setSelectedText : String -> Editor -> Editor
 setSelectedText str (Editor data) =
     let
@@ -95,6 +135,8 @@ setSelectedText str (Editor data) =
 -- CONFIG --
 
 
+{-| xxx
+-}
 type alias EditorConfig a =
     { editorMsg : EditorMsg -> a
     , sliderMsg : Slider.Msg -> a
@@ -108,6 +150,8 @@ type alias EditorConfig a =
     }
 
 
+{-| xxx
+-}
 type alias SmallEditorConfig =
     { lines : Int
     , showInfoPanel : Bool
@@ -116,6 +160,8 @@ type alias SmallEditorConfig =
     }
 
 
+{-| xxx
+-}
 smallConfig : EditorConfig a -> SmallEditorConfig
 smallConfig c =
     { lines = c.lines
@@ -129,6 +175,8 @@ smallConfig c =
 -- EMBEDDED EDITOR --
 
 
+{-| xxx
+-}
 embedded : EditorConfig a -> Editor -> Html a
 embedded editorConfig editor =
     div [ style "position" "absolute" ]
@@ -142,6 +190,8 @@ embedded editorConfig editor =
         ]
 
 
+{-| xxx
+-}
 init : EditorConfig a -> String -> Editor
 init editorConfig text =
     Editor
@@ -174,6 +224,8 @@ init editorConfig text =
 -- UPDATE --
 
 
+{-| xxx
+-}
 update : EditorMsg -> Editor -> ( Editor, Cmd EditorMsg )
 update msg (Editor data) =
     let
@@ -183,6 +235,8 @@ update msg (Editor data) =
     ( Editor { state = is, buffer = b }, cmd )
 
 
+{-| xxx
+-}
 sliderUpdate : Slider.Msg -> Editor -> ( Editor, Cmd Slider.Msg )
 sliderUpdate sliderMsg ((Editor data) as editor) =
     let
@@ -217,6 +271,8 @@ sliderUpdate sliderMsg ((Editor data) as editor) =
 -- VIEW --
 
 
+{-| xxx
+-}
 view : List (Attribute EditorMsg) -> Editor -> Html EditorMsg
 view attr (Editor data) =
     Editor.View.view attr (Buffer.lines data.buffer) data.state
@@ -226,11 +282,15 @@ view attr (Editor data) =
 -- SLIDER --
 
 
+{-| xxx
+-}
 slider : Editor -> Slider.Model
 slider (Editor data) =
     data.state.slider
 
 
+{-| xxx
+-}
 updateSlider : Slider.Model -> Editor -> Editor
 updateSlider slider_ (Editor data) =
     let
@@ -240,6 +300,8 @@ updateSlider slider_ (Editor data) =
     Editor { data | state = { oldState | slider = slider_ } }
 
 
+{-| xxx
+-}
 sliderView : Editor -> Html Slider.Msg
 sliderView (Editor data) =
     Html.div
@@ -251,6 +313,8 @@ sliderView (Editor data) =
 --  EDITOR FUNCTIONS --
 
 
+{-| xxx
+-}
 wrapSelection : Editor -> Editor
 wrapSelection ((Editor data) as editor) =
     case data.state.selection of
@@ -284,6 +348,8 @@ wrapSelection ((Editor data) as editor) =
 -- ?? -- |> recordHistory state buffer
 
 
+{-| xxx
+-}
 insert : WrapOption -> Position -> String -> Editor -> Editor
 insert wrapOption position string (Editor data) =
     let
@@ -298,6 +364,8 @@ insert wrapOption position string (Editor data) =
     Editor { data | buffer = Buffer.insert position textToInsert data.buffer }
 
 
+{-| xxx
+-}
 placeInClipboard : String -> Editor -> Editor
 placeInClipboard str (Editor data) =
     let
@@ -310,16 +378,22 @@ placeInClipboard str (Editor data) =
     Editor { data | state = newState }
 
 
+{-| xxx
+-}
 pasteFromClipBoard : Editor -> Editor
 pasteFromClipBoard (Editor data) =
     Editor { data | buffer = Buffer.insert data.state.cursor data.state.clipboard data.buffer }
 
 
+{-| xxx
+-}
 clearState : Editor -> Editor
 clearState (Editor data) =
     Editor { data | state = Editor.Update.clearState data.state }
 
 
+{-| xxx
+-}
 load : WrapOption -> String -> Editor -> Editor
 load wrapOption content ((Editor data) as editor) =
     let
@@ -345,6 +419,8 @@ load wrapOption content ((Editor data) as editor) =
     Editor { newData | buffer = buffer }
 
 
+{-| xxx
+-}
 scrollToString : String -> Editor -> Editor
 scrollToString str (Editor data) =
     let
@@ -354,6 +430,8 @@ scrollToString str (Editor data) =
     Editor { state = is, buffer = b }
 
 
+{-| xxx
+-}
 scrollToLine : Int -> Editor -> Editor
 scrollToLine k (Editor data) =
     let

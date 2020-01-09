@@ -1,55 +1,37 @@
-# elm-text-editor
+# Pure Elm Text Editor
 
-A flexible text editor written in Elm
+*January 4, 2020*
 
-[Check out the demo](https://sidneynemzer.github.io/elm-text-editor/)
+This project is a fork of 
+[work by Sydney Nemzer](https://github.com/SidneyNemzer/elm-text-editor).
+His [demo](https://sidneynemzer.github.io/elm-text-editor/), 
+ inspired by prior work of Martin Janiczek, shows the 
+feasibility of writing a pure Elm text editor. There is a lot of power 
+in Nemzer's code, and its architecture makes it easy to work with.
+My
+[forked repo](https://github.com/jxxcarlson/elm-text-editor) adds 
+scrolling, copy, cut, and paste, search and replace, text wrap,
+and an API for embedding the editor in another app.  Here are two demos
+of this code:
 
-> Note:
-> * This project is not published yet on package.elm-lang.org
-> * I would not consider this project ready for use in production, since it's missing major features like scrolling and line wrap
+1. [Basic editor](https://jxxcarlson.github.io/app/editor/index.html)
 
-## Features / Architecture
+2. [MiniLaTeX Demo](https://jxxcarlson.github.io/app/minilatex3/index.html)
 
-This library implements an editor (duh) and a buffer. The buffer is separate from the editor to allow multiple editors to use the same buffer, such as in a multi-panel text editor.
+I sent a PR to Sydney on December 27, and have updated it
+regularly since then,  Haven't heard back from him
+yet.  Ideally, the code here can be incorporated in his.
+If some members of the community take up an interest in the 
+editor and contribute code to it, I think that a workable
+editor package could be published in the not too distant future.
+I believe that many of us would find uses for such a package
+(see Sydney's Road Map).
 
-> Note: There's a checkmark next to implemented features
+My plan, pending hearing back from Sydney, is to forge ahead but not 
+to publish a package.  I'm going to post issues on my repo as I encounter
+them, and encourage others to do the same.  I'll push both my own
+changes and any merged PRs to the PR I sent Sydney.
 
-### Buffer
+## Embedding the Editor
 
-- [x] file content
-- [ ] save status
-- [ ] syntax highlighting (cached)
-- [ ] decorations (eg underlines, tooltips, gutter icons)
-
-The buffer implementation has helper functions for manipulating its content, like finding the end of a word.
-
-### Editor
-
-- [x] cursor location
-- [x] selection
-- [x] rendering to the DOM
-- [x] UI interaction (mouse and keyboard)
-- [x] undo history
-- [ ] scroll position
-- [ ] auto-complete dialog
-- [ ] open decorations (in other words, decorations exist in the buffer but each editor tracks open decorations)
-- [ ] line wrap
-
-I hope that one day this project will be comparable to Ace and CodeMirror, but Ace and CodeMirror have had quite a head start (about 7 years!).
-
-## Previous work and Inspiration
-
-The editor behavior and keyboard shortcuts are based on [Atom][] (because that's the editor I'm most familiar with).
-
-[Ace][] and [CodeMirror][] are text editors designed to work in a web browser. They're both written in JavaScript, so integration with Elm is pretty meh.
-
-[Janiczek][] recently demonstrated [a text editor in pure elm][Janiczek-editor-discourse], which implements work-arounds for several issues I had faced in the past when creating a pure elm editor.
-
-> I hope this inspires somebody to try some stuff in Elm they’ve been needing but seemed too big / hard for them! You might, like me with this project, find out it’s in your reach - no doubt thanks to Elm  
-> *- Janiczek*
-
-[Atom]: https://atom.io
-[Ace]: https://ace.c9.io
-[CodeMirror]: https://codemirror.net
-[Janiczek]: https://github.com/Janiczek
-[Janiczek-editor-discourse]: https://discourse.elm-lang.org/t/text-editor-done-in-pure-elm/1365
+See the notes in `Embedding.md` and also the code in the two demo apps.

@@ -5,6 +5,7 @@ consulting the code in `./demo`
 
 ## Installations
 
+
 ```bash
 elm install lukewestby/elm-string-interpolate
 elm install carwow/elm-slider
@@ -32,6 +33,9 @@ import SingleSlider as Slider
 type Msg
     = EditorMsg EditorMsg
     | SliderMsg Slider.Msg
+    | Outside Outside.InfoForElm -- if using module Outside
+    | LogErr String -- if using module Outside
+
     | ...
 ```
 

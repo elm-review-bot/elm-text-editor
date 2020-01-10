@@ -13,7 +13,14 @@ This
 scrolling, copy, cut, and paste, search and replace, text wrap,
 and an API for embedding the editor in another app.  Here is a simple demo of the code:
 
-> [Basic editor](https://jxxcarlson.github.io/app/editor-simple/index.html)
+> [Demo-simple](https://jxxcarlson.github.io/app/editor-simple/index.html)
+
+For a slightly more complex example that implements external
+copy-paste, see
+
+> [Demo](https://jxxcarlson.github.io/app/editor/index.html)
+
+At the moment, external copy-paste only works in Chrome.
 
 There is much work yet to be done.
 
@@ -21,8 +28,8 @@ There is much work yet to be done.
 ## Embedding the Editor
 
 - See the notes in `Embedding.md`
-- See the `demo-simple` and `demo` apps of this repo.
-- In order to implement external copy-paste (ctr-shift U), the second app imports module `Outside` into `Main` and references `outside.js` in `index.html`
+- Use the `demo-simple` and `demo` apps of this repo as models.
+- In order to implement external copy-paste (ctrl-shift U), the second app imports module `Outside` into `Main` and references `outside.js` in `index.html`
 
 
 ## Plans

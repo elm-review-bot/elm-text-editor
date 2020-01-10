@@ -38,7 +38,6 @@ type Msg
     | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
     | LogErr String
-    | AskForClipBoard
 
 
 type alias Model =
@@ -126,10 +125,6 @@ update msg model =
                     pasteToEditorClipboard model clipboard
 
         LogErr _ ->
-            ( model, Cmd.none )
-
-        AskForClipBoard ->
-            --  ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
             ( model, Cmd.none )
 
 

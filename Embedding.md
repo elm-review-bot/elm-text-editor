@@ -92,6 +92,7 @@ update msg model =
       case msg of
         EditorMsg editorMsg ->
             let
+                -- needed for ezxternal copy-paste:
                 clipBoardCmd =
                     if editorMsg == Editor.Update.CopyPasteClipboard then
                         Outside.sendInfo (Outside.AskForClipBoard E.null)
@@ -122,8 +123,6 @@ update msg model =
                 Outside.GotClipboard clipboard ->
                     ({model | clipboard = clipboard}, Cmd.none)
 
-        AskForClipBoard ->
-            (model, Outside.sendInfo (Outside.AskForClipBoard E.null))
 
  
         Other cases ...
@@ -155,4 +154,5 @@ view model =
 ## Files
 
 - Use the `index.html` file in `./demo` as a starting point for your `index.html`
-- Copy the files `outside.js` and `Outside.elm`
+- Copy the files `outside.js` and `Outside.elm` if you are 
+implementing external copy-paste

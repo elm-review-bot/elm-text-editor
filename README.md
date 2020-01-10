@@ -9,7 +9,7 @@ feasibility of writing such a text editor and establishes an elegant and powerfu
 
 
 This
-[forked repo](https://github.com/jxxcarlson/elm-text-editor-simple) adds 
+[forked repo](https://github.com/jxxcarlson/elm-text-editor) adds 
 scrolling, copy, cut, and paste, search and replace, text wrap,
 and an API for embedding the editor in another app.  Here is a simple demo of the code:
 

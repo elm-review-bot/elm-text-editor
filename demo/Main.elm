@@ -43,13 +43,21 @@ type Msg
 type alias Model =
     { editor : Editor
     , clipboard : String
+    , document : Document
     }
+
+
+type Document
+    = Jabberwock
+    | Gettysburg
+    | LongLines
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
     ( { editor = Editor.init config AppText.jabberwocky
       , clipboard = ""
+      , document = Jabberwock
       }
     , Cmd.none
     )
@@ -101,13 +109,13 @@ update msg model =
             load DontWrap Editor.Strings.info model
 
         GetSpeech ->
-            load DoWrap AppText.gettysburgAddress model
+            load DoWrap AppText.gettysburgAddress { model | document = Gettysburg }
 
         GetLongLongLines ->
-            load DontWrap AppText.longLines model
+            load DontWrap AppText.longLines { model | document = LongLines }
 
         Reset ->
-            load DontWrap AppText.jabberwocky model
+            load DontWrap AppText.jabberwocky { model | document = Jabberwock }
 
         FindTreasure ->
             highlightText "treasure" model
@@ -216,9 +224,9 @@ footer model =
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)" ]
             ]
         , div [ HA.style "margin-top" "10px" ] [ text "This app is based on  ", Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ] ]
-        , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands or type ctrl-h" ]
+        , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands or type ctrl-h to toggle" ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ resetButton, treasureButton, speechTextButton, longLinesTextButton ]
+        , div [ HA.style "margin-top" "10px" ] [ resetButton, treasureButton model, speechTextButton, longLinesTextButton ]
         ]
 
 
@@ -230,8 +238,13 @@ testButton =
     rowButton 80 Test "Info" []
 
 
-treasureButton =
-    rowButton 120 FindTreasure "Find treasure" []
+treasureButton model =
+    case model.document of
+        Jabberwock ->
+            rowButton 120 FindTreasure "Find treasure" []
+
+        _ ->
+            Html.span [] []
 
 
 speechTextButton =

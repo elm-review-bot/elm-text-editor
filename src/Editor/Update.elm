@@ -9,7 +9,6 @@ import Editor.Model exposing (InternalState, Snapshot)
 import Editor.Search
 import Editor.Strings
 import Editor.Wrap
-import Json.Encode as E
 import Position exposing (Position)
 import RollingList
 import Task
@@ -22,7 +21,7 @@ type Msg
     | MouseOver Position
     | MouseUp
     | Copy
-      -- | CopyPasteClipboard
+    | CopyPasteClipboard
     | Cut
     | CursorLeft
     | CursorRight
@@ -341,8 +340,12 @@ update buffer msg state =
         PasteFromClipboard ->
             ( state, Buffer.insert state.cursor state.clipboard buffer, Cmd.none )
 
-        --        CopyPasteClipboard ->
-        --            ( state, buffer, Outside.sendInfo (Outside.AskForClipBoard E.null) )
+        CopyPasteClipboard ->
+            {- The msg CopyPasteClipboard is detected and acted upon by the
+               host app's update function.
+            -}
+            ( state, buffer, Cmd.none )
+
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of
                 ( Just selection, Just closing ) ->

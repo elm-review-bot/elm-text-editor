@@ -5,4 +5,4 @@ demo/Demo.js
 demo/publish.sh
 demo/Demo.min.js
 demo/index-remote.html
-
+demo-simple/Demo.min.js

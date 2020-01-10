@@ -2,13 +2,24 @@ module Editor exposing
     ( embedded, init
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
-    , getCursor, getWrapOption
+    , getSource, getCursor, getWrapOption
     , placeInClipboard
     , scrollToLine, scrollToString
     , slider, sliderUpdate
     )
 
-{-| Use this module to embed this text editor in an Elm app.
+{-| Use this module to embed a text editor in an Elm app.
+
+
+## Contents
+
+  - Embedding the Editor
+  - Using the Editor
+  - Types
+  - Getters
+  - Clipboard
+  - Scroll
+  - Slider
 
 
 ## Embedding the Editor
@@ -28,7 +39,7 @@ module Editor exposing
 
 ## Getters
 
-@docs getCursor, getWrapOption
+@docs getSource, getCursor, getWrapOption
 
 
 ## Clipboard
@@ -101,7 +112,7 @@ getWrapOption (Editor data) =
     data.state.config.wrapOption
 
 
-{-| xxx
+{-| Return the current source text
 -}
 getSource : Editor -> String
 getSource (Editor data) =

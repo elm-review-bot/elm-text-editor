@@ -17,12 +17,13 @@ and an API for embedding the editor in another app.  Here is a simple demo of th
 
 There is much work yet to be done.
 
-**NOTE.** Certain operations such as external copy-paste (pasting from the clipboard to the editor) require ports.  This is not a feature of the current release, but I hope to have something soon, if it is possible.  It works in the `demo` app of this repo if you use the `v0` tag and the repo source text.
 
 ## Embedding the Editor
 
 - See the notes in `Embedding.md`
-- See the `demo-simple` app of this repo.
+- See the `demo-simple` and `demo` apps of this repo.
+- In order to implement external copy-paste (ctr-shift U), the second app imports module `Outside` into `Main` and references `outside.js` in `index.html`
+
 
 ## Plans
 

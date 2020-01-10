@@ -129,7 +129,8 @@ update msg model =
             ( model, Cmd.none )
 
         AskForClipBoard ->
-            ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
+            --  ( model, Outside.sendInfo (Outside.AskForClipBoard E.null) )
+            ( model, Cmd.none )
 
 
 

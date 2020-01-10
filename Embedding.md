@@ -7,7 +7,7 @@ consulting the code in `./demo`
 
 ```bash
 elm install lukewestby/elm-string-interpolate
-elm install bemyak/elm-slider
+elm install carwow/elm-slider
 elm install lovasoa/elm-rolling-list
 elm install elm-community/string-extra
 elm install elm-community/maybe-extra
@@ -19,8 +19,11 @@ elm install folkertdev/elm-paragraph
 
 ```
 import Editor exposing (EditorConfig, Editor, EditorMsg)
-import Editor.Config exposing (WrapOption(..))   
+import Editor.Config exposing (WrapOption(..)) 
+import Editor.Strings
+import Editor.Update -- for external copy-paste if needed  
 import SingleSlider as Slider
+
 ```
 
 ## Msg
@@ -87,12 +90,20 @@ editorStyle =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
       case msg of
-        EditorMsg msg_ ->
+        EditorMsg editorMsg ->
             let
-               (editor, cmd) = Editor.update msg_ model.editor
-            in
-              ({ model | editor = editor }, Cmd.map EditorMsg cmd)
+                clipBoardCmd =
+                    if editorMsg == Editor.Update.CopyPasteClipboard then
+                        Outside.sendInfo (Outside.AskForClipBoard E.null)
 
+                    else
+                        Cmd.none
+
+                ( editor, cmd ) =
+                    Editor.update editorMsg model.editor
+            in
+            ( { model | editor = editor }
+              , Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg cmd ] )
 
         SliderMsg sliderMsg ->
             let

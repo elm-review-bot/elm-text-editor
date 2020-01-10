@@ -50,6 +50,25 @@ Copy selection    ctrl-c
 Cut selection     ctrl-x
 Paste selection   ctrl-v
 
+External copy-paste
+-------------------
+
+- ctrl-shift-u copies text from the system
+  clipboard and pastes the content to the
+  editor at current cursor.  The copied
+  text remains in the Editor clipboard.
+
+- ctrl-shift-v pastes text from Editor
+  clipboard
+
+The pasted text will be wrapped if the
+the WrapOption is on.
+
+This works in Chrome 79 but not Firefox.
+In Chrome you have to respond to a permission
+dialog each time.  I'll see if this can
+be reduced to once per session.
+
 Text
 ------------
 

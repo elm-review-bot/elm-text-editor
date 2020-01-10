@@ -5,6 +5,7 @@ import Browser
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Strings
+import Editor.Update
 import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
@@ -83,12 +84,19 @@ editorStyle =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        EditorMsg msg_ ->
+        EditorMsg editorMsg ->
             let
+                clipBoardCmd =
+                    if editorMsg == Editor.Update.CopyPasteClipboard then
+                        Outside.sendInfo (Outside.AskForClipBoard E.null)
+
+                    else
+                        Cmd.none
+
                 ( editor, cmd ) =
-                    Editor.update msg_ model.editor
+                    Editor.update editorMsg model.editor
             in
-            ( { model | editor = editor }, Cmd.map EditorMsg cmd )
+            ( { model | editor = editor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg cmd ] )
 
         Test ->
             load DontWrap Editor.Strings.info model

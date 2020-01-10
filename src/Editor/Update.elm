@@ -1,5 +1,11 @@
 module Editor.Update exposing (Msg(..), blur, clearState, focus, scrollToLine, scrollToText, update)
 
+{-| Blah, blah ...
+
+@docs Msg, blur, clearState, focus, scrollToLine, scrollToText, update
+
+-}
+
 import Browser.Dom as Dom
 import Buffer exposing (Buffer)
 import Dict exposing (Dict)
@@ -15,6 +21,8 @@ import Task
 import Window
 
 
+{-| The messages to which the editor responds
+-}
 type Msg
     = NoOp
     | MouseDown Position
@@ -114,6 +122,8 @@ recordHistory oldState oldBuffer ( state, buffer, cmd ) =
     )
 
 
+{-| Return data represening an editor updated via a message and a new buffer
+-}
 update : Buffer -> Msg -> InternalState -> ( InternalState, Buffer, Cmd Msg )
 update buffer msg state =
     case msg of
@@ -1092,6 +1102,9 @@ update buffer msg state =
 -- HELPERS --
 
 
+{-| Return a pair (InternalState, Buffer) representing the editor scrolled
+to a given line `k`.
+-}
 scrollToLine : Int -> InternalState -> Buffer -> ( InternalState, Buffer )
 scrollToLine k state buffer =
     let
@@ -1162,6 +1175,8 @@ scrollToTextInternal str state buffer =
             ( { state | window = window_, cursor = cursor_, selection = Just end_, searchResults = RollingList.fromList searchResults, searchTerm = str }, buffer, Cmd.none )
 
 
+{-| Return data representing the editor scrolled toa given string (first search occurrence).
+-}
 scrollToText : String -> InternalState -> Buffer -> ( InternalState, Buffer )
 scrollToText str state buffer =
     let
@@ -1261,6 +1276,8 @@ lift f =
     \is -> { is | config = f is.config }
 
 
+{-| Return the "zero"" internal state
+-}
 clearState : InternalState -> InternalState
 clearState state =
     { state
@@ -1276,11 +1293,17 @@ clearState state =
     }
 
 
+{-| A command to place the focus on the element with
+the given id.
+-}
 focus : String -> Cmd Msg
 focus id =
     Task.attempt (\_ -> NoOp) (Dom.focus id)
 
 
+{-| A command to lose focus on the element with
+the given id.
+-}
 blur : String -> Cmd Msg
 blur id =
     Task.attempt (\_ -> NoOp) (Dom.blur id)

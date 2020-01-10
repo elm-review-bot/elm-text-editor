@@ -122,7 +122,7 @@ recordHistory oldState oldBuffer ( state, buffer, cmd ) =
     )
 
 
-{-| Return data represening an editor updated via a message and a new buffer
+{-| Return data representing an editor updated via a message and a new buffer
 -}
 update : Buffer -> Msg -> InternalState -> ( InternalState, Buffer, Cmd Msg )
 update buffer msg state =

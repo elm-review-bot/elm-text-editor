@@ -6735,8 +6735,8 @@ var $author$project$Editor$load = F3(
 			{e: buffer});
 	});
 var $author$project$Main$load = F3(
-	function (wrapOption, str, model) {
-		var newEditor = A3($author$project$Editor$load, wrapOption, str, model.c);
+	function (wrapOption, text, model) {
+		var newEditor = A3($author$project$Editor$load, wrapOption, text, model.c);
 		return _Utils_Tuple2(
 			_Utils_update(
 				model,
@@ -7659,7 +7659,7 @@ var $author$project$Buffer$groupRange = F2(
 			},
 			A2($author$project$Buffer$indexFromPosition, buffer, position));
 	});
-var $author$project$Editor$Strings$help = '\n-----------------------------------------------\n                     Key commands\n-----------------------------------------------\n\nShow help         ctrl-h         (Toggle)\nShow info panel   ctrl-shift-i   (Toggle)\n\nLines\n-----\n\nStart of line     Home\nEnd of line       End\n\nLine Up           up-arrow\nLine Down         down-arrow\n\nFirst line        ctrl-option up-arrow\nLast line         ctrl-option down-arrow\n\nGo to line        ctrl-g         (Toggle)\n\nMoves\n-----\nPage Up           option up-arrow\nPage Down         option down-arrow\n\nSelection\n---------\nSelect word       Double-click\nSelect line       Triple-click\nSelect group      ctrl-d\n\nExtend selection  shift-arrow: up | down | left | right\n\nCopy selection    ctrl-c\nCut selection     ctrl-x\nPaste selection   ctrl-v\n\nText\n------------\n\nIndent            Tab\nDe-indent         shift-Tab\n\nWrap selection    ctrl-w\nWrap text         ctrl-shift-w\nToggle wrap       ctrl-shift w   (for wrap on load)\n\nClear all        ctrl-shift c\n\nSearch\n------\n\nSearch panel      ctrl-s (Toggle)\nReplace panel     ctrl-r (Toggle)\nNext search hit   ctrl-. (Think >)\nPrev search hit   ctrl-. (Think <)\n\nUndo/Redo\n----------\n\nUndo              ctrl-z\nRedo              ctrl-y\n\n';
+var $author$project$Editor$Strings$help = '\n-----------------------------------------------\n                     Key commands\n-----------------------------------------------\n\nShow help         ctrl-h         (Toggle)\nShow info panel   ctrl-shift-i   (Toggle)\n\nLines\n-----\n\nStart of line     Home\nEnd of line       End\n\nLine Up           up-arrow\nLine Down         down-arrow\n\nFirst line        ctrl-option up-arrow\nLast line         ctrl-option down-arrow\n\nGo to line        ctrl-g         (Toggle)\n\nMoves\n-----\nPage Up           option up-arrow\nPage Down         option down-arrow\n\nSelection\n---------\nSelect word       Double-click\nSelect line       Triple-click\nSelect group      ctrl-d\n\nExtend selection  shift-arrow: up | down | left | right\n\nCopy selection    ctrl-c\nCut selection     ctrl-x\nPaste selection   ctrl-v\n\nText\n------------\n\nIndent            Tab\nDe-indent         shift-Tab\n\nWrap selection    ctrl-w\nWrap all          ctrl-shift-w\n\nClear all         ctrl-shift c\n\nSearch\n------\n\nSearch panel      ctrl-s (Toggle)\nReplace panel     ctrl-r (Toggle)\nNext search hit   ctrl-. (Think >)\nPrev search hit   ctrl-. (Think <)\n\nUndo/Redo\n----------\n\nUndo              ctrl-z\nRedo              ctrl-y\n\n';
 var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
 var $elm$core$String$repeatHelp = F3(
@@ -9187,8 +9187,8 @@ var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 0:
-				var msg_ = msg.a;
-				var _v1 = A2($author$project$Editor$update, msg_, model.c);
+				var editorMsg = msg.a;
+				var _v1 = A2($author$project$Editor$update, editorMsg, model.c);
 				var editor = _v1.a;
 				var cmd = _v1.b;
 				return _Utils_Tuple2(
@@ -10859,8 +10859,6 @@ var $author$project$Main$Reset = {$: 5};
 var $author$project$Main$resetButton = A4($author$project$Main$rowButton, 80, $author$project$Main$Reset, 'Reset', _List_Nil);
 var $author$project$Main$GetSpeech = {$: 3};
 var $author$project$Main$speechTextButton = A4($author$project$Main$rowButton, 160, $author$project$Main$GetSpeech, 'Gettysburg Address', _List_Nil);
-var $author$project$Main$Test = {$: 1};
-var $author$project$Main$testButton = A4($author$project$Main$rowButton, 80, $author$project$Main$Test, 'Info', _List_Nil);
 var $author$project$Main$FindTreasure = {$: 2};
 var $author$project$Main$treasureButton = A4($author$project$Main$rowButton, 120, $author$project$Main$FindTreasure, 'Find treasure', _List_Nil);
 var $author$project$Main$footer = function (model) {
@@ -10888,7 +10886,7 @@ var $author$project$Main$footer = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Source code (Work in Progress) Dec 27, 2009 — present')
+								$elm$html$Html$text('Source code (Work in Progress)')
 							]))
 					])),
 				A2(
@@ -10899,16 +10897,16 @@ var $author$project$Main$footer = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('This is an unpublished fork of work of Sydney Nemzer: '),
+						$elm$html$Html$text('This app is based on  '),
 						A2(
 						$elm$html$Html$a,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$href('https://github.com/SidneyNemzer/elm-text-editor')
+								$elm$html$Html$Attributes$href('https://sidneynemzer.github.io/elm-text-editor/')
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Source code')
+								$elm$html$Html$text('work of Sydney Nemzer')
 							]))
 					])),
 				A2(
@@ -10919,27 +10917,7 @@ var $author$project$Main$footer = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('An app that uses this editor: '),
-						A2(
-						$elm$html$Html$a,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$href('https://jxxcarlson.github.io/app/minilatex3/index.html')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('MiniLaTeX Demo')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Press the \'Help\' button upper-right for a list of key commands.')
+						$elm$html$Html$text('Press the \'Help\' button upper-right for a list of key commands, or use ctrl-h')
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -10958,7 +10936,7 @@ var $author$project$Main$footer = function (model) {
 						A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
 					]),
 				_List_fromArray(
-					[$author$project$Main$testButton, $author$project$Main$resetButton, $author$project$Main$treasureButton, $author$project$Main$speechTextButton, $author$project$Main$longLinesTextButton]))
+					[$author$project$Main$resetButton, $author$project$Main$treasureButton, $author$project$Main$speechTextButton, $author$project$Main$longLinesTextButton]))
 			]));
 };
 var $author$project$Main$title = A2(

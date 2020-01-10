@@ -4,7 +4,7 @@ reset=`tput setaf 7`
 echo
 echo "${color}:Publishing ...${reset}"
 
-TARGET=/Users/carlson/dev/github_pages/app/editor
+TARGET=/Users/carlson/dev/github_pages/app/editor-simple
 
 elm make --optimize Main.elm --output=Demo.js
 
@@ -20,7 +20,8 @@ cp index-remote.html ${TARGET}/index.html
 cp Demo.min.js ${TARGET}/
 
 
-#echo
-#echo "${color}:cd to github_pages ...${reset}"
-#
-#cd /Users/carlson/dev/github_pages
+echo
+echo "${color}cd /Users/carlson/dev/github_pages${reset}"
+
+
+# cd /Users/carlson/dev/github_pages

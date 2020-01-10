@@ -1,37 +1,37 @@
-# Pure Elm Text Editor
+# A Pure Elm Text Editor
 
-*January 4, 2020*
 
-This project is a fork of 
+This project, a text editor written in pure Elm, is a fork of 
 [work by Sydney Nemzer](https://github.com/SidneyNemzer/elm-text-editor).
 His [demo](https://sidneynemzer.github.io/elm-text-editor/), 
  inspired by prior work of Martin Janiczek, shows the 
-feasibility of writing a pure Elm text editor. There is a lot of power 
-in Nemzer's code, and its architecture makes it easy to work with.
-My
-[forked repo](https://github.com/jxxcarlson/elm-text-editor) adds 
+feasibility of writing such a text editor and establishes an elegant and powerful foundation for future work.  Many kudos to Sydney.
+
+
+This
+[forked repo](https://github.com/jxxcarlson/elm-text-editor-simple) adds 
 scrolling, copy, cut, and paste, search and replace, text wrap,
-and an API for embedding the editor in another app.  Here are two demos
-of this code:
+and an API for embedding the editor in another app.  Here is a simple demo of the code:
 
-1. [Basic editor](https://jxxcarlson.github.io/app/editor/index.html)
+> [Basic editor](https://jxxcarlson.github.io/app/editor-simple/index.html)
 
-2. [MiniLaTeX Demo](https://jxxcarlson.github.io/app/minilatex3/index.html)
+There is much work yet to be done.
 
-I sent a PR to Sydney on December 27, and have updated it
-regularly since then,  Haven't heard back from him
-yet.  Ideally, the code here can be incorporated in his.
-If some members of the community take up an interest in the 
-editor and contribute code to it, I think that a workable
-editor package could be published in the not too distant future.
-I believe that many of us would find uses for such a package
-(see Sydney's Road Map).
-
-My plan, pending hearing back from Sydney, is to forge ahead but not 
-to publish a package.  I'm going to post issues on my repo as I encounter
-them, and encourage others to do the same.  I'll push both my own
-changes and any merged PRs to the PR I sent Sydney.
+**NOTE.** Certain operations such as external copy-paste (pasting from the clipboard to the editor) require ports.  This is not a feature of the current release, but I hope to have something soon, if it is possible.  It works in the `demo` app of this repo if you use the `v0` tag and the repo source text.
 
 ## Embedding the Editor
 
-See the notes in `Embedding.md` and also the code in the two demo apps.
+- See the notes in `Embedding.md`
+- See the `demo-simple` app of this repo.
+
+## Plans
+
+- I would very much like this to be a community project; it is a tool that many of us can use to good end. I've posted some issues on the repo, and welcome comments, pull requests, and more issues.
+
+
+- I may post a Road Map later, but [Sydney Nemzer's README](https://github.com/SidneyNemzer/elm-text-editor/blob/master/README.md) is an excellent place to begin.
+
+
+ 
+
+

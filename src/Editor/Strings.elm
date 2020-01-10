@@ -57,10 +57,9 @@ Indent            Tab
 De-indent         shift-Tab
 
 Wrap selection    ctrl-w
-Wrap text         ctrl-shift-w
-Toggle wrap       ctrl-shift w   (for wrap on load)
+Wrap all          ctrl-shift-w
 
-Clear all        ctrl-shift c
+Clear all         ctrl-shift c
 
 Search
 ------

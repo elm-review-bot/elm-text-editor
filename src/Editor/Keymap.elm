@@ -152,8 +152,7 @@ keymaps =
             , ( "ArrowLeft", SelectToGroupStart )
             , ( "C", Clear )
             , ( "I", ToggleInfoPanel )
-            , ( "V", PasteFromClipboard )
-            , ( "U", CopyPasteClipboard )
+            , ( "V", CopyPasteClipboard )
             , ( "W", WrapAll )
             , ( "S", SendLine )
             ]

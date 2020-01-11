@@ -11,25 +11,32 @@ feasibility of writing such a text editor and establishes an elegant and powerfu
 This
 [forked repo](https://github.com/jxxcarlson/elm-text-editor) adds 
 scrolling, copy, cut, and paste, search and replace, text wrap,
-and an API for embedding the editor in another app.  Here is a simple demo of the code:
+and an API for embedding the editor in another app. 
+Here are some examples which make use of the present library.
 
-> [Demo-simple](https://jxxcarlson.github.io/app/editor-simple/index.html)
+- [Demo-simple](https://jxxcarlson.github.io/app/editor-simple/index.html)
 
-For a slightly more complex example that implements external
-copy-paste, see
-
-> [Demo](https://jxxcarlson.github.io/app/editor/index.html)
-
+- [Demo](https://jxxcarlson.github.io/app/editor/index.html) This one
+ implements external copy-paste: copy something somewhere with Cmd-C or
+ whatever, then use ctrl-shift-V to paste it in the editor.
 At the moment, external copy-paste only works in Chrome.
 
-There is much work yet to be done.
+- [Markdown Example](https://markdown.minilatex.app/) The editor is 
+hosted by an app that renders text written Markdown. The text may
+include mathematics written in TeX/LaTeX.  The app features 
+left-to-right sync:  doing ctrl-shift-S in the editor window 
+(Left) synchronizes the source text with the rendered text (Right).
+Still to do: right-to-left sync.  And much more.
 
 
 ## Embedding the Editor
 
 - See the notes in `Embedding.md`
-- Use the `demo-simple` and `demo` apps of this repo as models.
-- In order to implement external copy-paste (ctrl-shift U), the second app imports module `Outside` into `Main` and references `outside.js` in `index.html`
+- Use the `demo-simple` and `demo` apps of this repo as models, or consult
+the [Markdown Example Code](https://github.com/jxxcarlson/elm-markdown/tree/master/app-demo-fancy)
+- In order to implement external copy-paste (ctrl-shift V), 
+the second two apps import a module `Outside` into `Main`.  This module
+uses ports and references `outside.js` in `index.html`
 
 
 ## Plans

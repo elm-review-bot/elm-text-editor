@@ -56,13 +56,10 @@ Paste selection   ctrl-v
 External copy-paste
 -------------------
 
-- ctrl-shift-u copies text from the system
+- ctrl-shift-V copies text from the system
   clipboard and pastes the content to the
   editor at current cursor.  The copied
   text remains in the Editor clipboard.
-
-- ctrl-shift-v pastes text from Editor
-  clipboard
 
 The pasted text will be wrapped if the
 the WrapOption is on.

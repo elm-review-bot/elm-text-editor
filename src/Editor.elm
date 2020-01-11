@@ -243,7 +243,7 @@ embedded : EditorConfig a -> Editor -> Html a
 embedded editorConfig editor =
     div [ style "position" "absolute" ]
         [ div editorConfig.editorStyle
-            [ Editor.Styles.styles { width = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
+            [ Editor.Styles.styles { editorWidth = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
             , view [ style "background-color" "#eeeeee" ] editor
                 |> Html.map editorConfig.editorMsg
             , div [ HA.style "position" "absolute" ]

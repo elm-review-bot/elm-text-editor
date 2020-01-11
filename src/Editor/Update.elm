@@ -1158,7 +1158,7 @@ load wrapOption content state =
             List.maximum lineLengths |> Maybe.withDefault 1000
 
         buffer =
-            if wrapOption == DoWrap && maxLineLength > config.wrapParams.maximumWidth then
+            if wrapOption == DoWrap then
                 Buffer.fromString (Editor.Wrap.paragraphs config content)
 
             else

@@ -9,14 +9,19 @@ style =
     Html.node "style"
 
 
-styleText : { width : Int, numberOfLines : Int, lineHeight : Float } -> String
+styleText : { editorWidth : Int, numberOfLines : Int, lineHeight : Float } -> String
 styleText data =
+    let
+        editorHeight =
+            toFloat data.numberOfLines * data.lineHeight
+    in
     interpolate styleTemplate
-        [ String.fromInt data.width
-        , String.fromFloat (sliderOffsetX data.width)
-        , String.fromFloat (0.8 * data.lineHeight)
-        , String.fromFloat data.lineHeight
-        , String.fromFloat <| sliderOffsetY data.numberOfLines data.lineHeight
+        [ String.fromInt data.editorWidth
+        , String.fromFloat (sliderOffsetX data.editorWidth)
+        , String.fromFloat (0.8 * data.lineHeight) -- {2} font size
+        , String.fromFloat data.lineHeight -- {3}
+        , String.fromFloat <| sliderOffsetY data.numberOfLines data.lineHeight -- {4}
+        , String.fromFloat <| editorHeight -- {5}
         ]
 
 
@@ -46,7 +51,9 @@ body { font-size: {2}px;
   user-select: none;
   -webkit-user-select: none;
   display: flex;
-  overflow : scroll;
+  overflow-x : scroll;
+  overflow-y : hidden;
+  height: {5}px;
 }
 
 .elm-editor-container:focus {
@@ -125,9 +132,8 @@ body {
     background-color : #eeeeee;
     }
 
-#editor {
+#editor-container {
     text-align: left;
-    background-color : #eeeeee;
     }
 
 .input-range-labels-container { visibility: hidden }
@@ -141,6 +147,6 @@ body {
 """
 
 
-styles : { width : Int, lineHeight : Float, numberOfLines : Int } -> Html msg
+styles : { editorWidth : Int, lineHeight : Float, numberOfLines : Int } -> Html msg
 styles data =
     style [] [ text (styleText data) ]

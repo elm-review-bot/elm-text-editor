@@ -13,8 +13,10 @@ import Paragraph
 paragraphs : Config -> String -> String
 paragraphs config str =
     str
+        ++ "\n"
         |> runFSM
-        |> List.map (wrapParagraph config)
+        |> List.filter (\( t, s ) -> s /= "")
+        |> List.map (wrapParagraph config >> String.trim)
         |> String.join "\n\n"
 
 
@@ -179,6 +181,10 @@ classifyLine str =
 
     else if String.left 3 prefix == "```" then
         CodeDelimiter
+
+    else if String.left 2 prefix == "$$" then
+        CodeDelimiter
+        -- haha
 
     else
         Text

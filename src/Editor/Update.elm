@@ -21,6 +21,10 @@ import Task
 import Window
 
 
+
+-- MSG
+
+
 {-| The messages to which the editor responds
 -}
 type Msg
@@ -65,6 +69,7 @@ type Msg
     | SelectAll
     | SelectGroup
     | SelectLine
+    | SendLine
     | Undo
     | Redo
     | ScrollUp Int
@@ -958,6 +963,16 @@ update buffer msg state =
             , buffer
             , Cmd.none
             )
+
+        SendLine ->
+            let
+                k =
+                    state.cursor.line - state.window.first
+
+                newWindow =
+                    Window.shift (k - 5) state.window
+            in
+            ( { state | currentLine = Buffer.lineAt state.cursor buffer, window = newWindow }, buffer, Cmd.none )
 
         Undo ->
             case Editor.History.undo (stateToSnapshot state buffer) state.history of

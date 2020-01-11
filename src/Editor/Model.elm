@@ -24,6 +24,7 @@ type alias InternalState =
     , selection : Maybe Position
     , selectedText : Maybe String
     , clipboard : String
+    , currentLine : Maybe String
     , dragging : Bool
     , history : History Snapshot
     , searchTerm : String

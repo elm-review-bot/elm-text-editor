@@ -58,9 +58,6 @@ nextState line ( state, data ) =
     let
         ( newState, action ) =
             nextStateAndAction line state
-
-        --        _ =
-        --            Debug.log "line" ( state, line, data.currentParagraph )
     in
     ( newState, action line data )
 

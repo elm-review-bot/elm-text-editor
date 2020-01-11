@@ -16,6 +16,7 @@ module Buffer exposing
     , init
     , insert
     , lastPosition
+    , lineAt
     , lineEnd
     , lines
     , nearWordChar
@@ -141,6 +142,11 @@ removeBefore position (Buffer buffer) =
 lines : Buffer -> List String
 lines (Buffer content) =
     String.split "\n" content
+
+
+lineAt : Position -> Buffer -> Maybe String
+lineAt position buffer =
+    List.Extra.getAt position.line (lines buffer)
 
 
 fromString : String -> Buffer

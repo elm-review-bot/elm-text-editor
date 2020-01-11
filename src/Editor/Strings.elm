@@ -12,9 +12,12 @@ module Editor.Strings exposing (help, info)
 help : String
 help =
     """
------------------------------------------------
-                     Key commands
------------------------------------------------
+------------------------------------------
+               Key commands
+------------------------------------------
+
+NEW: ctrl-shift-S to sync with external
+window if the hosting app implements it
 
 Show help         ctrl-h         (Toggle)
 Show info panel   ctrl-shift-i   (Toggle)

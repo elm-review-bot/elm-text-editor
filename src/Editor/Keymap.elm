@@ -155,6 +155,7 @@ keymaps =
             , ( "V", PasteFromClipboard )
             , ( "U", CopyPasteClipboard )
             , ( "W", WrapAll )
+            , ( "S", SendLine )
             ]
     }
 

@@ -2,7 +2,7 @@ module Editor exposing
     ( embedded, init
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
-    , getSource, getCursor, getWrapOption
+    , getSource, getCursor, getWrapOption, lineAt, lineAtCursor
     , placeInClipboard
     , scrollToLine, scrollToString
     , slider, sliderUpdate
@@ -39,7 +39,7 @@ module Editor exposing
 
 ## Getters
 
-@docs getSource, getCursor, getWrapOption
+@docs getSource, getCursor, getWrapOption, lineAt, lineAtCursor
 
 
 ## Clipboard
@@ -110,6 +110,21 @@ type Editor
 getWrapOption : Editor -> WrapOption
 getWrapOption (Editor data) =
     data.state.config.wrapOption
+
+
+{-| Return the the line at the given position
+-}
+lineAt : Position -> Editor -> Maybe String
+lineAt position (Editor data) =
+    Buffer.lineAt position data.buffer
+
+
+{-| Return the the line at the given position
+-}
+lineAtCursor : Editor -> String
+lineAtCursor (Editor data) =
+    Buffer.lineAt data.state.cursor data.buffer
+        |> Maybe.withDefault "invalid cursor"
 
 
 {-| Return the current source text
@@ -260,6 +275,7 @@ init editorConfig text =
             , selection = Nothing
             , selectedText = Nothing
             , clipboard = ""
+            , currentLine = Nothing
             , dragging = False
             , history = Editor.History.empty
             , searchTerm = ""

@@ -6,3 +6,4 @@ demo/publish.sh
 demo/Demo.min.js
 demo/index-remote.html
 demo-simple/Demo.min.js
+demo-simple/Demo.js

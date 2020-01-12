@@ -161,9 +161,8 @@ body {
 .center-column {
     display: flex;
     flex-direction: column;
-    flex: shrink;
     align-items: center;
-    background-color: blue; //: #eeeeee;
+    background-color: lightblue; //: #eeeeee;
     }
 
 #editor-container {

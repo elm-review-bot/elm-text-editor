@@ -244,9 +244,16 @@ smallConfig c =
 -}
 embedded : EditorConfig a -> Editor -> Html a
 embedded editorConfig editor =
+    let
+        styleConfig =
+            { editorWidth = editorConfig.width
+            , editorHeight = editorConfig.height
+            , lineHeight = editorConfig.lineHeight
+            }
+    in
     div [ style "position" "absolute" ]
         [ div editorConfig.editorStyle
-            [ Editor.Styles.editorStyles { editorWidth = round editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = lines editorConfig }
+            [ Editor.Styles.editorStyles styleConfig
             , view [ style "background-color" "#eeeeee" ] editor
                 |> Html.map editorConfig.editorMsg
             , div [ HA.style "position" "absolute" ]

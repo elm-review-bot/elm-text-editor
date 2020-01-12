@@ -9,32 +9,66 @@ style =
     Html.node "style"
 
 
-styleText : { editorWidth : Int, numberOfLines : Int, lineHeight : Float } -> String
-styleText data =
+editorStyles : StyleConfig -> Html msg
+editorStyles styleConfig =
+    style [] [ text (styleText styleConfig) ]
+
+
+type alias StyleConfig =
+    { editorWidth : Float
+    , editorHeight : Float
+    , lineHeight : Float
+    }
+
+
+type alias StyleParams =
+    { editorWidth : String
+    , editorHeight : String
+    , lineHeight : String
+    , fontSize : String
+    , sliderXOffset : String
+    , sliderYOffset : String
+    }
+
+
+getStyleParams : StyleConfig -> StyleParams
+getStyleParams c =
+    { editorWidth = String.fromFloat c.editorWidth
+    , editorHeight = String.fromFloat c.editorHeight
+    , lineHeight = String.fromFloat c.lineHeight
+    , fontSize = String.fromFloat (0.8 * c.lineHeight)
+    , sliderXOffset = String.fromFloat <| c.editorWidth + 50
+    , sliderYOffset = String.fromFloat <| 0.8 * c.editorHeight
+    }
+
+
+styleText : StyleConfig -> String
+styleText styleConfig =
     let
-        editorHeight =
-            toFloat data.numberOfLines * data.lineHeight
+        s =
+            getStyleParams styleConfig
     in
     interpolate styleTemplate
-        [ String.fromInt data.editorWidth
-        , String.fromFloat (sliderOffsetX data.editorWidth)
-        , String.fromFloat (0.8 * data.lineHeight) -- {2} font size
-        , String.fromFloat data.lineHeight -- {3}
-        , String.fromFloat <| sliderOffsetY data.numberOfLines data.lineHeight -- {4}
-        , String.fromFloat <| editorHeight -- {5}
+        [ s.editorWidth
+        , s.sliderXOffset
+        , s.fontSize
+        , s.lineHeight
+        , s.sliderYOffset -- String.fromFloat <| sliderOffsetY styleConfig.numberOfLines styleConfig.lineHeight -- {4}
+        , s.sliderXOffset -- String.fromFloat <| editorHeight -- {5}
         ]
 
 
-sliderOffsetX : Int -> Float
-sliderOffsetX k =
-    (k + 50)
-        |> toFloat
-        |> (\x -> 1.0 * x)
 
-
-sliderOffsetY : Int -> Float -> Float
-sliderOffsetY numberOfLines lineHeight =
-    0.8 * toFloat numberOfLines * lineHeight
+--sliderOffsetX : Int -> Float
+--sliderOffsetX k =
+--    (k + 50)
+--        |> toFloat
+--        |> (\x -> 1.0 * x)
+--
+--
+--sliderOffsetY : Int -> Float -> Float
+--sliderOffsetY numberOfLines lineHeight =
+--    0.8 * toFloat numberOfLines * lineHeight
 
 
 styleTemplate : String
@@ -145,8 +179,3 @@ body {
 }
 
 """
-
-
-editorStyles : Config -> Html msg
-editorStyles data =
-    style [] [ text (styleText data) ]

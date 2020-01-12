@@ -2,7 +2,8 @@ module Editor exposing
     ( embedded, init
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
-    , getSource, getCursor, getWrapOption, lineAt, lineAtCursor
+    , getSource, getCursor, getWrapOption, getSelectedText, lineAt, lineAtCursor
+    , setSelectedText
     , placeInClipboard
     , scrollToLine, scrollToString
     , slider, sliderUpdate
@@ -39,7 +40,12 @@ module Editor exposing
 
 ## Getters
 
-@docs getSource, getCursor, getWrapOption, lineAt, lineAtCursor
+@docs getSource, getCursor, getWrapOption, getSelectedText, lineAt, lineAtCursor
+
+
+## Setters
+
+@docs setSelectedText
 
 
 ## Clipboard
@@ -141,15 +147,13 @@ getCursor (Editor data) =
     data.state.cursor
 
 
-{-| xxx
--}
+{-| -}
 getSelectedText : Editor -> Maybe String
 getSelectedText (Editor data) =
     data.state.selectedText
 
 
-{-| xxx
--}
+{-| -}
 getSmallConfig : InternalState -> SmallEditorConfig
 getSmallConfig s =
     s.config
@@ -159,8 +163,7 @@ getSmallConfig s =
 -- SETTERS --
 
 
-{-| xxx
--}
+{-| -}
 setSelectedText : String -> Editor -> Editor
 setSelectedText str (Editor data) =
     let

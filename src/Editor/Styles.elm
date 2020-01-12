@@ -92,7 +92,7 @@ body { font-size: {2}px;
 
 .elm-editor-container:focus {
   outline: none;
-    background-color : blue;
+    // background-color : lightblue;
 }
 
 .elm-editor-gutter {

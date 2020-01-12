@@ -80,7 +80,6 @@ body { font-size: {2}px;
 
 .elm-editor-container {
   font-family: monospace;
-  border: 1px solid lightgray;
   width: {0}px;
   user-select: none;
   -webkit-user-select: none;
@@ -92,6 +91,7 @@ body { font-size: {2}px;
 
 .elm-editor-container:focus {
   outline: none;
+    background-color : blue;
 }
 
 .elm-editor-gutter {
@@ -155,19 +155,20 @@ body { font-size: {2}px;
 
 body {
     font-family: sans-serif;
-    background-color : #cccccc;
 
     }
 
 .center-column {
     display: flex;
     flex-direction: column;
+    flex: shrink;
     align-items: center;
-    background-color : #eeeeee;
+    background-color: blue; //: #eeeeee;
     }
 
 #editor-container {
     text-align: left;
+9
     }
 
 .input-range-labels-container { visibility: hidden }

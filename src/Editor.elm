@@ -252,13 +252,11 @@ embedded editorConfig editor =
             }
     in
     div [ style "position" "absolute" ]
-        [ div editorConfig.editorStyle
-            [ Editor.Styles.editorStyles styleConfig
-            , view [ style "background-color" "#eeeeee" ] editor
-                |> Html.map editorConfig.editorMsg
-            , div [ HA.style "position" "absolute" ]
-                [ sliderView editor |> Html.map editorConfig.sliderMsg ]
-            ]
+        [ Editor.Styles.editorStyles styleConfig
+        , view [ style "background-color" "blue" ] editor
+            |> Html.map editorConfig.editorMsg
+        , div [ HA.style "position" "absolute" ]
+            [ sliderView editor |> Html.map editorConfig.sliderMsg ]
         ]
 
 

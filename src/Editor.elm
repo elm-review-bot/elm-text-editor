@@ -2,7 +2,7 @@ module Editor exposing
     ( embedded, init
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
-    , getSource, getCursor, getWrapOption, getSelectedText, lineAt, lineAtCursor
+    , getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
     , setSelectedText
     , placeInClipboard
     , scrollToLine, scrollToString
@@ -40,7 +40,7 @@ module Editor exposing
 
 ## Getters
 
-@docs getSource, getCursor, getWrapOption, getSelectedText, lineAt, lineAtCursor
+@docs getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
 
 
 ## Setters
@@ -109,6 +109,11 @@ type Editor
 
 
 -- GETTERS --
+
+
+getFontSize : Editor -> Float
+getFontSize (Editor data) =
+    0.8 * data.state.config.lineHeight
 
 
 {-| Get the options for wrapping text. See the example for `insert`.
@@ -213,6 +218,7 @@ type alias SmallEditorConfig =
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
     , wrapOption : WrapOption
     , height : Float
+    , lineHeight : Float
     }
 
 
@@ -225,6 +231,7 @@ smallConfig c =
     , wrapParams = c.wrapParams
     , wrapOption = c.wrapOption
     , height = c.height
+    , lineHeight = c.lineHeight
     }
 
 

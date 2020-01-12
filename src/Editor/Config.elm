@@ -79,3 +79,7 @@ setOptimumWrapWidth k config =
             { w | optimalWidth = k }
     in
     { config | wrapParams = newWrapParams }
+        getF
+        toFloat
+        data.numberOfLines
+        * data.lineHeight

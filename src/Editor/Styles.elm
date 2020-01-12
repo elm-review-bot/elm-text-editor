@@ -1,4 +1,4 @@
-module Editor.Styles exposing (styles)
+module Editor.Styles exposing (editorStyles)
 
 import Html exposing (Html, text)
 import String.Interpolate exposing (interpolate)
@@ -147,6 +147,6 @@ body {
 """
 
 
-styles : { editorWidth : Int, lineHeight : Float, numberOfLines : Int } -> Html msg
-styles data =
+editorStyles : Config -> Html msg
+editorStyles data =
     style [] [ text (styleText data) ]

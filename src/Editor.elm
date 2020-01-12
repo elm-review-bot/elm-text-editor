@@ -197,8 +197,8 @@ type alias EditorConfig a =
     { editorMsg : EditorMsg -> a
     , sliderMsg : Slider.Msg -> a
     , editorStyle : List (Html.Attribute a)
-    , width : Int
-    , lines : Int
+    , width : Float
+    , height : Float
     , lineHeight : Float
     , showInfoPanel : Bool
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
@@ -220,7 +220,7 @@ type alias SmallEditorConfig =
 -}
 smallConfig : EditorConfig a -> SmallEditorConfig
 smallConfig c =
-    { lines = c.lines
+    { lines = floor <| c.height / c.lineHeight
     , showInfoPanel = c.showInfoPanel
     , wrapParams = c.wrapParams
     , wrapOption = c.wrapOption
@@ -246,13 +246,18 @@ embedded : EditorConfig a -> Editor -> Html a
 embedded editorConfig editor =
     div [ style "position" "absolute" ]
         [ div editorConfig.editorStyle
-            [ Editor.Styles.styles { editorWidth = editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = editorConfig.lines }
+            [ Editor.Styles.styles { editorWidth = round editorConfig.width, lineHeight = editorConfig.lineHeight, numberOfLines = lines editorConfig }
             , view [ style "background-color" "#eeeeee" ] editor
                 |> Html.map editorConfig.editorMsg
             , div [ HA.style "position" "absolute" ]
                 [ sliderView editor |> Html.map editorConfig.sliderMsg ]
             ]
         ]
+
+
+lines : EditorConfig msg -> Int
+lines editorConfig =
+    floor <| editorConfig.height / editorConfig.lineHeight
 
 
 {-| Initialize the embedded editor:
@@ -274,7 +279,7 @@ init editorConfig text =
             { config = smallConfig editorConfig
             , scrolledLine = 0
             , cursor = Position 0 0
-            , window = { first = 0, last = editorConfig.lines - 1 }
+            , window = { first = 0, last = lines editorConfig }
             , selection = Nothing
             , selectedText = Nothing
             , clipboard = ""

@@ -1,9 +1,13 @@
 node_modules
 elm-stuff/
-demo/Demo.js
 .idea/
+
+demo/Demo.js
 demo/publish.sh
 demo/Demo.min.js
 demo/index-remote.html
+
 demo-simple/Demo.min.js
 demo-simple/Demo.js
+demo-simple/index-remote.html
+demo-simple/*.sh

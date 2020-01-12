@@ -111,6 +111,7 @@ type Editor
 -- GETTERS --
 
 
+{-| -}
 getFontSize : Editor -> Float
 getFontSize (Editor data) =
     0.8 * data.state.config.lineHeight

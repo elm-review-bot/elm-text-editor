@@ -67,21 +67,13 @@ config : EditorConfig Msg
 config =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg
-    , editorStyle = editorStyle
     , width = 450
-    , height = 500
+    , height = 480
     , lineHeight = 16.0
     , showInfoPanel = True
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
     }
-
-
-editorStyle : List (Html.Attribute msg)
-editorStyle =
-    [ HA.style "background-color" "#dddddd"
-    , HA.style "border" "solid 0.5px"
-    ]
 
 
 

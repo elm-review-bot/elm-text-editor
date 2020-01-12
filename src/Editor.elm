@@ -196,7 +196,6 @@ setSelectedText str (Editor data) =
 type alias EditorConfig a =
     { editorMsg : EditorMsg -> a
     , sliderMsg : Slider.Msg -> a
-    , editorStyle : List (Html.Attribute a)
     , width : Float
     , height : Float
     , lineHeight : Float
@@ -213,6 +212,7 @@ type alias SmallEditorConfig =
     , showInfoPanel : Bool
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
     , wrapOption : WrapOption
+    , height : Float
     }
 
 
@@ -224,6 +224,7 @@ smallConfig c =
     , showInfoPanel = c.showInfoPanel
     , wrapParams = c.wrapParams
     , wrapOption = c.wrapOption
+    , height = c.height
     }
 
 
@@ -250,14 +251,33 @@ embedded editorConfig editor =
             , editorHeight = editorConfig.height
             , lineHeight = editorConfig.lineHeight
             }
+
+        m =
+            1.04348
+
+        b =
+            90.87
+
+        height_ =
+            editorConfig.height
+
+        -- m * editorConfig.height + b
     in
     div [ style "position" "absolute" ]
         [ Editor.Styles.editorStyles styleConfig
-        , view [ style "background-color" "blue" ] editor
+        , view (innerStyle height_) editor
             |> Html.map editorConfig.editorMsg
         , div [ HA.style "position" "absolute" ]
             [ sliderView editor |> Html.map editorConfig.sliderMsg ]
         ]
+
+
+innerStyle h =
+    [ style "height" (String.fromFloat h ++ "px")
+    , style "border" "solid"
+    , style "border-width" "0.5px"
+    , style "border-color" "#aaa"
+    ]
 
 
 lines : EditorConfig msg -> Int

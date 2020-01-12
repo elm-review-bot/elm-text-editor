@@ -38,7 +38,7 @@ getStyleParams c =
     , lineHeight = String.fromFloat c.lineHeight
     , fontSize = String.fromFloat (0.8 * c.lineHeight)
     , sliderXOffset = String.fromFloat <| c.editorWidth + 50
-    , sliderYOffset = String.fromFloat <| 0.8 * c.editorHeight
+    , sliderYOffset = String.fromFloat <| 1.04348 * c.editorHeight - 90.87 - 20
     }
 
 
@@ -55,6 +55,7 @@ styleText styleConfig =
         , s.lineHeight
         , s.sliderYOffset -- String.fromFloat <| sliderOffsetY styleConfig.numberOfLines styleConfig.lineHeight -- {4}
         , s.sliderXOffset -- String.fromFloat <| editorHeight -- {5}
+        , s.editorHeight -- {6}
         ]
 
 
@@ -86,7 +87,7 @@ body { font-size: {2}px;
   display: flex;
   overflow-x : scroll;
   overflow-y : hidden;
-  height: {5}px;
+  height: {6}px;
 }
 
 .elm-editor-container:focus {

@@ -1853,9 +1853,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.bq,
-		impl.bP,
-		impl.bN,
+		impl.bp,
+		impl.bO,
+		impl.bM,
 		function() { return function() {} }
 	);
 });
@@ -2700,7 +2700,7 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		y: func(record.y),
+		z: func(record.z),
 		au: record.au,
 		aq: record.aq
 	}
@@ -2970,7 +2970,7 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.y;
+		var message = !tag ? value : tag < 3 ? value.a : value.z;
 		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.au;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
@@ -3924,11 +3924,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.bq,
-		impl.bP,
-		impl.bN,
+		impl.bp,
+		impl.bO,
+		impl.bM,
 		function(sendToApp, initialModel) {
-			var view = impl.bR;
+			var view = impl.bQ;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3960,12 +3960,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.bq,
-		impl.bP,
-		impl.bN,
+		impl.bp,
+		impl.bO,
+		impl.bM,
 		function(sendToApp, initialModel) {
 			var divertHrefToApp = impl.ar && impl.ar(sendToApp)
-			var view = impl.bR;
+			var view = impl.bQ;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3978,7 +3978,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.bO) && (_VirtualDom_doc.title = title = doc.bO);
+				(title !== doc.bN) && (_VirtualDom_doc.title = title = doc.bN);
 			});
 		}
 	);
@@ -4034,8 +4034,8 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.bz;
-	var onUrlRequest = impl.bA;
+	var onUrlChange = impl.by;
+	var onUrlRequest = impl.bz;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
@@ -4065,13 +4065,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		bq: function(flags)
+		bp: function(flags)
 		{
-			return A3(impl.bq, flags, _Browser_getUrl(), key);
+			return A3(impl.bp, flags, _Browser_getUrl(), key);
 		},
-		bR: impl.bR,
-		bP: impl.bP,
-		bN: impl.bN
+		bQ: impl.bQ,
+		bO: impl.bO,
+		bM: impl.bM
 	});
 }
 
@@ -4137,17 +4137,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { bm: 'hidden', bc: 'visibilitychange' }
+		? { bl: 'hidden', bc: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { bm: 'mozHidden', bc: 'mozvisibilitychange' }
+		? { bl: 'mozHidden', bc: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { bm: 'msHidden', bc: 'msvisibilitychange' }
+		? { bl: 'msHidden', bc: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { bm: 'webkitHidden', bc: 'webkitvisibilitychange' }
-		: { bm: 'hidden', bc: 'visibilitychange' };
+		? { bl: 'webkitHidden', bc: 'webkitvisibilitychange' }
+		: { bl: 'hidden', bc: 'visibilitychange' };
 }
 
 
@@ -4233,7 +4233,7 @@ function _Browser_getViewport()
 			a5: _Browser_window.pageXOffset,
 			a6: _Browser_window.pageYOffset,
 			a4: _Browser_doc.documentElement.clientWidth,
-			aa: _Browser_doc.documentElement.clientHeight
+			y: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4244,7 +4244,7 @@ function _Browser_getScene()
 	var elem = _Browser_doc.documentElement;
 	return {
 		a4: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		aa: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		y: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4269,13 +4269,13 @@ function _Browser_getViewportOf(id)
 		return {
 			aX: {
 				a4: node.scrollWidth,
-				aa: node.scrollHeight
+				y: node.scrollHeight
 			},
 			a3: {
 				a5: node.scrollLeft,
 				a6: node.scrollTop,
 				a4: node.clientWidth,
-				aa: node.clientHeight
+				y: node.clientHeight
 			}
 		};
 	});
@@ -4310,13 +4310,13 @@ function _Browser_getElement(id)
 				a5: x,
 				a6: y,
 				a4: _Browser_doc.documentElement.clientWidth,
-				aa: _Browser_doc.documentElement.clientHeight
+				y: _Browser_doc.documentElement.clientHeight
 			},
-			bj: {
+			bi: {
 				a5: x + rect.left,
 				a6: y + rect.top,
 				a4: rect.width,
-				aa: rect.height
+				y: rect.height
 			}
 		};
 	});
@@ -4397,7 +4397,7 @@ var _Regex_never = /.^/;
 var _Regex_fromStringWith = F2(function(options, string)
 {
 	var flags = 'g';
-	if (options.bw) { flags += 'm'; }
+	if (options.bv) { flags += 'm'; }
 	if (options.bb) { flags += 'i'; }
 
 	try
@@ -5282,14 +5282,13 @@ var $author$project$Main$SliderMsg = function (a) {
 };
 var $author$project$Main$config = {
 	aC: $author$project$Main$EditorMsg,
-	bh: _List_Nil,
-	aa: 200,
-	S: 16.0,
-	M: true,
+	y: 480,
+	T: 16.0,
+	N: true,
 	a_: $author$project$Main$SliderMsg,
 	a4: 500,
-	Z: 1,
-	_: {bu: 55, ap: 50, a$: $elm$core$String$length}
+	_: 1,
+	aa: {bt: 55, ap: 50, a$: $elm$core$String$length}
 };
 var $author$project$Editor$Editor = $elm$core$Basics$identity;
 var $author$project$Position$Position = F2(
@@ -5297,7 +5296,7 @@ var $author$project$Position$Position = F2(
 		return {t: column, b: line};
 	});
 var $author$project$Editor$History$History = $elm$core$Basics$identity;
-var $author$project$Editor$History$empty = {D: _List_Nil, z: _List_Nil};
+var $author$project$Editor$History$empty = {E: _List_Nil, A: _List_Nil};
 var $lovasoa$elm_rolling_list$RollingList$fromList = function (l) {
 	return {n: l, o: _List_Nil};
 };
@@ -5309,7 +5308,7 @@ var $author$project$Buffer$init = function (content) {
 	return content;
 };
 var $author$project$Editor$lines = function (editorConfig) {
-	return $elm$core$Basics$floor(editorConfig.aa / editorConfig.S);
+	return $elm$core$Basics$floor(editorConfig.y / editorConfig.T);
 };
 var $carwow$elm_slider$SingleSlider$ProgressLeft = 0;
 var $elm$core$String$fromFloat = _String_fromNumber;
@@ -5317,19 +5316,20 @@ var $carwow$elm_slider$SingleSlider$defaultCurrentValueFormatter = F2(
 	function (currentValue, max) {
 		return _Utils_eq(currentValue, max) ? '' : $elm$core$String$fromFloat(currentValue);
 	});
-var $carwow$elm_slider$SingleSlider$defaultModel = {aj: $carwow$elm_slider$SingleSlider$defaultCurrentValueFormatter, R: false, bt: 100, al: $elm$core$String$fromFloat, bv: 0, an: $elm$core$String$fromFloat, T: 0, G: false, bL: 10, bQ: 0};
+var $carwow$elm_slider$SingleSlider$defaultModel = {aj: $carwow$elm_slider$SingleSlider$defaultCurrentValueFormatter, S: false, bs: 100, al: $elm$core$String$fromFloat, bu: 0, an: $elm$core$String$fromFloat, U: 0, H: false, bK: 10, bP: 0};
 var $author$project$Editor$Model$slider = function () {
 	var initialSlider = $carwow$elm_slider$SingleSlider$defaultModel;
 	return _Utils_update(
 		initialSlider,
-		{bt: 100, bv: 0, bL: 0.01, bQ: 0});
+		{bs: 100, bu: 0, bK: 0.01, bP: 0});
 }();
 var $author$project$Editor$smallConfig = function (c) {
 	return {
-		aI: $elm$core$Basics$floor(c.aa / c.S),
-		M: c.M,
-		Z: c.Z,
-		_: c._
+		y: c.y,
+		aI: $elm$core$Basics$floor(c.y / c.T),
+		N: c.N,
+		_: c._,
+		aa: c.aa
 	};
 };
 var $author$project$Editor$init = F2(
@@ -5339,26 +5339,26 @@ var $author$project$Editor$init = F2(
 			a: {
 				ba: false,
 				ah: '',
-				J: $author$project$Editor$smallConfig(editorConfig),
+				K: $author$project$Editor$smallConfig(editorConfig),
 				bd: $elm$core$Maybe$Nothing,
-				Q: A2($author$project$Position$Position, 0, 0),
+				R: A2($author$project$Position$Position, 0, 0),
 				bf: false,
-				bn: $author$project$Editor$History$empty,
-				bC: '',
-				bE: $author$project$Buffer$fromString(''),
-				bF: 0,
-				bG: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
-				bH: '',
+				bm: $author$project$Editor$History$empty,
+				bB: '',
+				bD: $author$project$Buffer$fromString(''),
+				bE: 0,
+				bF: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
+				bG: '',
 				ae: $elm$core$Maybe$Nothing,
 				aY: $elm$core$Maybe$Nothing,
-				bI: false,
-				bJ: true,
-				M: editorConfig.M,
-				bK: false,
+				bH: false,
+				bI: true,
+				N: editorConfig.N,
+				bJ: false,
 				af: $author$project$Editor$Model$slider,
-				bS: {
-					bl: 0,
-					br: $author$project$Editor$lines(editorConfig)
+				bR: {
+					bk: 0,
+					bq: $author$project$Editor$lines(editorConfig)
 				}
 			}
 		};
@@ -5370,7 +5370,7 @@ var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
 			ah: '',
-			K: 0,
+			L: 0,
 			d: A2($author$project$Editor$init, $author$project$Main$config, $author$project$AppText$jabberwocky)
 		},
 		$elm$core$Platform$Cmd$none);
@@ -5413,10 +5413,10 @@ var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Window$scrollToIncludeCursor = F2(
 	function (cursor, window) {
 		var line = cursor.b;
-		var offset = (_Utils_cmp(line, window.br) > -1) ? (line - window.br) : ((_Utils_cmp(line, window.bl) < 1) ? (line - window.bl) : 0);
+		var offset = (_Utils_cmp(line, window.bq) > -1) ? (line - window.bq) : ((_Utils_cmp(line, window.bk) < 1) ? (line - window.bk) : 0);
 		return _Utils_update(
 			window,
-			{bl: window.bl + offset, br: window.br + offset});
+			{bk: window.bk + offset, bq: window.bq + offset});
 	});
 var $author$project$Buffer$lines = function (_v0) {
 	var content = _v0;
@@ -5544,15 +5544,15 @@ var $author$project$Editor$Update$scrollToText = F3(
 				_Utils_update(
 					state,
 					{
-						bG: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
-						bH: str
+						bF: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
+						bG: str
 					}),
 				buffer);
 		} else {
 			var _v1 = _v0.a;
 			var cursor = _v1.a;
 			var end = _v1.b;
-			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 			var _v2 = _Utils_Tuple2(cursor, end);
 			var cursor_ = _v2.a;
 			var end_ = _v2.b;
@@ -5560,11 +5560,11 @@ var $author$project$Editor$Update$scrollToText = F3(
 				_Utils_update(
 					state,
 					{
-						Q: cursor_,
-						bG: $lovasoa$elm_rolling_list$RollingList$fromList(searchResults),
-						bH: str,
+						R: cursor_,
+						bF: $lovasoa$elm_rolling_list$RollingList$fromList(searchResults),
+						bG: str,
 						aY: $elm$core$Maybe$Just(end_),
-						bS: window_
+						bR: window_
 					}),
 				buffer);
 		}
@@ -5591,15 +5591,15 @@ var $author$project$Editor$Update$clearState = function (state) {
 	return _Utils_update(
 		state,
 		{
-			Q: {t: 0, b: 0},
+			R: {t: 0, b: 0},
 			bf: false,
-			bC: '',
-			bF: 0,
-			bG: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
-			bH: '',
+			bB: '',
+			bE: 0,
+			bF: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
+			bG: '',
 			ae: $elm$core$Maybe$Nothing,
 			aY: $elm$core$Maybe$Nothing,
-			bS: {bl: 0, br: state.J.aI - 1}
+			bR: {bk: 0, bq: state.K.aI - 1}
 		});
 };
 var $author$project$Editor$clearState = function (_v0) {
@@ -6184,8 +6184,8 @@ var $folkertdev$elm_paragraph$SymmetricList$singleton = function (x) {
 };
 var $folkertdev$elm_paragraph$Paragraph$startr = function (width) {
 	return {
-		I: $folkertdev$elm_paragraph$SymmetricList$singleton(
-			{k: 0, Y: 0, a4: 0}),
+		J: $folkertdev$elm_paragraph$SymmetricList$singleton(
+			{k: 0, Z: 0, a4: 0}),
 		k: 1,
 		a4: width
 	};
@@ -6437,7 +6437,7 @@ var $folkertdev$elm_paragraph$Paragraph$stepr = F3(
 			return (tot_width - p.a4) - 1;
 		};
 		var waste = function (p) {
-			return $folkertdev$elm_paragraph$Paragraph$single(p) ? 0 : (p.Y + A2(
+			return $folkertdev$elm_paragraph$Paragraph$single(p) ? 0 : (p.Z + A2(
 				$elm$core$Basics$pow,
 				options.ap - width_hd(p),
 				2));
@@ -6447,9 +6447,9 @@ var $folkertdev$elm_paragraph$Paragraph$stepr = F3(
 			return (state.a4 - p.a4) - 1;
 		};
 		var _new = function (p) {
-			return $folkertdev$elm_paragraph$Paragraph$single(p) ? {k: state.k, Y: 0, a4: state.a4} : {
+			return $folkertdev$elm_paragraph$Paragraph$single(p) ? {k: state.k, Z: 0, a4: state.a4} : {
 				k: state.k,
-				Y: p.a4 + A2(
+				Z: p.a4 + A2(
 					$elm$core$Basics$pow,
 					options.ap - old_width_hd(p),
 					2),
@@ -6460,7 +6460,7 @@ var $folkertdev$elm_paragraph$Paragraph$stepr = F3(
 			function (p, q) {
 				var wq0 = width_hd(q);
 				var wp0 = width_hd(p);
-				var rq0 = (options.bu - wq0) + 1;
+				var rq0 = (options.bt - wq0) + 1;
 				return ($folkertdev$elm_paragraph$Paragraph$single(q) && (!p.a4)) ? A2($elm$core$Basics$min, options.ap - wp0, rq0) : ($folkertdev$elm_paragraph$Paragraph$single(q) ? rq0 : A2(
 					$elm$core$Basics$min,
 					A2(
@@ -6483,14 +6483,14 @@ var $folkertdev$elm_paragraph$Paragraph$stepr = F3(
 					if (_v2.$ === 1) {
 						return (_Utils_cmp(
 							width_hd(q),
-							options.bu) > 0) ? $folkertdev$elm_paragraph$SymmetricList$empty : ps_pq;
+							options.bt) > 0) ? $folkertdev$elm_paragraph$SymmetricList$empty : ps_pq;
 					} else {
 						var p = _v2.a;
 						if ((_Utils_cmp(
 							waste(p),
 							waste(q)) < 1) || (_Utils_cmp(
 							width_hd(q),
-							options.bu) > 0)) {
+							options.bt) > 0)) {
 							var $temp$ps_pq = ps_p;
 							ps_pq = $temp$ps_pq;
 							continue discardBadCandidates;
@@ -6533,7 +6533,7 @@ var $folkertdev$elm_paragraph$Paragraph$stepr = F3(
 					}
 				}
 			});
-		var _v6 = $folkertdev$elm_paragraph$SymmetricList$last(state.I);
+		var _v6 = $folkertdev$elm_paragraph$SymmetricList$last(state.J);
 		if (_v6.$ === 1) {
 			return state;
 		} else {
@@ -6541,9 +6541,9 @@ var $folkertdev$elm_paragraph$Paragraph$stepr = F3(
 			var input = A2(
 				add,
 				_new(last),
-				state.I);
+				state.J);
 			var newCandidates = discardBadCandidates(input);
-			return {I: newCandidates, k: tot_len, a4: tot_width};
+			return {J: newCandidates, k: tot_len, a4: tot_width};
 		}
 	});
 var $folkertdev$elm_paragraph$Paragraph$splitAt = F2(
@@ -6603,7 +6603,7 @@ var $folkertdev$elm_paragraph$Paragraph$paragraph = F2(
 							}),
 						$folkertdev$elm_paragraph$SymmetricList$last),
 					function ($) {
-						return $.I;
+						return $.J;
 					}),
 				zs);
 			var targetLength = first.k;
@@ -6714,7 +6714,7 @@ var $author$project$Editor$Wrap$wrapParagraph = F2(
 			return A2(
 				$elm$core$String$join,
 				'\n',
-				A2($folkertdev$elm_paragraph$Paragraph$lines, config._, str));
+				A2($folkertdev$elm_paragraph$Paragraph$lines, config.aa, str));
 		} else {
 			return str;
 		}
@@ -6750,8 +6750,8 @@ var $author$project$Editor$load = F3(
 			$elm$core$Maybe$withDefault,
 			1000,
 			$elm$core$List$maximum(lineLengths));
-		var config = data.a.J;
-		var buffer = ((!wrapOption) && (_Utils_cmp(maxLineLength, config._.bu) > 0)) ? $author$project$Buffer$fromString(
+		var config = data.a.K;
+		var buffer = ((!wrapOption) && (_Utils_cmp(maxLineLength, config.aa.bt) > 0)) ? $author$project$Buffer$fromString(
 			A2($author$project$Editor$Wrap$paragraphs, config, content)) : $author$project$Buffer$fromString(content);
 		var _v0 = $author$project$Editor$clearState(editor);
 		var newData = _v0;
@@ -6784,11 +6784,11 @@ var $author$project$Editor$Update$scrollToLine = F3(
 				$author$project$Buffer$lines(buffer)) - 1,
 			k - 1);
 		var cursor = {t: 0, b: n};
-		var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+		var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 		return _Utils_Tuple2(
 			_Utils_update(
 				state,
-				{Q: cursor, aY: $elm$core$Maybe$Nothing, bS: window}),
+				{R: cursor, aY: $elm$core$Maybe$Nothing, bR: window}),
 			buffer);
 	});
 var $author$project$Editor$scrollToLine = F2(
@@ -6801,11 +6801,11 @@ var $author$project$Editor$scrollToLine = F2(
 	});
 var $carwow$elm_slider$SingleSlider$snapValue = F2(
 	function (value, model) {
-		var roundedStep = $elm$core$Basics$round(model.bL);
+		var roundedStep = $elm$core$Basics$round(model.bK);
 		var adjustedRoundedStep = (roundedStep > 0) ? roundedStep : 1;
 		var newValue = value / adjustedRoundedStep;
 		var roundedValue = function () {
-			var _v0 = model.T;
+			var _v0 = model.U;
 			if (!_v0) {
 				return $elm$core$Basics$floor(newValue);
 			} else {
@@ -6828,7 +6828,7 @@ var $carwow$elm_slider$SingleSlider$update = F2(
 					$elm$core$String$toFloat(newValue));
 				var newModel = _Utils_update(
 					model,
-					{bQ: convertedValue});
+					{bP: convertedValue});
 				return _Utils_Tuple3(newModel, $elm$core$Platform$Cmd$none, shouldFetchModels);
 			case 2:
 				var newValue = message.a;
@@ -6839,7 +6839,7 @@ var $carwow$elm_slider$SingleSlider$update = F2(
 				return _Utils_Tuple3(
 					_Utils_update(
 						model,
-						{bQ: convertedValue}),
+						{bP: convertedValue}),
 					$elm$core$Platform$Cmd$none,
 					true);
 			default:
@@ -6848,12 +6848,12 @@ var $carwow$elm_slider$SingleSlider$update = F2(
 					$carwow$elm_slider$SingleSlider$snapValue,
 					A2(
 						$elm$core$Maybe$withDefault,
-						model.bv,
+						model.bu,
 						$elm$core$String$toFloat(newValue)),
 					model);
 				var newModel = _Utils_update(
 					model,
-					{bQ: convertedValue});
+					{bP: convertedValue});
 				return _Utils_Tuple3(newModel, $elm$core$Platform$Cmd$none, true);
 		}
 	});
@@ -6884,7 +6884,7 @@ var $author$project$Editor$sliderUpdate = F2(
 		var line = $elm$core$Basics$round(
 			function (x) {
 				return x * numberOfLines;
-			}(newSlider.bQ / 100.0));
+			}(newSlider.bP / 100.0));
 		var newEditor = A2($author$project$Editor$updateSlider, newSlider, editor);
 		var newCmd = updateResults ? cmd : $elm$core$Platform$Cmd$none;
 		return _Utils_Tuple2(
@@ -7812,7 +7812,7 @@ var $author$project$Editor$Update$load = F3(
 			$elm$core$Maybe$withDefault,
 			1000,
 			$elm$core$List$maximum(lineLengths));
-		var config = state.J;
+		var config = state.K;
 		var buffer = (!wrapOption) ? $author$project$Buffer$fromString(
 			A2($author$project$Editor$Wrap$paragraphs, config, content)) : $author$project$Buffer$fromString(content);
 		return _Utils_Tuple2(
@@ -7851,15 +7851,15 @@ var $author$project$Editor$History$push = F2(
 	function (entry, _v0) {
 		var history = _v0;
 		return {
-			D: _List_Nil,
-			z: A2($elm$core$List$cons, entry, history.z)
+			E: _List_Nil,
+			A: A2($elm$core$List$cons, entry, history.A)
 		};
 	});
 var $author$project$Editor$Update$stateToSnapshot = F2(
 	function (_v0, buffer) {
-		var cursor = _v0.Q;
+		var cursor = _v0.R;
 		var selection = _v0.aY;
-		return {c: buffer, Q: cursor, aY: selection};
+		return {c: buffer, R: cursor, aY: selection};
 	});
 var $author$project$Editor$Update$recordHistory = F3(
 	function (oldState, oldBuffer, _v0) {
@@ -7870,10 +7870,10 @@ var $author$project$Editor$Update$recordHistory = F3(
 			_Utils_update(
 				state,
 				{
-					bn: (!_Utils_eq(oldBuffer, buffer)) ? A2(
+					bm: (!_Utils_eq(oldBuffer, buffer)) ? A2(
 						$author$project$Editor$History$push,
 						A2($author$project$Editor$Update$stateToSnapshot, oldState, oldBuffer),
-						state.bn) : state.bn
+						state.bm) : state.bm
 				}),
 			buffer,
 			cmd);
@@ -7881,15 +7881,15 @@ var $author$project$Editor$Update$recordHistory = F3(
 var $author$project$Editor$History$redo = F2(
 	function (current, _v0) {
 		var history = _v0;
-		var _v1 = history.D;
+		var _v1 = history.E;
 		if (_v1.b) {
 			var next = _v1.a;
 			var future = _v1.b;
 			return $elm$core$Maybe$Just(
 				_Utils_Tuple2(
 					{
-						D: future,
-						z: A2($elm$core$List$cons, current, history.z)
+						E: future,
+						A: A2($elm$core$List$cons, current, history.A)
 					},
 					next));
 		} else {
@@ -7969,12 +7969,12 @@ var $lovasoa$elm_rolling_list$RollingList$rollBack = function (rollingList) {
 };
 var $author$project$Window$shiftPosition__ = F2(
 	function (window, pos) {
-		var l = pos.b - window.bl;
-		return (l < 0) ? pos : {t: pos.t, b: pos.b - window.bl};
+		var l = pos.b - window.bk;
+		return (l < 0) ? pos : {t: pos.t, b: pos.b - window.bk};
 	});
 var $author$project$Editor$Update$rollSearchSelectionBackward = F2(
 	function (state, buffer) {
-		var searchResults_ = $lovasoa$elm_rolling_list$RollingList$rollBack(state.bG);
+		var searchResults_ = $lovasoa$elm_rolling_list$RollingList$rollBack(state.bF);
 		var _v0 = $lovasoa$elm_rolling_list$RollingList$current(searchResults_);
 		if (_v0.$ === 1) {
 			return _Utils_Tuple3(state, buffer, $elm$core$Platform$Cmd$none);
@@ -7982,7 +7982,7 @@ var $author$project$Editor$Update$rollSearchSelectionBackward = F2(
 			var _v1 = _v0.a;
 			var cursor = _v1.a;
 			var end = _v1.b;
-			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 			var _v2 = _Utils_Tuple2(
 				A2($author$project$Window$shiftPosition__, window_, cursor),
 				A2($author$project$Window$shiftPosition__, window_, end));
@@ -7992,10 +7992,10 @@ var $author$project$Editor$Update$rollSearchSelectionBackward = F2(
 				_Utils_update(
 					state,
 					{
-						Q: cursor_,
-						bG: searchResults_,
+						R: cursor_,
+						bF: searchResults_,
 						aY: $elm$core$Maybe$Just(end_),
-						bS: window_
+						bR: window_
 					}),
 				buffer,
 				$elm$core$Platform$Cmd$none);
@@ -8028,7 +8028,7 @@ var $lovasoa$elm_rolling_list$RollingList$roll = function (rollingList) {
 };
 var $author$project$Editor$Update$rollSearchSelectionForward = F2(
 	function (state, buffer) {
-		var searchResults_ = $lovasoa$elm_rolling_list$RollingList$roll(state.bG);
+		var searchResults_ = $lovasoa$elm_rolling_list$RollingList$roll(state.bF);
 		var _v0 = $lovasoa$elm_rolling_list$RollingList$current(searchResults_);
 		if (_v0.$ === 1) {
 			return _Utils_Tuple3(state, buffer, $elm$core$Platform$Cmd$none);
@@ -8036,7 +8036,7 @@ var $author$project$Editor$Update$rollSearchSelectionForward = F2(
 			var _v1 = _v0.a;
 			var cursor = _v1.a;
 			var end = _v1.b;
-			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 			var _v2 = _Utils_Tuple2(
 				A2($author$project$Window$shiftPosition__, window_, cursor),
 				A2($author$project$Window$shiftPosition__, window_, end));
@@ -8046,10 +8046,10 @@ var $author$project$Editor$Update$rollSearchSelectionForward = F2(
 				_Utils_update(
 					state,
 					{
-						Q: cursor_,
-						bG: searchResults_,
+						R: cursor_,
+						bF: searchResults_,
 						aY: $elm$core$Maybe$Just(end_),
-						bS: window_
+						bR: window_
 					}),
 				buffer,
 				$elm$core$Platform$Cmd$none);
@@ -8057,10 +8057,10 @@ var $author$project$Editor$Update$rollSearchSelectionForward = F2(
 	});
 var $author$project$Window$scroll = F2(
 	function (k, window) {
-		var index = window.bl + k;
+		var index = window.bk + k;
 		var _v0 = _Utils_Tuple2(
 			index < 0,
-			(_Utils_cmp(index, window.bl) > -1) && (_Utils_cmp(index, window.br) < 1));
+			(_Utils_cmp(index, window.bk) > -1) && (_Utils_cmp(index, window.bq) < 1));
 		if (_v0.a) {
 			return window;
 		} else {
@@ -8069,7 +8069,7 @@ var $author$project$Window$scroll = F2(
 			} else {
 				return _Utils_update(
 					window,
-					{bl: window.bl + k, br: window.br + k});
+					{bk: window.bk + k, bq: window.bq + k});
 			}
 		}
 	});
@@ -8082,8 +8082,8 @@ var $author$project$Editor$Update$scrollToTextInternal = F3(
 				_Utils_update(
 					state,
 					{
-						bG: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
-						bH: str,
+						bF: $lovasoa$elm_rolling_list$RollingList$fromList(_List_Nil),
+						bG: str,
 						aY: $elm$core$Maybe$Nothing
 					}),
 				buffer,
@@ -8092,7 +8092,7 @@ var $author$project$Editor$Update$scrollToTextInternal = F3(
 			var _v1 = _v0.a;
 			var cursor = _v1.a;
 			var end = _v1.b;
-			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+			var window_ = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 			var _v2 = _Utils_Tuple2(
 				A2($author$project$Window$shiftPosition__, window_, cursor),
 				A2($author$project$Window$shiftPosition__, window_, end));
@@ -8102,11 +8102,11 @@ var $author$project$Editor$Update$scrollToTextInternal = F3(
 				_Utils_update(
 					state,
 					{
-						Q: cursor_,
-						bG: $lovasoa$elm_rolling_list$RollingList$fromList(searchResults),
-						bH: str,
+						R: cursor_,
+						bF: $lovasoa$elm_rolling_list$RollingList$fromList(searchResults),
+						bG: str,
 						aY: $elm$core$Maybe$Just(end_),
-						bS: window_
+						bR: window_
 					}),
 				buffer,
 				$elm$core$Platform$Cmd$none);
@@ -8123,7 +8123,7 @@ var $author$project$Editor$Update$lift = function (f) {
 		return _Utils_update(
 			is,
 			{
-				J: f(is.J)
+				K: f(is.K)
 			});
 	};
 };
@@ -8131,7 +8131,7 @@ var $author$project$Editor$Config$setWrapOption = F2(
 	function (wrapOption, config) {
 		return _Utils_update(
 			config,
-			{Z: wrapOption});
+			{_: wrapOption});
 	});
 var $author$project$Editor$Update$setWrapOption = F2(
 	function (wrapOption, state) {
@@ -8150,7 +8150,7 @@ var $author$project$Window$shift = F2(
 	function (k, w) {
 		return _Utils_update(
 			w,
-			{bl: w.bl + k, br: w.br + k});
+			{bk: w.bk + k, bq: w.bq + k});
 	});
 var $author$project$Buffer$toString = function (_v0) {
 	var buffer = _v0;
@@ -8159,15 +8159,15 @@ var $author$project$Buffer$toString = function (_v0) {
 var $author$project$Editor$History$undo = F2(
 	function (current, _v0) {
 		var history = _v0;
-		var _v1 = history.z;
+		var _v1 = history.A;
 		if (_v1.b) {
 			var previous = _v1.a;
 			var past = _v1.b;
 			return $elm$core$Maybe$Just(
 				_Utils_Tuple2(
 					{
-						D: A2($elm$core$List$cons, current, history.D),
-						z: past
+						E: A2($elm$core$List$cons, current, history.E),
+						A: past
 					},
 					previous));
 		} else {
@@ -8184,7 +8184,7 @@ var $author$project$Editor$Update$update = F3(
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{Q: position, bf: true, aY: $elm$core$Maybe$Nothing}),
+						{R: position, bf: true, aY: $elm$core$Maybe$Nothing}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 2:
@@ -8193,14 +8193,14 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: position,
+							R: position,
 							aY: function () {
 								var _v1 = state.aY;
 								if (!_v1.$) {
 									var selection = _v1.a;
 									return _Utils_eq(selection, position) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(selection);
 								} else {
-									return _Utils_eq(position, state.Q) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(state.Q);
+									return _Utils_eq(position, state.R) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(state.R);
 								}
 							}()
 						}),
@@ -8219,9 +8219,9 @@ var $author$project$Editor$Update$update = F3(
 						var _v2 = state.aY;
 						if (!_v2.$) {
 							var selection = _v2.a;
-							return A2($author$project$Position$order, selection, state.Q).a;
+							return A2($author$project$Position$order, selection, state.R).a;
 						} else {
-							return state.Q;
+							return state.R;
 						}
 					}();
 					return A3(
@@ -8234,9 +8234,9 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: newCursor,
+							R: newCursor,
 							aY: $elm$core$Maybe$Nothing,
-							bS: A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bS)
+							bR: A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bR)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8246,9 +8246,9 @@ var $author$project$Editor$Update$update = F3(
 						var _v3 = state.aY;
 						if (!_v3.$) {
 							var selection = _v3.a;
-							return A2($author$project$Position$order, selection, state.Q).b;
+							return A2($author$project$Position$order, selection, state.R).b;
 						} else {
-							return state.Q;
+							return state.R;
 						}
 					}();
 					return A3(
@@ -8261,22 +8261,22 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: newCursor,
+							R: newCursor,
 							aY: $elm$core$Maybe$Nothing,
-							bS: A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bS)
+							bR: A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bR)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 9:
-				var newWindow = A2($author$project$Window$scroll, -1, state.bS);
+				var newWindow = A2($author$project$Window$scroll, -1, state.bR);
 				var newCursor = function () {
 					var moveFrom = function () {
 						var _v4 = state.aY;
 						if (!_v4.$) {
 							var selection = _v4.a;
-							return A2($author$project$Position$order, selection, state.Q).a;
+							return A2($author$project$Position$order, selection, state.R).a;
 						} else {
-							return state.Q;
+							return state.R;
 						}
 					}();
 					return A3(
@@ -8288,7 +8288,7 @@ var $author$project$Editor$Update$update = F3(
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{Q: newCursor, aY: $elm$core$Maybe$Nothing, bS: newWindow}),
+						{R: newCursor, aY: $elm$core$Maybe$Nothing, bR: newWindow}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 10:
@@ -8297,9 +8297,9 @@ var $author$project$Editor$Update$update = F3(
 						var _v5 = state.aY;
 						if (!_v5.$) {
 							var selection = _v5.a;
-							return A2($author$project$Position$order, selection, state.Q).b;
+							return A2($author$project$Position$order, selection, state.R).b;
 						} else {
-							return state.Q;
+							return state.R;
 						}
 					}();
 					return A3(
@@ -8312,9 +8312,9 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: newCursor,
+							R: newCursor,
 							aY: $elm$core$Maybe$Nothing,
-							bS: A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bS)
+							bR: A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bR)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8323,22 +8323,22 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: function () {
+							R: function () {
 								var moveFrom = function () {
 									var _v7 = state.aY;
 									if (!_v7.$) {
 										var selection = _v7.a;
-										return A2($author$project$Position$order, selection, state.Q).b;
+										return A2($author$project$Position$order, selection, state.R).b;
 									} else {
-										return state.Q;
+										return state.R;
 									}
 								}();
 								var _v6 = A2($author$project$Buffer$lineEnd, moveFrom.b, buffer);
 								if (!_v6.$) {
 									var column = _v6.a;
-									return A2($author$project$Position$setColumn, column, state.Q);
+									return A2($author$project$Position$setColumn, column, state.R);
 								} else {
-									return A3($author$project$Buffer$clampPosition, 1, buffer, state.Q);
+									return A3($author$project$Buffer$clampPosition, 1, buffer, state.R);
 								}
 							}(),
 							aY: $elm$core$Maybe$Nothing
@@ -8350,14 +8350,14 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: function () {
+							R: function () {
 								var moveFrom = function () {
 									var _v8 = state.aY;
 									if (!_v8.$) {
 										var selection = _v8.a;
-										return A2($author$project$Position$order, selection, state.Q).a;
+										return A2($author$project$Position$order, selection, state.R).a;
 									} else {
-										return state.Q;
+										return state.R;
 									}
 								}();
 								return A2($author$project$Position$setColumn, 0, moveFrom);
@@ -8371,7 +8371,7 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: A2($author$project$Buffer$groupEnd, state.Q, buffer),
+							R: A2($author$project$Buffer$groupEnd, state.R, buffer),
 							aY: $elm$core$Maybe$Nothing
 						}),
 					buffer,
@@ -8381,7 +8381,7 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: A2($author$project$Buffer$groupStart, state.Q, buffer),
+							R: A2($author$project$Buffer$groupStart, state.R, buffer),
 							aY: $elm$core$Maybe$Nothing
 						}),
 					buffer,
@@ -8394,13 +8394,13 @@ var $author$project$Editor$Update$update = F3(
 					var text = _v9.a;
 					return _Utils_Tuple3(
 						state,
-						A3($author$project$Buffer$insert, state.Q, text, buffer),
+						A3($author$project$Buffer$insert, state.R, text, buffer),
 						$elm$core$Platform$Cmd$none);
 				}
 			case 23:
 				return _Utils_Tuple3(
 					state,
-					A3($author$project$Buffer$insert, state.Q, state.ah, buffer),
+					A3($author$project$Buffer$insert, state.R, state.ah, buffer),
 					$elm$core$Platform$Cmd$none);
 			case 5:
 				return _Utils_Tuple3(state, buffer, $elm$core$Platform$Cmd$none);
@@ -8413,7 +8413,7 @@ var $author$project$Editor$Update$update = F3(
 					if (!_v10.b.$) {
 						var selection = _v10.a.a;
 						var closing = _v10.b.a;
-						var _v11 = A2($author$project$Position$order, selection, state.Q);
+						var _v11 = A2($author$project$Position$order, selection, state.R);
 						var start = _v11.a;
 						var end = _v11.b;
 						var wrapped = _Utils_ap(
@@ -8429,7 +8429,7 @@ var $author$project$Editor$Update$update = F3(
 								_Utils_update(
 									state,
 									{
-										Q: _Utils_eq(state.Q.b, start.b) ? $author$project$Position$nextColumn(state.Q) : state.Q,
+										R: _Utils_eq(state.R.b, start.b) ? $author$project$Position$nextColumn(state.R) : state.R,
 										aY: $elm$core$Maybe$Just(
 											_Utils_eq(selection.b, start.b) ? $author$project$Position$nextColumn(selection) : selection)
 									}),
@@ -8438,7 +8438,7 @@ var $author$project$Editor$Update$update = F3(
 					} else {
 						var selection = _v10.a.a;
 						var _v12 = _v10.b;
-						var _v13 = A2($author$project$Position$order, selection, state.Q);
+						var _v13 = A2($author$project$Position$order, selection, state.R);
 						var start = _v13.a;
 						var end = _v13.b;
 						return A3(
@@ -8449,7 +8449,7 @@ var $author$project$Editor$Update$update = F3(
 								_Utils_update(
 									state,
 									{
-										Q: (string === '\n') ? {t: 0, b: start.b + 1} : $author$project$Position$nextColumn(start),
+										R: (string === '\n') ? {t: 0, b: start.b + 1} : $author$project$Position$nextColumn(start),
 										aY: $elm$core$Maybe$Nothing
 									}),
 								A4($author$project$Buffer$replace, start, end, string, buffer),
@@ -8458,7 +8458,7 @@ var $author$project$Editor$Update$update = F3(
 				} else {
 					var _v14 = _v10.a;
 					var maybeClosing = _v10.b;
-					var nearWordChar = A2($author$project$Buffer$nearWordChar, state.Q, buffer);
+					var nearWordChar = A2($author$project$Buffer$nearWordChar, state.R, buffer);
 					var insertString = (!nearWordChar) ? A2(
 						$elm$core$Maybe$withDefault,
 						string,
@@ -8466,7 +8466,7 @@ var $author$project$Editor$Update$update = F3(
 							$elm$core$Maybe$map,
 							$elm$core$Basics$append(string),
 							maybeClosing)) : string;
-					var newCursor = (string === '\n') ? {t: 0, b: state.Q.b + 1} : $author$project$Position$nextColumn(state.Q);
+					var newCursor = (string === '\n') ? {t: 0, b: state.R.b + 1} : $author$project$Position$nextColumn(state.R);
 					return A3(
 						$author$project$Editor$Update$recordHistory,
 						state,
@@ -8475,15 +8475,15 @@ var $author$project$Editor$Update$update = F3(
 							_Utils_update(
 								state,
 								{
-									Q: newCursor,
-									bS: (string === '\n') ? A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bS) : state.bS
+									R: newCursor,
+									bR: (string === '\n') ? A2($author$project$Window$scrollToIncludeCursor, newCursor, state.bR) : state.bR
 								}),
-							A3($author$project$Buffer$insert, state.Q, insertString, buffer),
+							A3($author$project$Buffer$insert, state.R, insertString, buffer),
 							$elm$core$Platform$Cmd$none));
 				}
 			case 16:
 				var cursor = {t: 0, b: 0};
-				var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+				var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 				return A3(
 					$author$project$Editor$Update$recordHistory,
 					state,
@@ -8491,7 +8491,7 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_Tuple3(
 						_Utils_update(
 							state,
-							{Q: cursor, aY: $elm$core$Maybe$Nothing, bS: window}),
+							{R: cursor, aY: $elm$core$Maybe$Nothing, bR: window}),
 						buffer,
 						$elm$core$Platform$Cmd$none));
 			case 17:
@@ -8508,7 +8508,7 @@ var $author$project$Editor$Update$update = F3(
 							$author$project$Buffer$lines(buffer)) - 1,
 						n_ - 1);
 					var cursor = {t: 0, b: n};
-					var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+					var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 					return A3(
 						$author$project$Editor$Update$recordHistory,
 						state,
@@ -8516,7 +8516,7 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(
 							_Utils_update(
 								state,
-								{Q: cursor, aY: $elm$core$Maybe$Nothing, bS: window}),
+								{R: cursor, aY: $elm$core$Maybe$Nothing, bR: window}),
 							buffer,
 							$elm$core$Platform$Cmd$none));
 				}
@@ -8537,7 +8537,7 @@ var $author$project$Editor$Update$update = F3(
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{bC: str}),
+						{bB: str}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 20:
@@ -8546,7 +8546,7 @@ var $author$project$Editor$Update$update = F3(
 					return _Utils_Tuple3(state, buffer, $elm$core$Platform$Cmd$none);
 				} else {
 					var end = _v17.a;
-					var newBuffer = A4($author$project$Buffer$replace, state.Q, end, state.bC, buffer);
+					var newBuffer = A4($author$project$Buffer$replace, state.R, end, state.bB, buffer);
 					return A3(
 						$author$project$Editor$Update$recordHistory,
 						state,
@@ -8559,7 +8559,7 @@ var $author$project$Editor$Update$update = F3(
 					b: $elm$core$List$length(
 						$author$project$Buffer$lines(buffer)) - 1
 				};
-				var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bS);
+				var window = A2($author$project$Window$scrollToIncludeCursor, cursor, state.bR);
 				return A3(
 					$author$project$Editor$Update$recordHistory,
 					state,
@@ -8567,14 +8567,14 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_Tuple3(
 						_Utils_update(
 							state,
-							{Q: cursor, aY: $elm$core$Maybe$Nothing, bS: window}),
+							{R: cursor, aY: $elm$core$Maybe$Nothing, bR: window}),
 						buffer,
 						$elm$core$Platform$Cmd$none));
 			case 24:
 				var _v18 = state.aY;
 				if (!_v18.$) {
 					var selection = _v18.a;
-					var _v19 = A2($author$project$Position$order, selection, state.Q);
+					var _v19 = A2($author$project$Position$order, selection, state.R);
 					var start = _v19.a;
 					var end = _v19.b;
 					return A3(
@@ -8584,7 +8584,7 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(
 							_Utils_update(
 								state,
-								{Q: start, aY: $elm$core$Maybe$Nothing}),
+								{R: start, aY: $elm$core$Maybe$Nothing}),
 							A4($author$project$Buffer$replace, start, end, '', buffer),
 							$elm$core$Platform$Cmd$none));
 				} else {
@@ -8596,8 +8596,8 @@ var $author$project$Editor$Update$update = F3(
 							state,
 							A4(
 								$author$project$Buffer$replace,
-								state.Q,
-								$author$project$Position$nextColumn(state.Q),
+								state.R,
+								$author$project$Position$nextColumn(state.R),
 								'',
 								buffer),
 							$elm$core$Platform$Cmd$none));
@@ -8606,7 +8606,7 @@ var $author$project$Editor$Update$update = F3(
 				var _v20 = state.aY;
 				if (!_v20.$) {
 					var selection = _v20.a;
-					var _v21 = A2($author$project$Position$order, selection, state.Q);
+					var _v21 = A2($author$project$Position$order, selection, state.R);
 					var start = _v21.a;
 					var end = _v21.b;
 					return A3(
@@ -8616,7 +8616,7 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(
 							_Utils_update(
 								state,
-								{Q: start, aY: $elm$core$Maybe$Nothing}),
+								{R: start, aY: $elm$core$Maybe$Nothing}),
 							A4($author$project$Buffer$replace, start, end, '', buffer),
 							$elm$core$Platform$Cmd$none));
 				} else {
@@ -8628,20 +8628,20 @@ var $author$project$Editor$Update$update = F3(
 							_Utils_update(
 								state,
 								{
-									Q: A3(
+									R: A3(
 										$author$project$Buffer$clampPosition,
 										1,
 										buffer,
-										$author$project$Position$previousColumn(state.Q))
+										$author$project$Position$previousColumn(state.R))
 								}),
-							A2($author$project$Buffer$removeBefore, state.Q, buffer),
+							A2($author$project$Buffer$removeBefore, state.R, buffer),
 							$elm$core$Platform$Cmd$none));
 				}
 			case 26:
 				var _v22 = state.aY;
 				if (!_v22.$) {
 					var selection = _v22.a;
-					var _v23 = A2($author$project$Position$order, selection, state.Q);
+					var _v23 = A2($author$project$Position$order, selection, state.R);
 					var start = _v23.a;
 					var end = _v23.b;
 					return A3(
@@ -8651,18 +8651,18 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(
 							_Utils_update(
 								state,
-								{Q: start, aY: $elm$core$Maybe$Nothing}),
+								{R: start, aY: $elm$core$Maybe$Nothing}),
 							A4($author$project$Buffer$replace, start, end, '', buffer),
 							$elm$core$Platform$Cmd$none));
 				} else {
-					var end = A2($author$project$Buffer$groupEnd, state.Q, buffer);
+					var end = A2($author$project$Buffer$groupEnd, state.R, buffer);
 					return A3(
 						$author$project$Editor$Update$recordHistory,
 						state,
 						buffer,
 						_Utils_Tuple3(
 							state,
-							A4($author$project$Buffer$replace, state.Q, end, '', buffer),
+							A4($author$project$Buffer$replace, state.R, end, '', buffer),
 							$elm$core$Platform$Cmd$none));
 				}
 			case 4:
@@ -8685,7 +8685,7 @@ var $author$project$Editor$Update$update = F3(
 						state,
 						buffer,
 						function () {
-							var _v25 = A2($author$project$Position$order, sel, state.Q);
+							var _v25 = A2($author$project$Position$order, sel, state.R);
 							var start = _v25.a;
 							var end = _v25.b;
 							var selectedText = A3($author$project$Buffer$between, start, end, buffer);
@@ -8719,7 +8719,7 @@ var $author$project$Editor$Update$update = F3(
 						state,
 						buffer,
 						function () {
-							var _v27 = A2($author$project$Position$order, sel, state.Q);
+							var _v27 = A2($author$project$Position$order, sel, state.R);
 							var start = _v27.a;
 							var end = _v27.b;
 							var selectedText = A3($author$project$Buffer$between, start, end, buffer);
@@ -8737,7 +8737,7 @@ var $author$project$Editor$Update$update = F3(
 				var _v28 = state.aY;
 				if (!_v28.$) {
 					var selection = _v28.a;
-					var _v29 = A2($author$project$Position$order, selection, state.Q);
+					var _v29 = A2($author$project$Position$order, selection, state.R);
 					var start = _v29.a;
 					var end = _v29.b;
 					return A3(
@@ -8747,11 +8747,11 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(
 							_Utils_update(
 								state,
-								{Q: start, aY: $elm$core$Maybe$Nothing}),
+								{R: start, aY: $elm$core$Maybe$Nothing}),
 							A4($author$project$Buffer$replace, start, end, '', buffer),
 							$elm$core$Platform$Cmd$none));
 				} else {
-					var start = A2($author$project$Buffer$groupStart, state.Q, buffer);
+					var start = A2($author$project$Buffer$groupStart, state.R, buffer);
 					return A3(
 						$author$project$Editor$Update$recordHistory,
 						state,
@@ -8759,8 +8759,8 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(
 							_Utils_update(
 								state,
-								{Q: start}),
-							A4($author$project$Buffer$replace, start, state.Q, '', buffer),
+								{R: start}),
+							A4($author$project$Buffer$replace, start, state.R, '', buffer),
 							$elm$core$Platform$Cmd$none));
 				}
 			case 28:
@@ -8775,14 +8775,14 @@ var $author$project$Editor$Update$update = F3(
 							_Utils_update(
 								state,
 								{
-									Q: A2($author$project$Position$addColumn, $author$project$Buffer$indentSize, state.Q),
+									R: A2($author$project$Position$addColumn, $author$project$Buffer$indentSize, state.R),
 									aY: $elm$core$Maybe$Just(
 										A2($author$project$Position$addColumn, $author$project$Buffer$indentSize, selection))
 								}),
-							A3($author$project$Buffer$indentBetween, state.Q, selection, buffer),
+							A3($author$project$Buffer$indentBetween, state.R, selection, buffer),
 							$elm$core$Platform$Cmd$none));
 				} else {
-					var _v31 = A2($author$project$Buffer$indentFrom, state.Q, buffer);
+					var _v31 = A2($author$project$Buffer$indentFrom, state.R, buffer);
 					var indentedBuffer = _v31.a;
 					var indentedColumn = _v31.b;
 					return A3(
@@ -8793,7 +8793,7 @@ var $author$project$Editor$Update$update = F3(
 							_Utils_update(
 								state,
 								{
-									Q: A2($author$project$Position$setColumn, indentedColumn, state.Q)
+									R: A2($author$project$Position$setColumn, indentedColumn, state.R)
 								}),
 							indentedBuffer,
 							$elm$core$Platform$Cmd$none));
@@ -8802,7 +8802,7 @@ var $author$project$Editor$Update$update = F3(
 				var _v32 = state.aY;
 				if (!_v32.$) {
 					var selection = _v32.a;
-					var _v33 = A3($author$project$Buffer$deindentBetween, state.Q, selection, buffer);
+					var _v33 = A3($author$project$Buffer$deindentBetween, state.R, selection, buffer);
 					var deindentedBuffer = _v33.a;
 					var cursorColumn = _v33.b;
 					var selectionColumn = _v33.c;
@@ -8814,14 +8814,14 @@ var $author$project$Editor$Update$update = F3(
 							_Utils_update(
 								state,
 								{
-									Q: A2($author$project$Position$setColumn, cursorColumn, state.Q),
+									R: A2($author$project$Position$setColumn, cursorColumn, state.R),
 									aY: $elm$core$Maybe$Just(
 										A2($author$project$Position$setColumn, selectionColumn, selection))
 								}),
 							deindentedBuffer,
 							$elm$core$Platform$Cmd$none));
 				} else {
-					var _v34 = A2($author$project$Buffer$deindentFrom, state.Q, buffer);
+					var _v34 = A2($author$project$Buffer$deindentFrom, state.R, buffer);
 					var deindentedBuffer = _v34.a;
 					var deindentedColumn = _v34.b;
 					return A3(
@@ -8832,7 +8832,7 @@ var $author$project$Editor$Update$update = F3(
 							_Utils_update(
 								state,
 								{
-									Q: A2($author$project$Position$setColumn, deindentedColumn, state.Q)
+									R: A2($author$project$Position$setColumn, deindentedColumn, state.R)
 								}),
 							deindentedBuffer,
 							$elm$core$Platform$Cmd$none));
@@ -8842,15 +8842,15 @@ var $author$project$Editor$Update$update = F3(
 					$author$project$Buffer$clampPosition,
 					1,
 					buffer,
-					$author$project$Position$previousLine(state.Q));
+					$author$project$Position$previousLine(state.R));
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8859,15 +8859,15 @@ var $author$project$Editor$Update$update = F3(
 					$author$project$Buffer$clampPosition,
 					1,
 					buffer,
-					$author$project$Position$nextLine(state.Q));
+					$author$project$Position$nextLine(state.R));
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8876,15 +8876,15 @@ var $author$project$Editor$Update$update = F3(
 					$author$project$Buffer$clampPosition,
 					1,
 					buffer,
-					$author$project$Position$previousColumn(state.Q));
+					$author$project$Position$previousColumn(state.R));
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8893,28 +8893,28 @@ var $author$project$Editor$Update$update = F3(
 					$author$project$Buffer$clampPosition,
 					0,
 					buffer,
-					$author$project$Position$nextColumn(state.Q));
+					$author$project$Position$nextColumn(state.R));
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 34:
-				var cursor = A2($author$project$Position$setColumn, 0, state.Q);
+				var cursor = A2($author$project$Position$setColumn, 0, state.R);
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8923,43 +8923,43 @@ var $author$project$Editor$Update$update = F3(
 					$author$project$Position$setColumn,
 					A2(
 						$elm$core$Maybe$withDefault,
-						state.Q.b,
-						A2($author$project$Buffer$lineEnd, state.Q.b, buffer)),
-					state.Q);
+						state.R.b,
+						A2($author$project$Buffer$lineEnd, state.R.b, buffer)),
+					state.R);
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 36:
-				var cursor = A2($author$project$Buffer$groupStart, state.Q, buffer);
+				var cursor = A2($author$project$Buffer$groupStart, state.R, buffer);
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 37:
-				var cursor = A2($author$project$Buffer$groupEnd, state.Q, buffer);
+				var cursor = A2($author$project$Buffer$groupEnd, state.R, buffer);
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							Q: cursor,
+							R: cursor,
 							aY: _Utils_eq(
 								state.aY,
-								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.Q, cursor))) ? $elm$core$Maybe$Just(state.Q) : state.aY)
+								$elm$core$Maybe$Just(cursor)) ? $elm$core$Maybe$Nothing : ((_Utils_eq(state.aY, $elm$core$Maybe$Nothing) && (!_Utils_eq(state.R, cursor))) ? $elm$core$Maybe$Just(state.R) : state.aY)
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -8968,14 +8968,14 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: $author$project$Buffer$lastPosition(buffer),
+							R: $author$project$Buffer$lastPosition(buffer),
 							aY: $elm$core$Maybe$Just(
 								A2($author$project$Position$Position, 0, 0))
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 39:
-				var range = A2($author$project$Buffer$groupRange, state.Q, buffer);
+				var range = A2($author$project$Buffer$groupRange, state.R, buffer);
 				if (!range.$) {
 					var _v36 = range.a;
 					var start = _v36.a;
@@ -8984,7 +8984,7 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_update(
 							state,
 							{
-								Q: end,
+								R: end,
 								aY: $elm$core$Maybe$Just(start)
 							}),
 						buffer,
@@ -8997,29 +8997,29 @@ var $author$project$Editor$Update$update = F3(
 					_Utils_update(
 						state,
 						{
-							Q: A2(
+							R: A2(
 								$elm$core$Maybe$withDefault,
-								state.Q,
+								state.R,
 								A2(
 									$elm$core$Maybe$map,
 									function (column) {
-										return A2($author$project$Position$setColumn, column, state.Q);
+										return A2($author$project$Position$setColumn, column, state.R);
 									},
-									A2($author$project$Buffer$lineEnd, state.Q.b, buffer))),
+									A2($author$project$Buffer$lineEnd, state.R.b, buffer))),
 							aY: $elm$core$Maybe$Just(
-								A2($author$project$Position$setColumn, 0, state.Q))
+								A2($author$project$Position$setColumn, 0, state.R))
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 41:
-				var k = state.Q.b - state.bS.bl;
-				var newWindow = A2($author$project$Window$shift, k - 5, state.bS);
+				var k = state.R.b - state.bR.bk;
+				var newWindow = A2($author$project$Window$shift, k - 5, state.bR);
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
 						{
-							bd: A2($author$project$Buffer$lineAt, state.Q, buffer),
-							bS: newWindow
+							bd: A2($author$project$Buffer$lineAt, state.R, buffer),
+							bR: newWindow
 						}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
@@ -9027,7 +9027,7 @@ var $author$project$Editor$Update$update = F3(
 				var _v37 = A2(
 					$author$project$Editor$History$undo,
 					A2($author$project$Editor$Update$stateToSnapshot, state, buffer),
-					state.bn);
+					state.bm);
 				if (!_v37.$) {
 					var _v38 = _v37.a;
 					var history = _v38.a;
@@ -9035,7 +9035,7 @@ var $author$project$Editor$Update$update = F3(
 					return _Utils_Tuple3(
 						_Utils_update(
 							state,
-							{Q: snapshot.Q, bn: history, aY: snapshot.aY}),
+							{R: snapshot.R, bm: history, aY: snapshot.aY}),
 						snapshot.c,
 						$elm$core$Platform$Cmd$none);
 				} else {
@@ -9045,7 +9045,7 @@ var $author$project$Editor$Update$update = F3(
 				var _v39 = A2(
 					$author$project$Editor$History$redo,
 					A2($author$project$Editor$Update$stateToSnapshot, state, buffer),
-					state.bn);
+					state.bm);
 				if (!_v39.$) {
 					var _v40 = _v39.a;
 					var history = _v40.a;
@@ -9053,7 +9053,7 @@ var $author$project$Editor$Update$update = F3(
 					return _Utils_Tuple3(
 						_Utils_update(
 							state,
-							{Q: snapshot.Q, bn: history, aY: snapshot.aY}),
+							{R: snapshot.R, bm: history, aY: snapshot.aY}),
 						snapshot.c,
 						$elm$core$Platform$Cmd$none);
 				} else {
@@ -9061,32 +9061,32 @@ var $author$project$Editor$Update$update = F3(
 				}
 			case 44:
 				var k = msg.a;
-				var maxDelta = A2($elm$core$Basics$min, state.bS.bl, k);
+				var maxDelta = A2($elm$core$Basics$min, state.bR.bk, k);
 				var _v41 = _Utils_Tuple2(
-					A2($author$project$Position$shift, -maxDelta, state.Q),
-					A2($author$project$Window$shift, -maxDelta, state.bS));
+					A2($author$project$Position$shift, -maxDelta, state.R),
+					A2($author$project$Window$shift, -maxDelta, state.bR));
 				var newCursor = _v41.a;
 				var newWindow = _v41.b;
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{Q: newCursor, aY: $elm$core$Maybe$Nothing, bS: newWindow}),
+						{R: newCursor, aY: $elm$core$Maybe$Nothing, bR: newWindow}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 45:
 				var k = msg.a;
 				var deltaMax = $elm$core$List$length(
-					$author$project$Buffer$lines(buffer)) - state.Q.b;
+					$author$project$Buffer$lines(buffer)) - state.R.b;
 				var delta = A2($elm$core$Basics$min, deltaMax - 1, k);
 				var _v42 = _Utils_Tuple2(
-					A2($author$project$Position$shift, delta, state.Q),
-					A2($author$project$Window$shift, delta, state.bS));
+					A2($author$project$Position$shift, delta, state.R),
+					A2($author$project$Window$shift, delta, state.bR));
 				var newCursor = _v42.a;
 				var newWindow = _v42.b;
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{Q: newCursor, aY: $elm$core$Maybe$Nothing, bS: newWindow}),
+						{R: newCursor, aY: $elm$core$Maybe$Nothing, bR: newWindow}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 49:
@@ -9104,7 +9104,7 @@ var $author$project$Editor$Update$update = F3(
 						$author$project$Buffer$init(
 							A2(
 								$author$project$Editor$Wrap$paragraphs,
-								state.J,
+								state.K,
 								$author$project$Buffer$toString(buffer))),
 						$elm$core$Platform$Cmd$none));
 			case 50:
@@ -9113,7 +9113,7 @@ var $author$project$Editor$Update$update = F3(
 					return _Utils_Tuple3(state, buffer, $elm$core$Platform$Cmd$none);
 				} else {
 					var sel = _v43.a;
-					var _v44 = A2($author$project$Position$order, sel, state.Q);
+					var _v44 = A2($author$project$Position$order, sel, state.R);
 					var start = _v44.a;
 					var end = _v44.b;
 					var selectedText = A3($author$project$Buffer$between, start, end, buffer);
@@ -9122,7 +9122,7 @@ var $author$project$Editor$Update$update = F3(
 						{
 							ae: $elm$core$Maybe$Just(selectedText)
 						});
-					var wrappedText = A2($author$project$Editor$Wrap$paragraphs, state.J, selectedText);
+					var wrappedText = A2($author$project$Editor$Wrap$paragraphs, state.K, selectedText);
 					var newBuffer = A4($author$project$Buffer$replace, start, end, wrappedText, buffer);
 					return A3(
 						$author$project$Editor$Update$recordHistory,
@@ -9131,7 +9131,7 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_Tuple3(newState, newBuffer, $elm$core$Platform$Cmd$none));
 				}
 			case 52:
-				return (!state.J.Z) ? _Utils_Tuple3(
+				return (!state.K._) ? _Utils_Tuple3(
 					A2($author$project$Editor$Update$setWrapOption, 1, state),
 					buffer,
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple3(
@@ -9139,14 +9139,14 @@ var $author$project$Editor$Update$update = F3(
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 53:
-				if (state.bJ) {
-					var _v45 = A3($author$project$Editor$Update$load, state.J.Z, $author$project$Editor$Strings$help, state);
+				if (state.bI) {
+					var _v45 = A3($author$project$Editor$Update$load, state.K._, $author$project$Editor$Strings$help, state);
 					var newState = _v45.a;
 					var newBuffer = _v45.b;
 					return _Utils_Tuple3(
 						_Utils_update(
 							newState,
-							{bE: buffer, bJ: false}),
+							{bD: buffer, bI: false}),
 						newBuffer,
 						$elm$core$Platform$Cmd$none);
 				} else {
@@ -9154,53 +9154,53 @@ var $author$project$Editor$Update$update = F3(
 						_Utils_update(
 							state,
 							{
-								bE: $author$project$Buffer$fromString(''),
-								bJ: true
+								bD: $author$project$Buffer$fromString(''),
+								bI: true
 							}),
-						state.bE,
+						state.bD,
 						$elm$core$Platform$Cmd$none);
 				}
 			case 54:
 				return _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{M: !state.M}),
+						{N: !state.N}),
 					buffer,
 					$elm$core$Platform$Cmd$none);
 			case 55:
-				return state.bI ? _Utils_Tuple3(
+				return state.bH ? _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{bI: false}),
+						{bH: false}),
 					buffer,
 					$author$project$Editor$Update$blur('line-number-input')) : _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{bI: true}),
+						{bH: true}),
 					buffer,
 					$author$project$Editor$Update$focus('line-number-input'));
 			case 56:
-				return state.bK ? _Utils_Tuple3(
+				return state.bJ ? _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{bK: false}),
+						{bJ: false}),
 					buffer,
 					$author$project$Editor$Update$blur('search-box')) : _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{bK: true}),
+						{bJ: true}),
 					buffer,
 					$author$project$Editor$Update$focus('search-box'));
 			case 57:
-				return state.bK ? _Utils_Tuple3(
+				return state.bJ ? _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{ba: false, bK: false}),
+						{ba: false, bJ: false}),
 					buffer,
 					$author$project$Editor$Update$blur('search-box')) : _Utils_Tuple3(
 					_Utils_update(
 						state,
-						{ba: true, bK: true}),
+						{ba: true, bJ: true}),
 					buffer,
 					$author$project$Editor$Update$focus('search-box'));
 			default:
@@ -9245,7 +9245,7 @@ var $author$project$Main$update = F2(
 					$author$project$AppText$gettysburgAddress,
 					_Utils_update(
 						model,
-						{K: 1}));
+						{L: 1}));
 			case 4:
 				return A3(
 					$author$project$Main$load,
@@ -9253,7 +9253,7 @@ var $author$project$Main$update = F2(
 					$author$project$AppText$longLines,
 					_Utils_update(
 						model,
-						{K: 2}));
+						{L: 2}));
 			case 5:
 				return A3(
 					$author$project$Main$load,
@@ -9261,7 +9261,7 @@ var $author$project$Main$update = F2(
 					$author$project$AppText$jabberwocky,
 					_Utils_update(
 						model,
-						{K: 0}));
+						{L: 0}));
 			case 2:
 				return A2($author$project$Main$highlightText, 'treasure', model);
 			case 6:
@@ -9288,11 +9288,11 @@ var $author$project$Editor$Styles$style = $elm$html$Html$node('style');
 var $author$project$Editor$Styles$getStyleParams = function (c) {
 	return {
 		bg: $elm$core$String$fromFloat(c.bg),
-		bi: $elm$core$String$fromFloat(c.bi),
-		ak: $elm$core$String$fromFloat(0.8 * c.S),
-		S: $elm$core$String$fromFloat(c.S),
-		ag: $elm$core$String$fromFloat(c.bi + 50),
-		as: $elm$core$String$fromFloat(0.8 * c.bg)
+		bh: $elm$core$String$fromFloat(c.bh),
+		ak: $elm$core$String$fromFloat(0.8 * c.T),
+		T: $elm$core$String$fromFloat(c.T),
+		ag: $elm$core$String$fromFloat(c.bh + 50),
+		as: $elm$core$String$fromFloat(((1.04348 * c.bg) - 90.87) - 20)
 	};
 };
 var $elm$core$String$dropRight = F2(
@@ -9301,7 +9301,7 @@ var $elm$core$String$dropRight = F2(
 	});
 var $lukewestby$elm_string_interpolate$String$Interpolate$applyInterpolation = F2(
 	function (replacements, _v0) {
-		var match = _v0.bs;
+		var match = _v0.br;
 		var ordinalString = A2(
 			$elm$core$Basics$composeL,
 			$elm$core$String$dropLeft(1),
@@ -9318,13 +9318,13 @@ var $lukewestby$elm_string_interpolate$String$Interpolate$applyInterpolation = F
 	});
 var $elm$regex$Regex$Match = F4(
 	function (match, index, number, submatches) {
-		return {bp: index, bs: match, by: number, bM: submatches};
+		return {bo: index, br: match, bx: number, bL: submatches};
 	});
 var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
 var $elm$regex$Regex$fromString = function (string) {
 	return A2(
 		$elm$regex$Regex$fromStringWith,
-		{bb: false, bw: false},
+		{bb: false, bv: false},
 		string);
 };
 var $elm$regex$Regex$never = _Regex_never;
@@ -9342,14 +9342,14 @@ var $lukewestby$elm_string_interpolate$String$Interpolate$interpolate = F2(
 			$lukewestby$elm_string_interpolate$String$Interpolate$applyInterpolation(asArray),
 			string);
 	});
-var $author$project$Editor$Styles$styleTemplate = '\n\nbody { font-size: {2}px;\n       line-height: {3}px;}\n\n.elm-editor-container {\n  font-family: monospace;\n  width: {0}px;\n  user-select: none;\n  -webkit-user-select: none;\n  display: flex;\n  overflow-x : scroll;\n  overflow-y : hidden;\n  height: {5}px;\n}\n\n.elm-editor-container:focus {\n  outline: none;\n    background-color : blue;\n}\n\n.elm-editor-gutter {\n  display: flex;\n  flex-direction: column;\n  flex-shrink: 0;\n}\n\n.elm-editor-lines {\n  flex-grow: 1;\n}\n\n.elm-editor-line-number {\n  display: inline-block;\n  width: 35px;\n  padding-right: 5px;\n  text-align: right;\n  background-color: lightgray;\n  cursor: default;\n}\n\n.elm-editor-line {\n  cursor: text;\n}\n\n.elm-editor-line__gutter-padding {\n  width: 5px;\n}\n\n.elm-editor-line__character--has-cursor {\n  position: relative;\n}\n\n.elm-editor-line__character--selected {\n  background-color: cornflowerblue;\n  color: white;\n}\n\n.elm-editor-cursor {\n  position: absolute;\n  border-left: 16px solid #990000;\n  opacity: 0.2;\n  left: 0;\n  height: 100%;\n}\n\n.elm-editor-container:focus .elm-editor-cursor {\n  animation: 1s blink step-start infinite;\n  border-left: 4px solid #333333;\n}\n\n@keyframes blink {\n  from, to {\n    opacity: 0;\n  }\n  50% {\n    opacity: 1;s\n  }\n}\n\n\nbody {\n    font-family: sans-serif;\n\n    }\n\n.center-column {\n    display: flex;\n    flex-direction: column;\n    flex: shrink;\n    align-items: center;\n    background-color: blue; //: #eeeeee;\n    }\n\n#editor-container {\n    text-align: left;\n9\n    }\n\n.input-range-labels-container { visibility: hidden }\n\n\n\n.input-range-container {\n     transform: rotate(-270deg) translateY(-{1}px) translateX({4}px)\n}\n\n';
+var $author$project$Editor$Styles$styleTemplate = '\n\nbody { font-size: {2}px;\n       line-height: {3}px;}\n\n.elm-editor-container {\n  font-family: monospace;\n  width: {0}px;\n  user-select: none;\n  -webkit-user-select: none;\n  display: flex;\n  overflow-x : scroll;\n  overflow-y : hidden;\n  height: {6}px;\n}\n\n.elm-editor-container:focus {\n  outline: none;\n    background-color : blue;\n}\n\n.elm-editor-gutter {\n  display: flex;\n  flex-direction: column;\n  flex-shrink: 0;\n}\n\n.elm-editor-lines {\n  flex-grow: 1;\n}\n\n.elm-editor-line-number {\n  display: inline-block;\n  width: 35px;\n  padding-right: 5px;\n  text-align: right;\n  background-color: lightgray;\n  cursor: default;\n}\n\n.elm-editor-line {\n  cursor: text;\n}\n\n.elm-editor-line__gutter-padding {\n  width: 5px;\n}\n\n.elm-editor-line__character--has-cursor {\n  position: relative;\n}\n\n.elm-editor-line__character--selected {\n  background-color: cornflowerblue;\n  color: white;\n}\n\n.elm-editor-cursor {\n  position: absolute;\n  border-left: 16px solid #990000;\n  opacity: 0.2;\n  left: 0;\n  height: 100%;\n}\n\n.elm-editor-container:focus .elm-editor-cursor {\n  animation: 1s blink step-start infinite;\n  border-left: 4px solid #333333;\n}\n\n@keyframes blink {\n  from, to {\n    opacity: 0;\n  }\n  50% {\n    opacity: 1;s\n  }\n}\n\n\nbody {\n    font-family: sans-serif;\n\n    }\n\n.center-column {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    background-color: lightblue; //: #eeeeee;\n    }\n\n#editor-container {\n    text-align: left;\n9\n    }\n\n.input-range-labels-container { visibility: hidden }\n\n\n\n.input-range-container {\n     transform: rotate(-270deg) translateY(-{1}px) translateX({4}px)\n}\n\n';
 var $author$project$Editor$Styles$styleText = function (styleConfig) {
 	var s = $author$project$Editor$Styles$getStyleParams(styleConfig);
 	return A2(
 		$lukewestby$elm_string_interpolate$String$Interpolate$interpolate,
 		$author$project$Editor$Styles$styleTemplate,
 		_List_fromArray(
-			[s.bi, s.ag, s.ak, s.S, s.as, s.ag]));
+			[s.bh, s.ag, s.ak, s.T, s.as, s.ag, s.bg]));
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -9363,18 +9363,30 @@ var $author$project$Editor$Styles$editorStyles = function (styleConfig) {
 				$author$project$Editor$Styles$styleText(styleConfig))
 			]));
 };
-var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
-var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$Editor$innerStyle = function (h) {
+	return _List_fromArray(
+		[
+			A2(
+			$elm$html$Html$Attributes$style,
+			'height',
+			$elm$core$String$fromFloat(h) + 'px'),
+			A2($elm$html$Html$Attributes$style, 'border', 'solid'),
+			A2($elm$html$Html$Attributes$style, 'border-width', '0.5px'),
+			A2($elm$html$Html$Attributes$style, 'border-color', '#aaa')
+		]);
+};
+var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $carwow$elm_slider$SingleSlider$calculateProgressPercentages = function (model) {
-	var value = A3($elm$core$Basics$clamp, model.bv, model.bt, model.bQ);
-	var progressRatio = 100 / (model.bt - model.bv);
-	var _v0 = model.T;
+	var value = A3($elm$core$Basics$clamp, model.bu, model.bs, model.bP);
+	var progressRatio = 100 / (model.bs - model.bu);
+	var _v0 = model.U;
 	if (_v0 === 1) {
-		return model.G ? {ab: 100 - ((value - model.bv) * progressRatio), ad: 0.0} : {ab: (value - model.bv) * progressRatio, ad: 0.0};
+		return model.H ? {ab: 100 - ((value - model.bu) * progressRatio), ad: 0.0} : {ab: (value - model.bu) * progressRatio, ad: 0.0};
 	} else {
-		return {ab: 0.0, ad: (model.bt - value) * progressRatio};
+		return {ab: 0.0, ad: (model.bs - value) * progressRatio};
 	}
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
@@ -9491,7 +9503,7 @@ var $debois$elm_dom$DOM$boundingClientRect = A4(
 		function (_v0, width, height) {
 			var x = _v0.a;
 			var y = _v0.b;
-			return {aa: height, ab: x, a2: y, a4: width};
+			return {y: height, ab: x, a2: y, a4: width};
 		}),
 	A2($debois$elm_dom$DOM$position, 0, 0),
 	$debois$elm_dom$DOM$offsetWidth,
@@ -9501,17 +9513,17 @@ var $carwow$elm_slider$SingleSlider$onInsideRangeClick = function (model) {
 		$elm$json$Json$Decode$map2,
 		F2(
 			function (rectangle, mouseX) {
-				var adjustedValue = A3($elm$core$Basics$clamp, model.bv, model.bt, model.bQ);
+				var adjustedValue = A3($elm$core$Basics$clamp, model.bu, model.bs, model.bP);
 				var newValue = $elm$core$Basics$round(
 					function () {
-						var _v0 = model.T;
+						var _v0 = model.U;
 						if (!_v0) {
 							return (adjustedValue / rectangle.a4) * mouseX;
 						} else {
-							return model.G ? (adjustedValue - ((mouseX / rectangle.a4) * (adjustedValue - model.bv))) : (adjustedValue + ((mouseX / rectangle.a4) * (model.bt - adjustedValue)));
+							return model.H ? (adjustedValue - ((mouseX / rectangle.a4) * (adjustedValue - model.bu))) : (adjustedValue + ((mouseX / rectangle.a4) * (model.bs - adjustedValue)));
 						}
 					}());
-				var adjustedNewValue = A3($elm$core$Basics$clamp, model.bv, model.bt, newValue);
+				var adjustedNewValue = A3($elm$core$Basics$clamp, model.bu, model.bs, newValue);
 				return $elm$core$String$fromFloat(adjustedNewValue);
 			}),
 		A2(
@@ -9538,8 +9550,8 @@ var $carwow$elm_slider$SingleSlider$onOutsideRangeClick = function (model) {
 		$elm$json$Json$Decode$map2,
 		F2(
 			function (rectangle, mouseX) {
-				var clickedValue = model.G ? (model.bt - (((model.bt - model.bv) / rectangle.a4) * mouseX)) : ((((model.bt - model.bv) / rectangle.a4) * mouseX) + model.bv);
-				var newValue = A2($carwow$elm_slider$SingleSlider$closestStep, clickedValue, model.bL);
+				var clickedValue = model.H ? (model.bs - (((model.bs - model.bu) / rectangle.a4) * mouseX)) : ((((model.bs - model.bu) / rectangle.a4) * mouseX) + model.bu);
+				var newValue = A2($carwow$elm_slider$SingleSlider$closestStep, clickedValue, model.bK);
 				return $elm$core$String$fromInt(newValue);
 			}),
 		A2(
@@ -9565,7 +9577,7 @@ var $carwow$elm_slider$SingleSlider$view = function (model) {
 			$elm$html$Html$Attributes$class('input-range__track')
 		]);
 	var trackAllAttributes = function () {
-		var _v2 = model.R;
+		var _v2 = model.S;
 		if (!_v2) {
 			return A2(
 				$elm$core$List$append,
@@ -9595,7 +9607,7 @@ var $carwow$elm_slider$SingleSlider$view = function (model) {
 			$elm$core$String$fromFloat(progressPercentages.ad) + '%')
 		]);
 	var progressAllAttributes = function () {
-		var _v1 = model.R;
+		var _v1 = model.S;
 		if (!_v1) {
 			return A2(
 				$elm$core$List$append,
@@ -9611,11 +9623,11 @@ var $carwow$elm_slider$SingleSlider$view = function (model) {
 			return progressAttributes;
 		}
 	}();
-	var _v0 = model.G ? _Utils_Tuple2(
-		model.al(model.bt),
-		model.an(model.bv)) : _Utils_Tuple2(
-		model.an(model.bv),
-		model.al(model.bt));
+	var _v0 = model.H ? _Utils_Tuple2(
+		model.al(model.bs),
+		model.an(model.bu)) : _Utils_Tuple2(
+		model.an(model.bu),
+		model.al(model.bs));
 	var leftText = _v0.a;
 	var rightText = _v0.b;
 	return A2(
@@ -9637,15 +9649,15 @@ var $carwow$elm_slider$SingleSlider$view = function (model) {
 							[
 								$elm$html$Html$Attributes$type_('range'),
 								$elm$html$Html$Attributes$min(
-								$elm$core$String$fromFloat(model.bv)),
+								$elm$core$String$fromFloat(model.bu)),
 								$elm$html$Html$Attributes$max(
-								$elm$core$String$fromFloat(model.bt)),
+								$elm$core$String$fromFloat(model.bs)),
 								$elm$html$Html$Attributes$value(
-								$elm$core$String$fromFloat(model.bQ)),
+								$elm$core$String$fromFloat(model.bP)),
 								$elm$html$Html$Attributes$step(
-								$elm$core$String$fromFloat(model.bL)),
+								$elm$core$String$fromFloat(model.bK)),
 								$elm$html$Html$Attributes$class('input-range'),
-								$elm$html$Html$Attributes$disabled(model.R),
+								$elm$html$Html$Attributes$disabled(model.S),
 								A2($elm$html$Html$Events$on, 'change', $carwow$elm_slider$SingleSlider$onChange),
 								A2(
 								$elm$html$Html$Events$on,
@@ -9654,7 +9666,7 @@ var $carwow$elm_slider$SingleSlider$view = function (model) {
 								A2(
 								$elm$html$Html$Attributes$style,
 								'direction',
-								model.G ? 'rtl' : 'ltr')
+								model.H ? 'rtl' : 'ltr')
 							]),
 						_List_Nil),
 						A2($elm$html$Html$div, trackAllAttributes, _List_Nil),
@@ -9687,7 +9699,7 @@ var $carwow$elm_slider$SingleSlider$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text(
-								A2(model.aj, model.bQ, model.bt))
+								A2(model.aj, model.bP, model.bs))
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -10126,7 +10138,7 @@ var $author$project$Editor$View$goToLinePanel_ = A2(
 	_List_fromArray(
 		[$author$project$Editor$View$goToLineButton, $author$project$Editor$View$acceptLineNumber]));
 var $author$project$Editor$View$goToLinePanel = function (state) {
-	return state.bI ? $author$project$Editor$View$goToLinePanel_ : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	return state.bH ? $author$project$Editor$View$goToLinePanel_ : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 };
 var $author$project$Editor$Update$MouseDown = function (a) {
 	return {$: 1, a: a};
@@ -10187,7 +10199,7 @@ var $author$project$Editor$View$gutter = F2(
 			A2(
 				$elm$core$List$map,
 				$author$project$Editor$View$lineNumber,
-				A2($elm$core$List$range, window.bl + 1, window.br + 1)));
+				A2($elm$core$List$range, window.bk + 1, window.bq + 1)));
 	});
 var $author$project$Editor$Widget$columnButtonStyle = _List_fromArray(
 	[
@@ -10203,7 +10215,7 @@ var $author$project$Editor$View$cursorPosition = function (state) {
 		_List_fromArray(
 			[
 				$elm$html$Html$text(
-				'Cursor: ' + $elm$core$String$fromInt(state.Q.b + 1))
+				'Cursor: ' + $elm$core$String$fromInt(state.R.b + 1))
 			]));
 };
 var $author$project$Editor$Widget$lightButtonLabelStyle = function (width) {
@@ -10272,7 +10284,7 @@ var $author$project$Editor$View$scrollPosition = function (state) {
 		_List_fromArray(
 			[
 				$elm$html$Html$text(
-				'Scroll: ' + $elm$core$String$fromInt(state.bS.bl))
+				'Scroll: ' + $elm$core$String$fromInt(state.bR.bk))
 			]));
 };
 var $author$project$Editor$Widget$buttonLabelStyle = function (width) {
@@ -10312,7 +10324,7 @@ var $author$project$Editor$Widget$columnButton = F4(
 				]));
 	});
 var $author$project$Editor$View$toggleHelpButton = function (state) {
-	var label = state.bJ ? 'Help' : 'Back';
+	var label = state.bI ? 'Help' : 'Back';
 	return A4($author$project$Editor$Widget$columnButton, 80, $author$project$Editor$Update$ToggleHelp, label, _List_Nil);
 };
 var $author$project$Editor$View$wordCount = function (lines) {
@@ -10329,7 +10341,7 @@ var $author$project$Editor$View$wordCount = function (lines) {
 			]));
 };
 var $author$project$Editor$View$wrappingOption = function (state) {
-	var message = (!state.J.Z) ? 'Wrap: ON' : 'Wrap: OFF';
+	var message = (!state.K._) ? 'Wrap: ON' : 'Wrap: OFF';
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -10359,7 +10371,7 @@ var $author$project$Editor$View$infoPanel_ = F2(
 	});
 var $author$project$Editor$View$infoPanel = F2(
 	function (state, lines) {
-		return state.M ? A2($author$project$Editor$View$infoPanel_, state, lines) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+		return state.N ? A2($author$project$Editor$View$infoPanel_, state, lines) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
 var $elm$html$Html$Attributes$classList = function (classes) {
 	return $elm$html$Html$Attributes$class(
@@ -10416,7 +10428,7 @@ var $author$project$Editor$View$selected = F3(
 	});
 var $author$project$Window$shiftPosition_ = F2(
 	function (window, pos) {
-		return {t: pos.t, b: pos.b + window.bl};
+		return {t: pos.t, b: pos.b + window.bk};
 	});
 var $author$project$Editor$View$character = F5(
 	function (window, cursor, selection, position, _char) {
@@ -10480,7 +10492,7 @@ var $elm$core$String$toList = function (string) {
 };
 var $author$project$Editor$View$line = F5(
 	function (window, cursor, selection, index, content) {
-		var offset = window.bl;
+		var offset = window.bk;
 		var length = $elm$core$String$length(content);
 		var endPosition = {t: length, b: index};
 		return A2(
@@ -10654,7 +10666,7 @@ var $lovasoa$elm_rolling_list$RollingList$toList = function (_v0) {
 var $author$project$Editor$View$numberOfHitsDisplay = function (state) {
 	var n = $elm$core$String$fromInt(
 		$elm$core$List$length(
-			$lovasoa$elm_rolling_list$RollingList$toList(state.bG)));
+			$lovasoa$elm_rolling_list$RollingList$toList(state.bF)));
 	return A4($author$project$Editor$Widget$rowButton, 40, $author$project$Editor$Update$NoOp, n, _List_Nil);
 };
 var $author$project$Editor$Update$OpenReplaceField = {$: 58};
@@ -10730,7 +10742,7 @@ var $author$project$Editor$View$searchPanel_ = function (state) {
 			]));
 };
 var $author$project$Editor$View$searchPanel = function (state) {
-	return state.bK ? $author$project$Editor$View$searchPanel_(state) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	return state.bJ ? $author$project$Editor$View$searchPanel_(state) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 };
 var $author$project$Window$indexedFilterMap = F2(
 	function (filter, list) {
@@ -10758,7 +10770,7 @@ var $author$project$Window$select = F2(
 			$author$project$Window$indexedFilterMap,
 			F2(
 				function (i, x) {
-					return (_Utils_cmp(i, window.bl) > -1) && (_Utils_cmp(i, window.br) < 1);
+					return (_Utils_cmp(i, window.bk) > -1) && (_Utils_cmp(i, window.bq) < 1);
 				}),
 			strings);
 	});
@@ -10799,12 +10811,12 @@ var $author$project$Editor$View$view = F3(
 						]),
 					_List_fromArray(
 						[
-							A2($author$project$Editor$View$gutter, state.Q, state.bS),
+							A2($author$project$Editor$View$gutter, state.R, state.bR),
 							$author$project$Editor$View$linesContainer(
 							A2(
 								$elm$core$List$indexedMap,
-								A3($author$project$Editor$View$line, state.bS, state.Q, state.aY),
-								A2($author$project$Window$select, state.bS, lines)))
+								A3($author$project$Editor$View$line, state.bR, state.R, state.aY),
+								A2($author$project$Window$select, state.bR, lines)))
 						]))
 				]));
 	});
@@ -10819,7 +10831,10 @@ var $author$project$Editor$view = F2(
 	});
 var $author$project$Editor$embedded = F2(
 	function (editorConfig, editor) {
-		var styleConfig = {bg: editorConfig.aa, bi: editorConfig.a4, S: editorConfig.S};
+		var styleConfig = {bg: editorConfig.y, bh: editorConfig.a4, T: editorConfig.T};
+		var m = 1.04348;
+		var height_ = editorConfig.y;
+		var b = 90.87;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -10834,10 +10849,7 @@ var $author$project$Editor$embedded = F2(
 					editorConfig.aC,
 					A2(
 						$author$project$Editor$view,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'background-color', 'blue')
-							]),
+						$author$project$Editor$innerStyle(height_),
 						editor)),
 					A2(
 					$elm$html$Html$div,
@@ -10911,7 +10923,7 @@ var $author$project$Main$GetSpeech = {$: 3};
 var $author$project$Main$speechTextButton = A4($author$project$Main$rowButton, 160, $author$project$Main$GetSpeech, 'Gettysburg Address', _List_Nil);
 var $author$project$Main$FindTreasure = {$: 2};
 var $author$project$Main$treasureButton = function (model) {
-	var _v0 = model.K;
+	var _v0 = model.L;
 	if (!_v0) {
 		return A4($author$project$Main$rowButton, 120, $author$project$Main$FindTreasure, 'Find treasure', _List_Nil);
 	} else {
@@ -11018,8 +11030,7 @@ var $author$project$Main$view = function (model) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'margin', '60px'),
-				A2($elm$html$Html$Attributes$style, 'height', '250px')
+				A2($elm$html$Html$Attributes$style, 'margin', '60px')
 			]),
 		_List_fromArray(
 			[
@@ -11029,6 +11040,6 @@ var $author$project$Main$view = function (model) {
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
-	{bq: $author$project$Main$init, bN: $author$project$Main$subscriptions, bP: $author$project$Main$update, bR: $author$project$Main$view});
+	{bp: $author$project$Main$init, bM: $author$project$Main$subscriptions, bO: $author$project$Main$update, bQ: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

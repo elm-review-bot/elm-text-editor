@@ -19,6 +19,7 @@ type alias Config =
     , showInfoPanel : Bool
     , wrapOption : WrapOption
     , height : Float
+    , lineHeight : Float
     }
 
 
@@ -44,6 +45,7 @@ default =
     , showInfoPanel = False
     , wrapOption = DoWrap
     , height = 400
+    , lineHeight = 14
     }
 
 

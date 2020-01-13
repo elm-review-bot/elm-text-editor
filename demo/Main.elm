@@ -10,8 +10,11 @@ import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
 import Json.Encode as E
+import Markdown.Elm
+import Markdown.Option exposing (..)
 import Outside
 import SingleSlider as Slider
+import Strings
 
 
 main : Program () Model Msg
@@ -44,11 +47,12 @@ type alias Model =
     { editor : Editor
     , clipboard : String
     , document : Document
+    , sourceText : String
     }
 
 
 type Document
-    = Jabberwock
+    = Intro
     | Gettysburg
     | LongLines
 
@@ -57,7 +61,8 @@ init : () -> ( Model, Cmd Msg )
 init () =
     ( { editor = Editor.init config AppText.jabberwocky
       , clipboard = ""
-      , document = Jabberwock
+      , document = Intro
+      , sourceText = Strings.intro
       }
     , Cmd.none
     )
@@ -107,7 +112,7 @@ update msg model =
             load DontWrap AppText.longLines { model | document = LongLines }
 
         Reset ->
-            load DontWrap AppText.jabberwocky { model | document = Jabberwock }
+            load DontWrap Strings.intro { model | document = Intro }
 
         FindTreasure ->
             highlightText "treasure" model
@@ -162,7 +167,7 @@ load wrapOption str model =
         newEditor =
             Editor.load wrapOption str model.editor
     in
-    ( { model | editor = newEditor }, Cmd.none )
+    ( { model | editor = newEditor, sourceText = str }, Cmd.none )
 
 
 {-| Find str and highlight it
@@ -195,11 +200,38 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ HA.style "margin" "60px" ]
+    div [ HA.style "margin" "60px", HA.class "flex-column", HA.style "width" "1200px" ]
         [ title
-        , Editor.embedded config model.editor
+        , div
+            [ HA.class "flex-row"
+            , HA.style "width" "980px"
+            , HA.style "align-items" "stretch"
+            ]
+            [ embeddedEditor model, renderedText model ]
         , footer model
         ]
+
+
+embeddedEditor : Model -> Html Msg
+embeddedEditor model =
+    div [ style "width" "500px" ]
+        [ Editor.embedded config model.editor ]
+
+
+renderedText model =
+    div
+        [ HA.style "flex" "row"
+        , HA.style "width" "400px"
+        , HA.style "height" "520px"
+        , HA.style "border" "solid"
+        , HA.style "border-color" "#444"
+        , HA.style "border-width" "0.5px"
+        , HA.style "overflow-y" "scroll"
+        , HA.style "order" "1"
+        , HA.style "align-self" "left"
+        , HA.style "padding" "12px"
+        ]
+        [ Markdown.Elm.toHtml Extended model.sourceText ]
 
 
 title : Html Msg
@@ -232,7 +264,7 @@ testButton =
 
 treasureButton model =
     case model.document of
-        Jabberwock ->
+        Intro ->
             rowButton 120 FindTreasure "Find treasure" []
 
         _ ->

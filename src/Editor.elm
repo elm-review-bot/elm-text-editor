@@ -65,6 +65,7 @@ module Editor exposing
 -}
 
 import Buffer exposing (Buffer)
+import Debounce exposing (Debounce)
 import Editor.Config exposing (WrapOption(..), WrapParams)
 import Editor.History
 import Editor.Model exposing (InternalState)
@@ -271,7 +272,7 @@ embedded editorConfig editor =
 
         -- m * editorConfig.height + b
     in
-    div [ style "position" "absolute" ]
+    div []
         [ Editor.Styles.editorStyles styleConfig
         , view (innerStyle height_) editor
             |> Html.map editorConfig.editorMsg
@@ -328,6 +329,7 @@ init editorConfig text =
             , showGoToLinePanel = False
             , showSearchPanel = False
             , savedBuffer = Buffer.fromString ""
+            , debounce = Debounce.init
             , slider = Editor.Model.slider
             }
         }

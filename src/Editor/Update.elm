@@ -8,6 +8,7 @@ module Editor.Update exposing (Msg(..), blur, clearState, focus, scrollToLine, s
 
 import Browser.Dom as Dom
 import Buffer exposing (Buffer)
+import Debounce exposing (Debounce)
 import Dict exposing (Dict)
 import Editor.Config as Config exposing (Config, WrapOption(..))
 import Editor.History
@@ -87,6 +88,15 @@ type Msg
     | ToggleSearchPanel
     | ToggleReplacePanel
     | OpenReplaceField
+    | DebounceMsg Debounce.Msg
+    | Unload String
+
+
+debounceConfig : Debounce.Config Msg
+debounceConfig =
+    { strategy = Debounce.later 1000
+    , transform = DebounceMsg
+    }
 
 
 autoclose : Dict String String
@@ -426,6 +436,9 @@ update buffer msg state =
 
                             else
                                 string
+
+                        ( debounce, cmd ) =
+                            Debounce.push debounceConfig insertString state.debounce
                     in
                     let
                         newCursor =
@@ -436,7 +449,8 @@ update buffer msg state =
                                 Position.nextColumn state.cursor
                     in
                     ( { state
-                        | cursor = newCursor
+                        | debounce = debounce
+                        , cursor = newCursor
                         , window =
                             if string == "\n" then
                                 Window.scrollToIncludeCursor newCursor state.window
@@ -445,7 +459,7 @@ update buffer msg state =
                                 state.window
                       }
                     , Buffer.insert state.cursor insertString buffer
-                    , Cmd.none
+                    , cmd
                     )
                         |> recordHistory state buffer
 
@@ -1112,9 +1126,37 @@ update buffer msg state =
         OpenReplaceField ->
             ( { state | canReplace = True }, buffer, Cmd.none )
 
+        DebounceMsg msg_ ->
+            let
+                ( debounce, cmd ) =
+                    Debounce.update
+                        debounceConfig
+                        (Debounce.takeLast unload)
+                        msg_
+                        state.debounce
+            in
+            ( { state | debounce = debounce }, buffer, Cmd.none )
+
+        Unload str ->
+            let
+                _ =
+                    Debug.log "Unload" str
+            in
+            ( { state | debounce = state.debounce }, buffer, Cmd.none )
 
 
+
+-- ( state, buffer, Cmd.none )
 -- HELPERS --
+
+
+unload : String -> Cmd Msg
+unload s =
+    let
+        _ =
+            Debug.log "Task unload" s
+    in
+    Task.perform Unload (Task.succeed s)
 
 
 {-| Return a pair (InternalState, Buffer) representing the editor scrolled

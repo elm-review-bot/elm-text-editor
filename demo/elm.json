@@ -19,7 +19,8 @@
             "jinjor/elm-debounce": "3.0.0",
             "jxxcarlson/elm-markdown": "4.0.3",
             "lovasoa/elm-rolling-list": "1.1.4",
-            "lukewestby/elm-string-interpolate": "1.0.4"
+            "lukewestby/elm-string-interpolate": "1.0.4",
+            "zwilias/elm-rosetree": "1.5.0"
         },
         "indirect": {
             "NoRedInk/elm-string-conversions": "1.0.1",
@@ -34,8 +35,7 @@
             "elm/virtual-dom": "1.0.2",
             "jxxcarlson/htree": "2.0.1",
             "pablohirafuji/elm-syntax-highlight": "3.2.0",
-            "zwilias/elm-html-string": "2.0.2",
-            "zwilias/elm-rosetree": "1.5.0"
+            "zwilias/elm-html-string": "2.0.2"
         }
     },
     "test-dependencies": {

@@ -2,6 +2,7 @@ module Main exposing (Msg(..), main)
 
 import AppText
 import Browser
+import Browser.Dom as Dom
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Strings
@@ -12,9 +13,12 @@ import Html.Events exposing (onClick)
 import Json.Encode as E
 import Markdown.Elm
 import Markdown.Option exposing (..)
+import Markdown.Parse as Parse
 import Outside
 import SingleSlider as Slider
 import Strings
+import Task exposing (Task)
+import Tree exposing (Tree)
 
 
 main : Program () Model Msg
@@ -32,7 +36,8 @@ main =
 
 
 type Msg
-    = EditorMsg EditorMsg
+    = NoOp
+    | EditorMsg EditorMsg
     | Test
     | FindTreasure
     | GetSpeech
@@ -41,6 +46,7 @@ type Msg
     | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
     | LogErr String
+    | SetViewPortForElement (Result Dom.Error ( Dom.Element, Dom.Viewport ))
 
 
 type alias Model =
@@ -48,6 +54,7 @@ type alias Model =
     , clipboard : String
     , document : Document
     , sourceText : String
+    , ast : Tree Parse.MDBlockWithId
     }
 
 
@@ -63,6 +70,7 @@ init () =
       , clipboard = ""
       , document = Intro
       , sourceText = Strings.intro
+      , ast = Parse.toMDBlockTree 0 Extended Strings.intro
       }
     , Cmd.none
     )
@@ -88,6 +96,9 @@ config =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         EditorMsg editorMsg ->
             let
                 ( editor, cmd ) =
@@ -136,10 +147,18 @@ update msg model =
                     syncWithEditor model editor cmd
 
                 E.SendLine ->
-                    ( model, Cmd.none )
+                    ( { model | editor = editor }, syncRenderedText (Editor.lineAtCursor editor) model )
 
                 _ ->
                     ( { model | editor = editor }, Cmd.map EditorMsg cmd )
+
+        SetViewPortForElement result ->
+            case result of
+                Ok ( element, viewport ) ->
+                    ( model, setViewPortForSelectedLine element viewport )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
         Test ->
             load DontWrap Editor.Strings.info model
@@ -179,6 +198,50 @@ update msg model =
 syncWithEditor : Model -> Editor -> Cmd EditorMsg -> ( Model, Cmd Msg )
 syncWithEditor model editor cmd =
     ( { model | editor = editor, sourceText = Editor.getSource editor }, Cmd.map EditorMsg cmd )
+
+
+
+-- LR SYNC
+
+
+syncRenderedText : String -> Model -> Cmd Msg
+syncRenderedText str model =
+    let
+        id =
+            case Parse.searchAST str model.ast of
+                Nothing ->
+                    "???"
+
+                Just id_ ->
+                    id_ |> Parse.stringOfId
+    in
+    setViewportForElement id
+
+
+setViewportForElement : String -> Cmd Msg
+setViewportForElement id =
+    Dom.getViewportOf "__rt_scroll__"
+        |> Task.andThen (\vp -> getElementWithViewPort vp id)
+        |> Task.attempt SetViewPortForElement
+
+
+getElementWithViewPort : Dom.Viewport -> String -> Task Dom.Error ( Dom.Element, Dom.Viewport )
+getElementWithViewPort vp id =
+    Dom.getElement id
+        |> Task.map (\el -> ( el, vp ))
+
+
+setViewPortForSelectedLine : Dom.Element -> Dom.Viewport -> Cmd Msg
+setViewPortForSelectedLine element viewport =
+    let
+        y =
+            viewport.viewport.y + element.element.y - element.element.height - 100
+    in
+    Task.attempt (\_ -> NoOp) (Dom.setViewportOf "__rt_scroll__" 0 y)
+
+
+
+-- COPY-PASTE
 
 
 {-| Paste contents of clipboard into Editor
@@ -274,6 +337,7 @@ renderedText model =
         , HA.style "order" "1"
         , HA.style "align-self" "left"
         , HA.style "padding" "12px"
+        , HA.attribute "id" "__rt_scroll__"
         ]
         [ Markdown.Elm.toHtml Extended model.sourceText ]
 

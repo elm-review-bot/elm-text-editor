@@ -56,6 +56,7 @@ documentDict =
         , ( "elmLesson", ( ElmLesson, Strings.lesson ) )
         , ( "changeLog", ( ChangeLog, Strings.changeLog ) )
         , ( "markdownExample", ( MarkdownExample, Strings.markdownExample ) )
+        , ( "test", ( Test, Strings.test ) )
         ]
 
 
@@ -177,7 +178,7 @@ update msg model =
                     ( { model | message = "sync error" }, Cmd.none )
 
         Test ->
-            load DontWrap Editor.Strings.info model
+            loadDocument "test" model
 
         About ->
             loadDocument "about" model
@@ -391,7 +392,7 @@ footer model =
     div
         [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
         [ div [ HA.style "margin-top" "20px", HA.class "flex-row-text-aligned" ]
-            [ aboutButton model, markdownExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
+            [ aboutButton model, testButton model, markdownExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
@@ -413,6 +414,10 @@ messageColor str =
 
 
 -- BUTTONS
+
+
+testButton model =
+    rowButton model 40 Test "Test" []
 
 
 elmLessonButton model =

@@ -224,7 +224,7 @@ wrappingOption state =
 
 
 infoPanelStyle =
-    [ style "width" "90px"
+    [ style "width" "110px"
     , style "position" "absolute"
     , style "right" "8px"
     , style "top" "8px"
@@ -320,7 +320,7 @@ wordCount lines =
 
 cursorPosition : InternalState -> Html Msg
 cursorPosition state =
-    div Widget.columnButtonStyle [ text ("Cursor: " ++ String.fromInt (state.cursor.line + 1)) ]
+    div Widget.columnButtonStyle [ text ("Cursor = (" ++ String.fromInt (state.cursor.line + 1) ++ ", " ++ String.fromInt state.cursor.column ++ ")") ]
 
 
 scrollPosition : InternalState -> Html Msg

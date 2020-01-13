@@ -1,4 +1,74 @@
-module Strings exposing (about, changeLog, lesson, markdownExample)
+module Strings exposing (about, changeLog, lesson, markdownExample, test)
+
+
+test =
+    """
+abc
+def
+![Hummingbird::left](http://noteimages.s3.amazonaws.com/jxxcarlson/hummingbird2.jpg)
+ghi
+
+abc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+bc
+def
+ghi
+jkl
+
+"""
 
 
 changeLog : String

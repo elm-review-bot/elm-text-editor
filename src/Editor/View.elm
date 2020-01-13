@@ -89,15 +89,16 @@ character window cursor selection position char =
 line : Window -> Position -> Maybe Position -> Int -> String -> Html Msg
 line window cursor selection index content =
     let
-        length =
-            String.length content
-
-        endPosition =
-            { line = index, column = length }
-
         {- Used below to correctly position and display the cursor -}
         offset =
             window.first
+
+        length =
+            String.length content
+
+        {-| Add offset to index to compensate for scrolling -}
+        endPosition =
+            { line = index + offset, column = length }
     in
     div
         [ class <| name ++ "-line"

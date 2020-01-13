@@ -1,6 +1,5 @@
 module Main exposing (Msg(..), main)
 
-import AppText
 import Browser
 import Browser.Dom as Dom
 import Editor exposing (Editor, EditorConfig, EditorMsg)
@@ -39,10 +38,9 @@ type Msg
     = NoOp
     | EditorMsg EditorMsg
     | Test
-    | FindTreasure
-    | GetSpeech
-    | GetLongLongLines
-    | Reset
+    | ElmLesson
+    | MarkdownExample
+    | About
     | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
     | LogErr String
@@ -52,23 +50,15 @@ type Msg
 type alias Model =
     { editor : Editor
     , clipboard : String
-    , document : Document
     , sourceText : String
     , ast : Tree Parse.MDBlockWithId
     }
-
-
-type Document
-    = Intro
-    | Gettysburg
-    | LongLines
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
     ( { editor = Editor.init config Strings.intro
       , clipboard = ""
-      , document = Intro
       , sourceText = Strings.intro
       , ast = Parse.toMDBlockTree 0 Extended Strings.intro
       }
@@ -81,9 +71,9 @@ config =
     { editorMsg = EditorMsg
     , sliderMsg = SliderMsg
     , width = 450
-    , height = 480
+    , height = 544
     , lineHeight = 16.0
-    , showInfoPanel = True
+    , showInfoPanel = False
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
     }
@@ -163,17 +153,14 @@ update msg model =
         Test ->
             load DontWrap Editor.Strings.info model
 
-        GetSpeech ->
-            load DoWrap AppText.gettysburgAddress { model | document = Gettysburg }
+        About ->
+            load DontWrap Strings.intro model
 
-        GetLongLongLines ->
-            load DontWrap AppText.longLines { model | document = LongLines }
+        ElmLesson ->
+            load DontWrap Strings.lesson model
 
-        Reset ->
-            load DontWrap Strings.intro { model | document = Intro }
-
-        FindTreasure ->
-            highlightText "treasure" model
+        MarkdownExample ->
+            load DontWrap Strings.markdownExample model
 
         SliderMsg sliderMsg ->
             let
@@ -307,7 +294,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ HA.style "margin" "60px", HA.class "flex-column", HA.style "width" "1200px" ]
+    div [ HA.style "margin" "30px", HA.class "flex-column", HA.style "width" "1200px" ]
         [ title
         , div
             [ HA.class "flex-row"
@@ -351,14 +338,15 @@ title =
 footer : Model -> Html Msg
 footer model =
     div
-        [ HA.style "font-size" "14px", HA.style "position" "absolute", HA.style "top" "590px", HA.style "left" "80px" ]
-        [ div []
+        [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
+        [ div [ HA.style "margin-top" "20px" ]
+            [ introButton, markdownExampleButton model, elmLessonButton model ]
+        , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)" ]
+            , text "This app is based on  "
+            , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ]
             ]
-        , div [ HA.style "margin-top" "10px" ] [ text "This app is based on  ", Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ] ]
-        , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands or type ctrl-h to toggle" ]
-        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ resetButton, treasureButton model, speechTextButton, longLinesTextButton ]
+        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-i for info panel" ]
         ]
 
 
@@ -370,25 +358,16 @@ testButton =
     rowButton 80 Test "Info" []
 
 
-treasureButton model =
-    case model.document of
-        Intro ->
-            rowButton 120 FindTreasure "Find treasure" []
-
-        _ ->
-            Html.span [] []
+elmLessonButton model =
+    rowButton 120 ElmLesson "Elm Lesson" []
 
 
-speechTextButton =
-    rowButton 160 GetSpeech "Gettysburg Address" []
+markdownExampleButton model =
+    rowButton 120 MarkdownExample "markdownExample" []
 
 
-longLinesTextButton =
-    rowButton 160 GetLongLongLines "Long lines" []
-
-
-resetButton =
-    rowButton 80 Reset "Reset" []
+introButton =
+    rowButton 80 About "About" []
 
 
 

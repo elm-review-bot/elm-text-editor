@@ -1,8 +1,31 @@
-module Strings exposing (intro, lesson, markdownExample)
+module Strings exposing (about, changeLog, lesson, markdownExample)
 
 
-intro : String
-intro =
+changeLog : String
+changeLog =
+    """
+ # Main Issues
+
+ - Jump when user clicks at end of line
+
+ - A better scrolling solution
+
+ I may need help on some of these.
+
+ # ChangeLog 
+ 
+ ##  January 13, 2020
+ 
+ - Change **Clear All** command (ctrl-shift-C) to (ctrl-option-C)
+ 
+ - Add feature *Copy editor selection to system clipboard*, attach 
+ to keyboard command ctrl-shift-C.
+ 
+    """
+
+
+about : String
+about =
     """
 ## About the Pure Elm Text Editor Project
 

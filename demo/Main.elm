@@ -2,6 +2,7 @@ module Main exposing (Msg(..), main)
 
 import Browser
 import Browser.Dom as Dom
+import Dict exposing (Dict)
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Strings
@@ -40,11 +41,29 @@ type Msg
     | Test
     | ElmLesson
     | MarkdownExample
+    | ChangeLog
     | About
     | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
     | LogErr String
     | SetViewPortForElement (Result Dom.Error ( Dom.Element, Dom.Viewport ))
+
+
+documentDict : Dict String ( Msg, String )
+documentDict =
+    Dict.fromList
+        [ ( "about", ( About, Strings.about ) )
+        , ( "elmLesson", ( ElmLesson, Strings.lesson ) )
+        , ( "changeLog", ( ChangeLog, Strings.changeLog ) )
+        , ( "markdownExample", ( MarkdownExample, Strings.markdownExample ) )
+        ]
+
+
+getMsgFromTitle : String -> Msg
+getMsgFromTitle title_ =
+    Dict.get title_ documentDict
+        |> Maybe.withDefault ( About, Strings.about )
+        |> Tuple.first
 
 
 type alias Model =
@@ -53,16 +72,18 @@ type alias Model =
     , message : String
     , sourceText : String
     , ast : Tree Parse.MDBlockWithId
+    , currentDocumentTitle : String
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editor = Editor.init config Strings.intro
+    ( { editor = Editor.init config Strings.about
       , clipboard = ""
-      , sourceText = Strings.intro
-      , ast = Parse.toMDBlockTree 0 Extended Strings.intro
+      , sourceText = Strings.about
+      , ast = Parse.toMDBlockTree 0 Extended Strings.about
       , message = "Starting up"
+      , currentDocumentTitle = "about"
       }
     , Cmd.none
     )
@@ -159,13 +180,16 @@ update msg model =
             load DontWrap Editor.Strings.info model
 
         About ->
-            load DontWrap Strings.intro model
+            loadDocument "about" model
 
         ElmLesson ->
-            load DontWrap Strings.lesson model
+            loadDocument "elmLesson" model
 
         MarkdownExample ->
-            load DontWrap Strings.markdownExample model
+            loadDocument "markdownExample" model
+
+        ChangeLog ->
+            loadDocument "changeLog" model
 
         SliderMsg sliderMsg ->
             let
@@ -268,6 +292,18 @@ pasteToEditorClipboard model str =
     ( { model | editor = Editor.insert wrapOption cursor str editor2 }, Cmd.none )
 
 
+loadDocument : String -> Model -> ( Model, Cmd Msg )
+loadDocument title_ model =
+    let
+        ( _, content ) =
+            Dict.get title_ documentDict |> Maybe.withDefault ( About, Strings.about )
+
+        editor =
+            Editor.load DontWrap content model.editor
+    in
+    ( { model | editor = editor, sourceText = content, currentDocumentTitle = title_ }, Cmd.none )
+
+
 {-| Load text into Editor
 -}
 load : WrapOption -> String -> Model -> ( Model, Cmd Msg )
@@ -355,7 +391,7 @@ footer model =
     div
         [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
         [ div [ HA.style "margin-top" "20px", HA.class "flex-row-text-aligned" ]
-            [ introButton, markdownExampleButton model, elmLessonButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
+            [ aboutButton model, markdownExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
@@ -379,20 +415,20 @@ messageColor str =
 -- BUTTONS
 
 
-testButton =
-    rowButton 80 Test "Info" []
-
-
 elmLessonButton model =
-    rowButton 120 ElmLesson "Elm Lesson" []
+    rowButton model 120 ElmLesson "Elm Lesson" []
 
 
 markdownExampleButton model =
-    rowButton 120 MarkdownExample "markdownExample" []
+    rowButton model 120 MarkdownExample "markdownExample" []
 
 
-introButton =
-    rowButton 80 About "About" []
+changeLogButton model =
+    rowButton model 150 ChangeLog "Issues and Change Log" []
+
+
+aboutButton model =
+    rowButton model 80 About "About" []
 
 
 
@@ -414,9 +450,30 @@ rowButtonLabelStyle width =
     , style "width" (String.fromInt width ++ "px")
     , style "height" "24px"
     , style "border" "none"
+    , style "margin-right" "10px"
     ]
 
 
-rowButton width msg str attr =
+activeRowButtonLabelStyle width =
+    [ style "font-size" "12px"
+    , style "background-color" "#922"
+    , style "color" "#eee"
+    , style "width" (String.fromInt width ++ "px")
+    , style "height" "24px"
+    , style "border" "none"
+    , style "margin-right" "10px"
+    ]
+
+
+rowButton model width msg str attr =
+    let
+        style_ =
+            case getMsgFromTitle model.currentDocumentTitle == msg of
+                True ->
+                    activeRowButtonLabelStyle width
+
+                False ->
+                    rowButtonLabelStyle width
+    in
     div (rowButtonStyle ++ attr)
-        [ button ([ onClick msg ] ++ rowButtonLabelStyle width) [ text str ] ]
+        [ button ([ onClick msg ] ++ style_) [ text str ] ]

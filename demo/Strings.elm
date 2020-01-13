@@ -4,7 +4,7 @@ module Strings exposing (intro, lesson, markdownExample)
 intro : String
 intro =
     """
-## About the Pure Elm Editor Project
+## About the Pure Elm Text Editor Project
 
 ![Hummingbird::left](http://noteimages.s3.amazonaws.com/jxxcarlson/hummingbird2.jpg)
 This project

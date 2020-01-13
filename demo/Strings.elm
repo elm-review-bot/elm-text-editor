@@ -54,7 +54,7 @@ editor to raise the source and rendered text to
 respective windows.  This feature needs a lot
 more more work.  To implement it, one searches the AST
 of the source text to find the id of the rendered text in question. *((This feature is not yet reliable. The
-searchAST function needs more work.))*
+searchAST function needs more work.  I'm working on it.))*
 
 - **Wrapping Text.**  ctrl-W wraps the current selection.  ctrl-shift-W
 wraps the entire document respecting paragraphs, code blocks,

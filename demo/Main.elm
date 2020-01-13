@@ -108,6 +108,9 @@ update msg model =
                     in
                     ( { model | editor = editor, sourceText = Editor.getSource editor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg cmd ] )
 
+                E.WriteToSystemClipBoard ->
+                    ( { model | editor = editor }, Outside.sendInfo (Outside.WriteToClipBoard (Editor.getSelectedText editor |> Maybe.withDefault "Nothing!!")) )
+
                 E.Unload _ ->
                     syncWithEditor model editor cmd
 

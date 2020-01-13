@@ -7,31 +7,39 @@ app.ports.infoForOutside.subscribe(msg => {
     switch(msg.tag) {
 
         case "AskForClipBoard":
-        console.log("AskForClipBoard")
+            console.log("AskForClipBoard")
 
-//        navigator.permissions.query({name:'clipboard'}).then(function(result) {
-//         if (result.state == 'granted') {
-//           console.log('Permission  to access clipboard granted');
+            navigator.clipboard.readText()
+              .then(text => {
+                console.log('Clipboard (outside):', text);
+                app.ports.infoForElm.send({tag: "GotClipboard", data:  text})
+              })
+              .catch(err => {
+                console.error('Failed to read clipboard: ', err);
+              });
+
+             break;
+
+        case "WriteToClipboard":
+            console.log("WriteToClipboard", JSON.stringify(msg.data))
+
+            navigator.permissions.query({name: "clipboard-write"}).then(result => {
+              if (result.state == "granted" || result.state == "prompt") {
+                updateClipboard(JSON.stringify(msg.data))
+              }
+            });
 
 
-        navigator.clipboard.readText()
-          .then(text => {
-            console.log('Clipboard (outside):', text);
-            app.ports.infoForElm.send({tag: "GotClipboard", data:  text})
-          })
-          .catch(err => {
-            console.error('Failed to read clipboard: ', err);
-          });
+             break;
 
+    }
 
-//         } else if (result.state == 'prompt') {
-//           alert('Browser is asking for permission');
-//         }
-//         // Don't do anything if the permission was denied.
-//        });
-
-        break;
-
+    function updateClipboard(newClip) {
+      navigator.clipboard.writeText(newClip).then(function() {
+        console.log("Wrote to clipboard");
+      }, function() {
+        console.log ("Clipboard write failed");
+      });
     }
 
 })

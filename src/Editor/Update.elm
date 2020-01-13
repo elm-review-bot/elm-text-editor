@@ -35,6 +35,7 @@ type Msg
     | MouseUp
     | Copy
     | CopyPasteClipboard
+    | WriteToSystemClipBoard
     | Cut
     | CursorLeft
     | CursorRight
@@ -370,6 +371,28 @@ update buffer msg state =
                host app's update function.
             -}
             ( state, buffer, Cmd.none )
+
+        WriteToSystemClipBoard ->
+            {- The msg WriteToSystemClipBoard is detected and acted upon by the
+               host app's update function.
+            -}
+            case state.selection of
+                Nothing ->
+                    ( state, buffer, Cmd.none )
+
+                Just sel ->
+                    let
+                        ( start, end ) =
+                            Position.order sel state.cursor
+
+                        selectedText =
+                            Buffer.between start end buffer
+
+                        newState =
+                            { state | selectedText = Just selectedText }
+                    in
+                    ( newState, buffer, Cmd.none )
+                        |> recordHistory state buffer
 
         Insert string ->
             case ( state.selection, Dict.get string autoclose ) of

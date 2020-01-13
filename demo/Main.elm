@@ -108,6 +108,36 @@ update msg model =
                 E.Unload _ ->
                     syncWithEditor model editor cmd
 
+                E.RemoveCharAfter ->
+                    syncWithEditor model editor cmd
+
+                E.RemoveCharBefore ->
+                    syncWithEditor model editor cmd
+
+                E.Cut ->
+                    syncWithEditor model editor cmd
+
+                E.Paste ->
+                    syncWithEditor model editor cmd
+
+                E.Undo ->
+                    syncWithEditor model editor cmd
+
+                E.Redo ->
+                    syncWithEditor model editor cmd
+
+                E.WrapSelection ->
+                    syncWithEditor model editor cmd
+
+                E.Clear ->
+                    syncWithEditor model editor cmd
+
+                E.WrapAll ->
+                    syncWithEditor model editor cmd
+
+                E.SendLine ->
+                    ( model, Cmd.none )
+
                 _ ->
                     ( { model | editor = editor }, Cmd.map EditorMsg cmd )
 

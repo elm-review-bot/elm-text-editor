@@ -96,7 +96,7 @@ line window cursor selection index content =
         length =
             String.length content
 
-        {-| Add offset to index to compensate for scrolling -}
+        {- Add offset to index to compensate for scrolling -}
         endPosition =
             { line = index + offset, column = length }
     in

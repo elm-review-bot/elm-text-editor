@@ -342,8 +342,8 @@ footer model =
         [ div [ HA.style "margin-top" "20px" ]
             [ introButton, markdownExampleButton model, elmLessonButton model ]
         , div [ HA.style "margin-top" "10px" ]
-            [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)" ]
-            , text "This app is based on  "
+            [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
+            , text "The editor in this app is based on  "
             , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ]
             ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-i for info panel" ]

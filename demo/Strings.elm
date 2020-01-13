@@ -8,38 +8,42 @@ intro =
 
 ![Hummingbird::left](http://noteimages.s3.amazonaws.com/jxxcarlson/hummingbird2.jpg)
 This project
-grew out for a
-pure Elm Markdown parser-renderer.  It is 
-very much a work in progress Comments,
-issues, and pull requests are very much welcome,
-as I would like the editor to become and
-generally useful tool, as well as one that
-I use in my own projects.
-
-A text editor is useful to the extent that it
-can be integrated into other applications. Here 
-we show how it an be used with a
-[pure Elm Markdown](https://github.com/jxxcarlson/elm-markdown).
-It uses [pablohirafuji/elm-syntax-highlight](https://package.elm-lang.org/packages/pablohirafuji/elm-syntax-highlight/latest/)
-for syntax highlighting. Language support at this time: elm,
-javascript, xml, css, python, sql, json.
-
-
-Please write me at
-jxxcarlson@gmail.com with comments and bug
+grew out the need for a
+pure Elm text editor.  It is
+very much a work in progress, for
+which reason there will be a higher than
+the usual frequency of updates. Comments,
+issues, and pull requests are welcome:
+I would like the editor to become a
+generally useful tool in addition to one that
+I use in my own projects. Please write me at
+jxxcarlson at gmail with comments and bug
 reports, or (better yet) post an issue on the
 [GitHub repo](https://github.com/jxxcarlson/elm-text-editor).
+
+A text editor is useful to the extent that it
+can work as part of other applications. To this
+end,
+we show how it an be used with a
+[pure Elm Markdown](https://github.com/jxxcarlson/elm-markdown)
+parser-renderer.  The renderer
+uses [pablohirafuji/elm-syntax-highlight](https://package.elm-lang.org/packages/pablohirafuji/elm-syntax-highlight/latest/). Language
+support at this time consists of Wlm,
+Javascript, Xml, Css, Python, Sql, and Json.
+
+
+
 
 ## Some features
 
 Most of the features are documented (after a fashion)
 in the help panel, which you can access by typing ctrl-h
-in the editor.  Tying ctrl-h again closes the the help
+in the editor.  Typing ctrl-h again closes the the help
 panel.  Here are some notable features:
 
 - **External copy-paste.** Do cmd-C (or whatever) to copy
 text outside the editor (wherever).  Then click in
-the editor and to ctrl-shift-V to paste the text
+the editor and do ctrl-shift-V to paste the text
 in.  At the moment, this is the only feature which
 uses ports. Also, it only works, as currently
 implemented, in Google Chrome.  Not good!
@@ -53,10 +57,15 @@ of the source text to find the id of the rendered text in question.
 
 - **Wrapping Text.**  ctrl-W wraps the current selection.  ctrl-shift-W
 wraps the entire document respecting paragraphs, code blocks,
-and LaTeX blocks, e.g. `$$ a^2 + b^2 = c^2 $$`. (Here, for simplicity,
-we do not implement math rendering.
-See [markdown.minilatex.app](https://markdown.minilatex.app/)).
-Still to do: protect Markdown tables and LaTeX begin-end pairs.
+and LaTeX blocks, e.g. `$$ a^2 + b^2 = c^2 $$.` In this app, for simplicity,
+we do not implement math rendering. See [markdown.minilatex.app](https://markdown.minilatex.app/). Still to do: protect Markdown tables and LaTeX begin-end pairs.
+
+- **Debounce.** Debounce is built into the editor and can
+be used or not used as needed in the host app. If you
+wish to use it, simply handle the `Unload` message from
+the editor however you like.  The debounce interval
+is currently set at 100 ms.  We use the package
+[jinjor/elm-debounce/](https://package.elm-lang.org/packages/jinjor/elm-debounce/latest/).
 
 
 ## Some missing features

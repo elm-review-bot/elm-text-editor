@@ -94,7 +94,7 @@ type Msg
 
 debounceConfig : Debounce.Config Msg
 debounceConfig =
-    { strategy = Debounce.later 1000
+    { strategy = Debounce.later 100
     , transform = DebounceMsg
     }
 

@@ -642,7 +642,7 @@ update buffer msg state =
                         selectedText =
                             Buffer.between start end buffer
                      in
-                     ( { state | selectedText = Just selectedText }, Buffer.replace start end "" buffer, Cmd.none )
+                     ( { state | selectedText = Just selectedText, selection = Nothing }, Buffer.replace start end "" buffer, Cmd.none )
                     )
                         |> recordHistory state buffer
 

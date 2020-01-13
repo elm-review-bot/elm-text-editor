@@ -15,6 +15,14 @@
   flex-direction: row;
 }
 
+.flex-row-text-aligned {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+
+
 
 .elmsh-line {
     padding : 8px;

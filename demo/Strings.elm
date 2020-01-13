@@ -53,7 +53,8 @@ editor to raise the source and rendered text to
 (more or less) the same height near the top of the
 respective windows.  This feature needs a lot
 more more work.  To implement it, one searches the AST
-of the source text to find the id of the rendered text in question.
+of the source text to find the id of the rendered text in question. *((This feature is not yet reliable. The
+searchAST function needs more work.))*
 
 - **Wrapping Text.**  ctrl-W wraps the current selection.  ctrl-shift-W
 wraps the entire document respecting paragraphs, code blocks,

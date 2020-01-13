@@ -6,7 +6,7 @@ import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Strings
 import Editor.Update as E
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, div, span, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
 import Json.Encode as E
@@ -50,6 +50,7 @@ type Msg
 type alias Model =
     { editor : Editor
     , clipboard : String
+    , message : String
     , sourceText : String
     , ast : Tree Parse.MDBlockWithId
     }
@@ -61,6 +62,7 @@ init () =
       , clipboard = ""
       , sourceText = Strings.intro
       , ast = Parse.toMDBlockTree 0 Extended Strings.intro
+      , message = "Starting up"
       }
     , Cmd.none
     )
@@ -145,10 +147,10 @@ update msg model =
         SetViewPortForElement result ->
             case result of
                 Ok ( element, viewport ) ->
-                    ( model, setViewPortForSelectedLine element viewport )
+                    ( { model | message = "synced" }, setViewPortForSelectedLine element viewport )
 
                 Err _ ->
-                    ( model, Cmd.none )
+                    ( { model | message = "sync error" }, Cmd.none )
 
         Test ->
             load DontWrap Editor.Strings.info model
@@ -184,7 +186,17 @@ update msg model =
 
 syncWithEditor : Model -> Editor -> Cmd EditorMsg -> ( Model, Cmd Msg )
 syncWithEditor model editor cmd =
-    ( { model | editor = editor, sourceText = Editor.getSource editor }, Cmd.map EditorMsg cmd )
+    let
+        newSource =
+            Editor.getSource editor
+    in
+    ( { model
+        | editor = editor
+        , sourceText = newSource
+        , ast = Parse.toMDBlockTree 0 Extended newSource
+      }
+    , Cmd.map EditorMsg cmd
+    )
 
 
 
@@ -339,8 +351,8 @@ footer : Model -> Html Msg
 footer model =
     div
         [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
-        [ div [ HA.style "margin-top" "20px" ]
-            [ introButton, markdownExampleButton model, elmLessonButton model ]
+        [ div [ HA.style "margin-top" "20px", HA.class "flex-row-text-aligned" ]
+            [ introButton, markdownExampleButton model, elmLessonButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
@@ -348,6 +360,16 @@ footer model =
             ]
         , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-i for info panel" ]
         ]
+
+
+messageColor : String -> Html.Attribute msg
+messageColor str =
+    case String.contains "error" str of
+        True ->
+            HA.style "color" "#a00"
+
+        False ->
+            HA.style "color" "#444"
 
 
 

@@ -261,16 +261,8 @@ embedded editorConfig editor =
             , lineHeight = editorConfig.lineHeight
             }
 
-        m =
-            1.04348
-
-        b =
-            90.87
-
         height_ =
             editorConfig.height
-
-        -- m * editorConfig.height + b
     in
     div []
         [ Editor.Styles.editorStyles styleConfig

@@ -1135,13 +1135,9 @@ update buffer msg state =
                         msg_
                         state.debounce
             in
-            ( { state | debounce = debounce }, buffer, Cmd.none )
+            ( { state | debounce = debounce }, buffer, cmd )
 
         Unload str ->
-            let
-                _ =
-                    Debug.log "Unload" str
-            in
             ( { state | debounce = state.debounce }, buffer, Cmd.none )
 
 
@@ -1152,10 +1148,6 @@ update buffer msg state =
 
 unload : String -> Cmd Msg
 unload s =
-    let
-        _ =
-            Debug.log "Task unload" s
-    in
     Task.perform Unload (Task.succeed s)
 
 

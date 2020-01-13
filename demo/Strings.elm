@@ -4,7 +4,7 @@ module Strings exposing (intro)
 intro : String
 intro =
     """
-## Introduction
+## I
 
 ![Hummingbird::left](http://noteimages.s3.amazonaws.com/jxxcarlson/hummingbird2.jpg)
 This project

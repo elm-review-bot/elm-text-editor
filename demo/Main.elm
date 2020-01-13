@@ -5,7 +5,7 @@ import Browser
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Strings
-import Editor.Update
+import Editor.Update as E
 import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
@@ -59,7 +59,7 @@ type Document
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editor = Editor.init config AppText.jabberwocky
+    ( { editor = Editor.init config Strings.intro
       , clipboard = ""
       , document = Intro
       , sourceText = Strings.intro
@@ -90,17 +90,26 @@ update msg model =
     case msg of
         EditorMsg editorMsg ->
             let
-                clipBoardCmd =
-                    if editorMsg == Editor.Update.CopyPasteClipboard then
-                        Outside.sendInfo (Outside.AskForClipBoard E.null)
-
-                    else
-                        Cmd.none
-
                 ( editor, cmd ) =
                     Editor.update editorMsg model.editor
             in
-            ( { model | editor = editor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg cmd ] )
+            case editorMsg of
+                E.CopyPasteClipboard ->
+                    let
+                        clipBoardCmd =
+                            if editorMsg == E.CopyPasteClipboard then
+                                Outside.sendInfo (Outside.AskForClipBoard E.null)
+
+                            else
+                                Cmd.none
+                    in
+                    ( { model | editor = editor, sourceText = Editor.getSource editor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg cmd ] )
+
+                E.Unload _ ->
+                    syncWithEditor model editor cmd
+
+                _ ->
+                    ( { model | editor = editor }, Cmd.map EditorMsg cmd )
 
         Test ->
             load DontWrap Editor.Strings.info model
@@ -135,6 +144,11 @@ update msg model =
 
 
 -- HELPER FUNCTIONS FOR UPDATE
+
+
+syncWithEditor : Model -> Editor -> Cmd EditorMsg -> ( Model, Cmd Msg )
+syncWithEditor model editor cmd =
+    ( { model | editor = editor, sourceText = Editor.getSource editor }, Cmd.map EditorMsg cmd )
 
 
 {-| Paste contents of clipboard into Editor

@@ -18,7 +18,7 @@ type alias MsgTestO model msg =
 
 one : Test
 one =
-    msgTest "insert one char" app insertOne <|
+    msgTest "inserting one chacter properly advances the cursor" app insertOne <|
         \initialModel _ finalModel ->
             let
                 initialCursor =

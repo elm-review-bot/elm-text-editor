@@ -115,7 +115,7 @@ update msg model =
 
         EditorMsg editorMsg ->
             let
-                ( editor, cmd ) =
+                ( newEditor, editorCmd ) =
                     Editor.update editorMsg model.editor
             in
             case editorMsg of
@@ -128,46 +128,46 @@ update msg model =
                             else
                                 Cmd.none
                     in
-                    ( { model | editor = editor, sourceText = Editor.getSource editor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg cmd ] )
+                    ( { model | editor = newEditor, sourceText = Editor.getSource newEditor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg editorCmd ] )
 
                 E.WriteToSystemClipBoard ->
-                    ( { model | editor = editor }, Outside.sendInfo (Outside.WriteToClipBoard (Editor.getSelectedText editor |> Maybe.withDefault "Nothing!!")) )
+                    ( { model | editor = newEditor }, Outside.sendInfo (Outside.WriteToClipBoard (Editor.getSelectedText newEditor |> Maybe.withDefault "Nothing!!")) )
 
                 E.Unload _ ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.RemoveCharAfter ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.RemoveCharBefore ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.Cut ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.Paste ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.Undo ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.Redo ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.WrapSelection ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.Clear ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.WrapAll ->
-                    syncWithEditor model editor cmd
+                    syncWithEditor model newEditor editorCmd
 
                 E.SendLine ->
-                    ( { model | editor = editor }, syncRenderedText (Editor.lineAtCursor editor) model )
+                    ( { model | editor = newEditor }, syncRenderedText (Editor.lineAtCursor newEditor) model )
 
                 _ ->
-                    ( { model | editor = editor }, Cmd.map EditorMsg cmd )
+                    ( { model | editor = newEditor }, Cmd.map EditorMsg editorCmd )
 
         SetViewPortForElement result ->
             case result of

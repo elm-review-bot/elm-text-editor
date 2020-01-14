@@ -77,7 +77,7 @@ changeLog =
  # Main Issues
 
 - Gutter numbers do not align with true line numbers when there are
-very long lines.
+very long lines.f
 
  - A better scrolling solution
 
@@ -130,7 +130,16 @@ uses [pablohirafuji/elm-syntax-highlight](https://package.elm-lang.org/packages/
 support at this time consists of Wlm,
 Javascript, Xml, Css, Python, Sql, and Json.
 
+## History
 
+I first learned about the possibility of a pure Elm text editor
+from the 2018 Discourse post of [Martin Janiczek](https://discourse.elm-lang.org/t/text-editor-done-in-pure-elm/1365/8),
+which I must have read in that same year.  A few day before the end of the next year, I came across
+wonderful work of [Sydney Nemzer](https://sidneynemzer.github.io/elm-text-editor/), who
+had also commented on the Discoure post.  Nemzer's code is the basis for what
+you see here, and rapid progress was possible
+only because of its well-thought-out design. It is a pleasure to
+acknowledge the work on which this package is built.
 
 
 ## Some features

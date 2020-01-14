@@ -1,4 +1,4 @@
-module Tests.Common exposing (Msg(..), app, config, initModel, insert, modelToString, msgFuzzer, msgTostring, noOp, removeCharAfter, removeCharBefore)
+module Tests.Common exposing (Msg(..), app, config, initModel, insertBlank, insertOne, modelToString, msgFuzzer, msgTostring, noOp, removeCharAfter, removeCharBefore)
 
 import ArchitectureTest exposing (..)
 import Editor exposing (..)
@@ -11,8 +11,8 @@ import SingleSlider as Slider
 app : TestedApp Editor EditorMsg
 app =
     { model = ConstantModel initModel
-    , update = NormalUpdate update
-    , msgFuzzer = msgFuzzer
+    , update = NormalUpdate Editor.update
+    , msgFuzzer = weightedMsgFuzzer
     , msgToString = msgTostring
     , modelToString = modelToString
     }
@@ -25,7 +25,7 @@ type Msg
 
 modelToString : Editor -> String
 modelToString editor =
-    getSource editor
+    "buffer: " ++ getSource editor
 
 
 msgTostring : EditorMsg -> String
@@ -56,13 +56,26 @@ config =
     }
 
 
-msgFuzzer : Fuzzer Msg
+msgFuzzer : Fuzzer EditorMsg
 msgFuzzer =
     Fuzz.oneOf
         [ noOp
+        , firstLine
         , insert
         , removeCharBefore
         , removeCharAfter
+        ]
+
+
+weightedMsgFuzzer : Fuzzer EditorMsg
+weightedMsgFuzzer =
+    Fuzz.frequency
+        [ ( 1, noOp )
+        , ( 1, firstLine )
+        , ( 10, insertOne )
+        , ( 2, insertBlank )
+        , ( 1, removeCharBefore )
+        , ( 1, removeCharAfter )
         ]
 
 
@@ -71,9 +84,34 @@ noOp =
     Fuzz.constant NoOp
 
 
+firstLine : Fuzzer EditorMsg
+firstLine =
+    Fuzz.constant FirstLine
+
+
+insertOne : Fuzzer EditorMsg
+insertOne =
+    Fuzz.string |> Fuzz.map oneCharString |> Fuzz.map Insert
+
+
+oneCharString : String -> String
+oneCharString str =
+    case String.left 1 str of
+        "" ->
+            " "
+
+        _ ->
+            str
+
+
 insert : Fuzzer EditorMsg
 insert =
     Fuzz.string |> Fuzz.map Insert
+
+
+insertBlank : Fuzzer EditorMsg
+insertBlank =
+    Fuzz.constant " " |> Fuzz.map Insert
 
 
 removeCharBefore : Fuzzer EditorMsg

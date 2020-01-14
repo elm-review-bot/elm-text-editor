@@ -1,7 +1,7 @@
 {
     "type": "package",
     "name": "jxxcarlson/elm-text-editor",
-    "summary": "Pure elm text editor forked from Sydney Nemzer",
+    "summary": "Pure Elm text editor forked from Sydney Nemzer",
     "license": "BSD-3-Clause",
     "version": "5.0.0",
     "exposed-modules": [

@@ -76,11 +76,17 @@ changeLog =
     """
  # Main Issues
 
- - Jump when user clicks at end of line
+- Gutter numbers do not align with true line numbers when there are
+very long lines.
 
  - A better scrolling solution
 
- I may need help on some of these.
+See the [full list of issues](https://github.com/jxxcarlson/elm-text-editor/issues).
+I may need help on some of these.
+
+ ## Fixed!
+
+ - Jump when user clicks at end of line (Fixed Jan 14, 2020)
 
  # ChangeLog 
  

@@ -136,10 +136,14 @@ I first learned about the possibility of a pure Elm text editor
 from the 2018 Discourse post of [Martin Janiczek](https://discourse.elm-lang.org/t/text-editor-done-in-pure-elm/1365/8),
 which I must have read in that same year.  A few day before the end of the next year, I came across
 wonderful work of [Sydney Nemzer](https://sidneynemzer.github.io/elm-text-editor/), who
-had also commented on the Discoure post.  Nemzer's code is the basis for what
+had also commented on the Discourse post.  [Nemzer's code](https://github.com/SidneyNemzer/elm-text-editor) is the basis for what
 you see here, and rapid progress was possible
 only because of its well-thought-out design. It is a pleasure to
 acknowledge the work on which this package is built.
+
+[Janiczek's repository](https://github.com/Janiczek/elm-editor) is of interest
+because of the property-based test suite that he developed.  I am studying
+this now and plan to set up a similar test suite.
 
 
 ## Some features
@@ -152,9 +156,11 @@ panel.  Here are some notable features:
 - **External copy-paste.** Do cmd-C (or whatever) to copy
 text outside the editor (wherever).  Then click in
 the editor and do ctrl-shift-V to paste the text
-in.  At the moment, this is the only feature which
-uses ports. Also, it only works, as currently
-implemented, in Google Chrome.  Not good!
+in.  In the reverse direction, use cmd-shift-C to copy
+editor text to the system clipboard.  At the moment, these
+are the only feature which
+use ports. Also, these features currently work only
+in Google Chrome.  Not good!
 
 - **Sync with rendered text (Left to Right).**  Do ctrl-shift-S in the
 editor to raise the source and rendered text to
@@ -162,7 +168,7 @@ editor to raise the source and rendered text to
 respective windows.  This feature needs a lot
 more more work.  To implement it, one searches the AST
 of the source text to find the id of the rendered text in question. *((This feature is not yet reliable. The
-searchAST function needs more work.  I'm working on it.))*
+searchAST function needs more thought.  I'm working on it.))*
 
 - **Wrapping Text.**  ctrl-W wraps the current selection.  ctrl-shift-W
 wraps the entire document respecting paragraphs, code blocks,
@@ -172,7 +178,7 @@ we do not implement math rendering. See [markdown.minilatex.app](https://markdow
 - **Debounce.** Debounce is built into the editor and can
 be used or not used as needed in the host app. If you
 wish to use it, simply handle the `Unload` message from
-the editor however you like.  The debounce interval
+the editor however you like and ignore the `Insert` message.  The debounce interval
 is currently set at 100 ms.  We use the package
 [jinjor/elm-debounce/](https://package.elm-lang.org/packages/jinjor/elm-debounce/latest/).
 
@@ -182,9 +188,11 @@ is currently set at 100 ms.  We use the package
 There are many.  But here are some that particularly
 interest me:
 
-- Right to Left editor sync
+- Right to Left editor sync: select rendered text to sync
+with corresponding source text.
 
-- Copy editor text to system clipboard
+- Linked scrolling of source and rendered text.
+
 
 """
 

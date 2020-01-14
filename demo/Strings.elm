@@ -77,7 +77,7 @@ changeLog =
  # Main Issues
 
 - Gutter numbers do not align with true line numbers when there are
-very long lines.f
+very long lines.
 
  - A better scrolling solution
 
@@ -86,7 +86,9 @@ I may need help on some of these.
 
  ## Fixed!
 
- - Jump when user clicks at end of line (Fixed Jan 14, 2020)
+ - Jump when user clicks at end of line (Fixed Jan 14, 2020).  Thanks to
+ Martin Stewart and Wolfgang Schuster whose precise error reports
+ helped fix this.
 
  # ChangeLog 
  
@@ -134,16 +136,21 @@ Javascript, Xml, Css, Python, Sql, and Json.
 
 I first learned about the possibility of a pure Elm text editor
 from the 2018 Discourse post of [Martin Janiczek](https://discourse.elm-lang.org/t/text-editor-done-in-pure-elm/1365/8),
-which I must have read in that same year.  A few day before the end of the next year, I came across
-wonderful work of [Sydney Nemzer](https://sidneynemzer.github.io/elm-text-editor/), who
-had also commented on the Discourse post.  [Nemzer's code](https://github.com/SidneyNemzer/elm-text-editor) is the basis for what
-you see here, and rapid progress was possible
-only because of its well-thought-out design. It is a pleasure to
-acknowledge the work on which this package is built.
+which I must have read in that same year.  [Janiczek's code](https://github.com/Janiczek/elm-editor) provides (1) a
+foundational editor structure with facilities for inserting and deleting characters
+and mving the insertion point around with arrow keys, (2) a set of fuzzer tests to
+verify the good operation of the editor.  These property-based tests use
+his [Architecture Test](https://package.elm-lang.org/packages/Janiczek/architecture-test/latest/) package. (I am working slowly to implement such tests for this project).
 
-[Janiczek's repository](https://github.com/Janiczek/elm-editor) is of interest
-because of the property-based test suite that he developed.  I am studying
-this now and plan to set up a similar test suite.
+
+A few day before the end of 2019, I came across
+wonderful work of [Sydney Nemzer](https://sidneynemzer.github.io/elm-text-editor/), who
+had also commented on the Discourse post.  [Nemzer's code](https://github.com/SidneyNemzer/elm-text-editor),
+which greatlu extends Janiczek's is the basis for what
+you see here, and with it rapid progress was possible. It is a pleasure to
+acknowledge the works on which this package is built.
+
+
 
 
 ## Some features

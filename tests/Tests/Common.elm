@@ -1,4 +1,4 @@
-module Tests.Common exposing (app, insert, msgFuzzer, noOp, removeCharAfter, removeCharBefore)
+module Tests.Common exposing (Msg(..), app, config, initModel, insert, modelToString, msgFuzzer, msgTostring, noOp, removeCharAfter, removeCharBefore)
 
 import ArchitectureTest exposing (..)
 import Editor exposing (..)

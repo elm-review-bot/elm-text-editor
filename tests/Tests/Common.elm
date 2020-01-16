@@ -1,4 +1,4 @@
-module Tests.Common exposing (Msg(..), app, config, initModel, insertBlank, insertOne, modelToString, msgFuzzer, msgTostring, noOp, removeCharAfter, removeCharBefore)
+module Tests.Common exposing (Msg(..), app, config, cursorDown, cursorLeft, cursorRight, cursorUp, initModel, insertBlank, insertOne, modelToString, msgFuzzer, msgTostring, noOp, removeCharAfter, removeCharBefore)
 
 import ArchitectureTest exposing (..)
 import Editor exposing (..)
@@ -6,6 +6,7 @@ import Editor.Config exposing (WrapOption(..))
 import Editor.Update exposing (..)
 import Fuzz exposing (Fuzzer, int, list, string)
 import SingleSlider as Slider
+import String.Interpolate exposing (interpolate)
 
 
 app : TestedApp Editor EditorMsg
@@ -25,7 +26,32 @@ type Msg
 
 modelToString : Editor -> String
 modelToString editor =
-    "buffer: " ++ getSource editor
+    let
+        pos =
+            getCursor editor
+
+        line =
+            pos.line |> String.fromInt
+
+        column =
+            pos.column |> String.fromInt
+
+        source =
+            getSource editor
+
+        decoratedSource =
+            source
+                |> String.replace " " "°"
+                |> String.lines
+                |> List.map (\line_ -> (line_ |> String.length |> String.fromInt) ++ ": " ++ line_)
+                |> List.indexedMap (\i line_ -> String.fromInt i ++ ", " ++ line_)
+                |> String.join "\n"
+    in
+    interpolate modelTemplate [ line, column, decoratedSource ]
+
+
+modelTemplate =
+    "MODEL\ncursor = ({0}, {1})\nbuffer:\n{2}\n"
 
 
 msgTostring : EditorMsg -> String
@@ -40,7 +66,11 @@ msgTostring editorMsg =
 
 initModel : Editor
 initModel =
-    Editor.init config "abc\ndef\n"
+    Editor.init config ""
+
+
+
+-- "abc\ndefg\n"
 
 
 config : EditorConfig Msg
@@ -72,6 +102,12 @@ weightedMsgFuzzer =
     Fuzz.frequency
         [ ( 1, noOp )
         , ( 1, firstLine )
+        , ( 1, lastLine )
+        , ( 1, cursorUp )
+        , ( 1, cursorDown )
+
+        --  , ( 1, cursorLeft )
+        , ( 1, cursorRight )
         , ( 10, insertOne )
         , ( 2, insertBlank )
         , ( 1, removeCharBefore )
@@ -84,9 +120,34 @@ noOp =
     Fuzz.constant NoOp
 
 
+cursorLeft : Fuzzer EditorMsg
+cursorLeft =
+    Fuzz.constant CursorLeft
+
+
+cursorRight : Fuzzer EditorMsg
+cursorRight =
+    Fuzz.constant CursorRight
+
+
+cursorUp : Fuzzer EditorMsg
+cursorUp =
+    Fuzz.constant CursorUp
+
+
+cursorDown : Fuzzer EditorMsg
+cursorDown =
+    Fuzz.constant CursorDown
+
+
 firstLine : Fuzzer EditorMsg
 firstLine =
     Fuzz.constant FirstLine
+
+
+lastLine : Fuzzer EditorMsg
+lastLine =
+    Fuzz.constant LastLine
 
 
 insertOne : Fuzzer EditorMsg

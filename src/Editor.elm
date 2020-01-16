@@ -2,7 +2,7 @@ module Editor exposing
     ( embedded, init
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
-    , getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
+    , getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
     , setSelectedText
     , placeInClipboard
     , scrollToLine, scrollToString
@@ -40,7 +40,7 @@ module Editor exposing
 
 ## Getters
 
-@docs getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
+@docs getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
 
 
 ## Setters
@@ -106,6 +106,20 @@ type Editor
         { buffer : Buffer
         , state : InternalState
         }
+
+
+{-| Get the buffer (mostly for tests)
+-}
+getBuffer : Editor -> Buffer
+getBuffer (Editor data) =
+    data.buffer
+
+
+{-| Get the state (mostly for tests)
+-}
+getState : Editor -> InternalState
+getState (Editor data) =
+    data.state
 
 
 

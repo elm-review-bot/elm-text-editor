@@ -8,17 +8,9 @@ import Test exposing (..)
 import Tests.Common exposing (..)
 
 
-type alias MsgTestO model msg =
-    String
-    -> TestedApp model msg
-    -> Fuzzer msg
-    -> (model -> msg -> model -> Expectation)
-    -> Test
-
-
 one : Test
 one =
-    msgTest "inserting one chacter properly advances the cursor" app insertOne <|
+    msgTest "inserting one character properly advances the cursor" app insertOne <|
         \initialModel _ finalModel ->
             let
                 initialCursor =

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+date +"%H:%M:%S"
 
 case $1 in
 

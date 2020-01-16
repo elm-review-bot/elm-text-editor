@@ -11,6 +11,7 @@ import Html exposing (Attribute, Html, div, span, text)
 import Html.Attributes as Attribute exposing (class, classList, style)
 import Html.Events as Event
 import Json.Decode as Decode
+import List.Extra
 import Position exposing (Position)
 import RollingList
 import Window exposing (Window)
@@ -200,16 +201,29 @@ infoPanel state lines =
         div [] []
 
 
+infoPanel_ : InternalState -> List String -> Html Msg
 infoPanel_ state lines =
     div infoPanelStyle
         [ toggleHelpButton state
         , scrollPosition state
         , cursorPosition state
+        , currentLineLength state lines
         , lineCount lines
         , wordCount lines
         , wrappingOption state
         , dismissInfoPanel
         ]
+
+
+currentLineLength : InternalState -> List String -> Html Msg
+currentLineLength state lines =
+    let
+        lineLength =
+            List.Extra.getAt state.cursor.line lines
+                |> Maybe.map (String.length >> String.fromInt)
+                |> Maybe.withDefault "-1"
+    in
+    div [ style "margin-top" "10px" ] [ text <| "Length: " ++ lineLength ]
 
 
 wrappingOption state =

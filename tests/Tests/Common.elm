@@ -50,6 +50,13 @@ modelToString editor =
     interpolate modelTemplate [ line, column, decoratedSource ]
 
 
+renderVisible : String -> String
+renderVisible str =
+    str
+        |> String.replace " " "°"
+        |> String.replace "\n" "(NL)"
+
+
 modelTemplate =
     "MODEL\ncursor = ({0}, {1})\nbuffer:\n{2}\n"
 
@@ -60,13 +67,40 @@ msgTostring editorMsg =
         NoOp ->
             "NoOp"
 
+        CursorUp ->
+            "CursorUp"
+
+        CursorDown ->
+            "CursorDown"
+
+        CursorLeft ->
+            "CursorLeft"
+
+        CursorRight ->
+            "CursorRight"
+
+        Insert str ->
+            "Insert:  " ++ renderVisible str
+
+        RemoveCharBefore ->
+            "RemoveCharBefore"
+
+        RemoveCharAfter ->
+            "RemoveCharAfter"
+
+        FirstLine ->
+            "CursorRight"
+
+        LastLine ->
+            "CursorRight"
+
         _ ->
             "Undefined"
 
 
 initModel : Editor
 initModel =
-    Editor.init config ""
+    Editor.init config "a"
 
 
 
@@ -105,8 +139,7 @@ weightedMsgFuzzer =
         , ( 1, lastLine )
         , ( 1, cursorUp )
         , ( 1, cursorDown )
-
-        --  , ( 1, cursorLeft )
+        , ( 1, cursorLeft )
         , ( 1, cursorRight )
         , ( 10, insertOne )
         , ( 2, insertBlank )

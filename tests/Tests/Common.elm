@@ -1,4 +1,4 @@
-module Tests.Common exposing (Msg(..), app, config, cursorDown, cursorLeft, cursorRight, cursorUp, initModel, insertBlank, insertOne, modelToString, msgFuzzer, msgTostring, noOp, removeCharAfter, removeCharBefore)
+module Tests.Common exposing (Msg(..), app, config, cursorDown, cursorLeft, cursorRight, cursorUp, firstLine, initModel, insert, insertBlank, insertOne, lastLine, modelTemplate, modelToString, msgTostring, noOp, oneCharString, removeCharAfter, removeCharBefore, renderVisible, weightedMsgFuzzer)
 
 import ArchitectureTest exposing (..)
 import Editor exposing (..)
@@ -13,7 +13,7 @@ app : TestedApp Editor EditorMsg
 app =
     { model = ConstantModel initModel
     , update = NormalUpdate Editor.update
-    , msgFuzzer = weightedMsgFuzzer
+    , msgFuzzer = Fuzz.constant CursorRight -- weightedMsgFuzzer
     , msgToString = msgTostring
     , modelToString = modelToString
     }
@@ -118,17 +118,6 @@ config =
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
     }
-
-
-msgFuzzer : Fuzzer EditorMsg
-msgFuzzer =
-    Fuzz.oneOf
-        [ noOp
-        , firstLine
-        , insert
-        , removeCharBefore
-        , removeCharAfter
-        ]
 
 
 weightedMsgFuzzer : Fuzzer EditorMsg

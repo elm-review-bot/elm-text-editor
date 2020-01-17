@@ -7,6 +7,7 @@ module Editor exposing
     , placeInClipboard
     , scrollToLine, scrollToString
     , slider, sliderUpdate
+    , smallConfig
     )
 
 {-| Use this module to embed a text editor in an Elm app.
@@ -339,6 +340,31 @@ init editorConfig text =
             , slider = Editor.Model.slider
             }
         }
+
+
+initialState editorConfig =
+    { config = smallConfig editorConfig
+    , scrolledLine = 0
+    , cursor = Position 0 0
+    , window = { first = 0, last = lines editorConfig }
+    , selection = Nothing
+    , selectedText = Nothing
+    , clipboard = ""
+    , currentLine = Nothing
+    , dragging = False
+    , history = Editor.History.empty
+    , searchTerm = ""
+    , replacementText = ""
+    , canReplace = False
+    , searchResults = RollingList.fromList []
+    , showHelp = True
+    , showInfoPanel = editorConfig.showInfoPanel
+    , showGoToLinePanel = False
+    , showSearchPanel = False
+    , savedBuffer = Buffer.fromString ""
+    , debounce = Debounce.init
+    , slider = Editor.Model.slider
+    }
 
 
 

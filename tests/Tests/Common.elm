@@ -5,7 +5,6 @@ import Editor exposing (..)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Update exposing (..)
 import Fuzz exposing (Fuzzer, int, list, string)
-import SingleSlider as Slider
 import String.Interpolate exposing (interpolate)
 
 
@@ -21,7 +20,6 @@ app =
 
 type Msg
     = EditorMsg EditorMsg
-    | SliderMsg Slider.Msg
 
 
 modelToString : Editor -> String
@@ -110,7 +108,6 @@ initModel =
 config : EditorConfig Msg
 config =
     { editorMsg = EditorMsg
-    , sliderMsg = SliderMsg
     , width = 450
     , height = 544
     , lineHeight = 16.0

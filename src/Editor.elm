@@ -6,7 +6,6 @@ module Editor exposing
     , setSelectedText
     , placeInClipboard
     , scrollToLine, scrollToString
-    , slider, sliderUpdate
     , smallConfig
     )
 
@@ -21,7 +20,6 @@ module Editor exposing
   - Getters
   - Clipboard
   - Scroll
-  - Slider
 
 
 ## Embedding the Editor
@@ -58,11 +56,6 @@ module Editor exposing
 
 @docs scrollToLine, scrollToString
 
-
-## Slider
-
-@docs slider, sliderUpdate
-
 -}
 
 import Buffer exposing (Buffer)
@@ -78,14 +71,12 @@ import Html exposing (Attribute, Html, div)
 import Html.Attributes as HA exposing (style)
 import Position exposing (Position)
 import RollingList
-import SingleSlider as Slider
 
 
 {-| Example:
 
     type Msg
         = EditorMsg EditorMsg
-        | SliderMsg Slider.Msg
         | LogErr String
         ...
 
@@ -217,7 +208,6 @@ setSelectedText str (Editor data) =
 -}
 type alias EditorConfig a =
     { editorMsg : EditorMsg -> a
-    , sliderMsg : Slider.Msg -> a
     , width : Float
     , height : Float
     , lineHeight : Float
@@ -339,7 +329,6 @@ init editorConfig text =
             , showSearchPanel = False
             , savedBuffer = Buffer.fromString ""
             , debounce = Debounce.init
-            , slider = Editor.Model.slider
             }
         }
 
@@ -364,7 +353,6 @@ initialState editorConfig =
     , showSearchPanel = False
     , savedBuffer = Buffer.fromString ""
     , debounce = Debounce.init
-    , slider = Editor.Model.slider
     }
 
 
@@ -396,54 +384,6 @@ update msg (Editor data) =
     ( Editor { state = is, buffer = b }, cmd )
 
 
-{-| Update the slider frm the hosting app:
-
-    update : Msg -> Model -> ( Model, Cmd Msg )
-    update msg model =
-        case msg of
-            ...
-
-            SliderMsg sliderMsg ->
-                let
-                    ( newEditor, cmd ) =
-                        Editor.sliderUpdate
-                           sliderMsg
-                           model.editor
-                in
-                ( { model | editor = newEditor }
-                , cmd |> Cmd.map SliderMsg )
-
--}
-sliderUpdate : Slider.Msg -> Editor -> ( Editor, Cmd Slider.Msg )
-sliderUpdate sliderMsg ((Editor data) as editor) =
-    let
-        ( newSlider, cmd, updateResults ) =
-            Slider.update sliderMsg (slider editor)
-
-        newEditor =
-            updateSlider newSlider editor
-
-        numberOfLines =
-            Buffer.lines data.buffer
-                |> List.length
-                |> toFloat
-
-        line =
-            newSlider.value
-                / 100.0
-                |> (\x -> x * numberOfLines)
-                |> round
-
-        newCmd =
-            if updateResults then
-                cmd
-
-            else
-                Cmd.none
-    in
-    ( scrollToLine line newEditor, newCmd )
-
-
 
 -- VIEW --
 
@@ -453,46 +393,6 @@ sliderUpdate sliderMsg ((Editor data) as editor) =
 view : List (Attribute EditorMsg) -> Editor -> Html EditorMsg
 view attr (Editor data) =
     Editor.View.view attr (Buffer.lines data.buffer) data.state
-
-
-
--- SLIDER --
-
-
-{-| Subscribe to the slider:
-
-    subscriptions : Model -> Sub Msg
-    subscriptions model =
-        Sub.batch
-            [ Sub.map SliderMsg <|
-                Slider.subscriptions (Editor.slider model.editor)
-              , ...
-            ]
-
--}
-slider : Editor -> Slider.Model
-slider (Editor data) =
-    data.state.slider
-
-
-{-| xxx
--}
-updateSlider : Slider.Model -> Editor -> Editor
-updateSlider slider_ (Editor data) =
-    let
-        oldState =
-            data.state
-    in
-    Editor { data | state = { oldState | slider = slider_ } }
-
-
-{-| xxx
--}
-sliderView : Editor -> Html Slider.Msg
-sliderView (Editor data) =
-    Html.div
-        [ style "position" "absolute", style "right" "0px", style "top" "0px" ]
-        [ Slider.view data.state.slider ]
 
 
 

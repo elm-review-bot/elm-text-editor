@@ -8,7 +8,6 @@ import Editor.Strings
 import Html exposing (Html, button, div, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
-import SingleSlider as Slider
 
 
 main : Program () Model Msg
@@ -32,7 +31,6 @@ type Msg
     | GetSpeech
     | GetLongLongLines
     | Reset
-    | SliderMsg Slider.Msg
     | LogErr String
 
 
@@ -62,7 +60,6 @@ init () =
 config : EditorConfig Msg
 config =
     { editorMsg = EditorMsg
-    , sliderMsg = SliderMsg
     , width = 500
     , height = 480
     , lineHeight = 16.0
@@ -105,13 +102,6 @@ update msg model =
 
         FindTreasure ->
             highlightText "treasure" model
-
-        SliderMsg sliderMsg ->
-            let
-                ( newEditor, cmd ) =
-                    Editor.sliderUpdate sliderMsg model.editor
-            in
-            ( { model | editor = newEditor }, cmd |> Cmd.map SliderMsg )
 
         LogErr _ ->
             ( model, Cmd.none )
@@ -180,10 +170,7 @@ highlightText str model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ Sub.map SliderMsg <|
-            Slider.subscriptions (Editor.slider model.editor)
-        ]
+    Sub.none
 
 
 

@@ -11,7 +11,6 @@ import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Position exposing (Position)
 import RollingList
-import SingleSlider as Slider
 import Test exposing (..)
 
 
@@ -21,13 +20,11 @@ testBuffer =
 
 type Msg
     = EditorMsg EditorMsg
-    | SliderMsg Slider.Msg
 
 
 editorConfig : EditorConfig Msg
 editorConfig =
     { editorMsg = EditorMsg
-    , sliderMsg = SliderMsg
     , width = 450
     , height = 544
     , lineHeight = 16.0
@@ -59,7 +56,6 @@ state =
     , showSearchPanel = False
     , savedBuffer = Buffer.fromString ""
     , debounce = Debounce.init
-    , slider = Editor.Model.slider
     }
 
 

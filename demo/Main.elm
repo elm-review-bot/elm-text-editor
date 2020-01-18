@@ -5,7 +5,6 @@ import Browser.Dom as Dom
 import Dict exposing (Dict)
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
-import Editor.Strings
 import Editor.Update as E
 import Html exposing (Html, button, div, span, text)
 import Html.Attributes as HA exposing (style)
@@ -15,7 +14,6 @@ import Markdown.Elm
 import Markdown.Option exposing (..)
 import Markdown.Parse as Parse
 import Outside
-import SingleSlider as Slider
 import Strings
 import Task exposing (Task)
 import Tree exposing (Tree)
@@ -45,7 +43,6 @@ type Msg
     | MarkdownExample
     | ChangeLog
     | About
-    | SliderMsg Slider.Msg
     | Outside Outside.InfoForElm
     | LogErr String
     | SetViewPortForElement (Result Dom.Error ( Dom.Element, Dom.Viewport ))
@@ -122,7 +119,6 @@ init flags =
 config : EditorConfig Msg
 config =
     { editorMsg = EditorMsg
-    , sliderMsg = SliderMsg
     , width = 450
     , height = 544
     , lineHeight = 16.0
@@ -235,13 +231,6 @@ update msg model =
 
         ChangeLog ->
             loadDocument "changeLog" model
-
-        SliderMsg sliderMsg ->
-            let
-                ( newEditor, cmd ) =
-                    Editor.sliderUpdate sliderMsg model.editor
-            in
-            ( { model | editor = newEditor }, cmd |> Cmd.map SliderMsg )
 
         Outside infoForElm ->
             case infoForElm of
@@ -378,9 +367,7 @@ highlightText str model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Sub.map SliderMsg <|
-            Slider.subscriptions (Editor.slider model.editor)
-        , Outside.getInfo Outside LogErr
+        [ Outside.getInfo Outside LogErr
         ]
 
 

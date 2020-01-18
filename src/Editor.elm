@@ -67,7 +67,7 @@ module Editor exposing
 
 import Buffer exposing (Buffer)
 import Debounce exposing (Debounce)
-import Editor.Config exposing (WrapOption(..), WrapParams)
+import Editor.Config exposing (Config, WrapOption(..), WrapParams)
 import Editor.History
 import Editor.Model exposing (InternalState)
 import Editor.Styles
@@ -176,7 +176,7 @@ getSelectedText (Editor data) =
 
 
 {-| -}
-getSmallConfig : InternalState -> SmallEditorConfig
+getSmallConfig : InternalState -> Config
 getSmallConfig s =
     s.config
 
@@ -227,26 +227,12 @@ type alias EditorConfig a =
     }
 
 
-{-| xxx
--}
-type alias SmallEditorConfig =
-    { lines : Int
-    , showInfoPanel : Bool
-    , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
-    , wrapOption : WrapOption
-    , height : Float
-    , width : Float
-    , lineHeight : Float
-    }
-
-
 {-| XXX: Changed
 -}
-smallConfig : EditorConfig a -> SmallEditorConfig
+smallConfig : EditorConfig a -> Config
 smallConfig c =
     { --- lines = floor <| c.height / c.lineHeight
-      lines = maxLines
-    , showInfoPanel = c.showInfoPanel
+      showInfoPanel = c.showInfoPanel
     , wrapParams = c.wrapParams
     , wrapOption = c.wrapOption
     , height = c.height
@@ -337,9 +323,6 @@ init editorConfig text =
             { config = smallConfig editorConfig
             , scrolledLine = 0
             , cursor = Position 0 0
-
-            ---, window = { first = 0, last = lines editorConfig }
-            , window = { first = 0, last = maxLines }
             , selection = Nothing
             , selectedText = Nothing
             , clipboard = ""
@@ -365,7 +348,6 @@ initialState editorConfig =
     { config = smallConfig editorConfig
     , scrolledLine = 0
     , cursor = Position 0 0
-    , window = { first = 0, last = lines editorConfig }
     , selection = Nothing
     , selectedText = Nothing
     , clipboard = ""

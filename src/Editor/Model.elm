@@ -7,7 +7,6 @@ import Editor.History exposing (History)
 import Position exposing (Position)
 import RollingList exposing (RollingList)
 import SingleSlider as Slider exposing (..)
-import Window exposing (Window)
 
 
 type alias Snapshot =
@@ -20,7 +19,6 @@ type alias Snapshot =
 type alias InternalState =
     { config : Config
     , scrolledLine : Int
-    , window : Window
     , cursor : Position
     , selection : Maybe Position
     , selectedText : Maybe String

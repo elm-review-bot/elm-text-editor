@@ -21,7 +21,7 @@ import Task exposing (Task)
 import Tree exposing (Tree)
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.element
         { init = init
@@ -76,17 +76,44 @@ type alias Model =
     , sourceText : String
     , ast : Tree Parse.MDBlockWithId
     , currentDocumentTitle : String
+    , width : Float
+    , height : Float
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init () =
-    ( { editor = Editor.init config Strings.about
+type alias Flags =
+    { width : Float
+    , height : Float
+    }
+
+
+windowProportion =
+    { width = 0.4
+    , height = 0.7
+    }
+
+
+px : Float -> String
+px k =
+    String.fromFloat k ++ "px"
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( { editor =
+            Editor.init
+                { config
+                    | width = windowProportion.width * flags.width
+                    , height = windowProportion.height * flags.height
+                }
+                Strings.about
       , clipboard = ""
       , sourceText = Strings.about
       , ast = Parse.toMDBlockTree 0 Extended Strings.about
       , message = "Starting up"
       , currentDocumentTitle = "about"
+      , width = flags.width
+      , height = flags.height
       }
     , Cmd.none
     )
@@ -372,7 +399,7 @@ view model =
         [ title
         , div
             [ HA.class "flex-row"
-            , HA.style "width" "980px"
+            , HA.style "width" (px model.width)
             , HA.style "align-items" "stretch"
             ]
             [ embeddedEditor model, renderedText model ]
@@ -382,15 +409,25 @@ view model =
 
 embeddedEditor : Model -> Html Msg
 embeddedEditor model =
-    div [ style "width" "500px" ]
-        [ Editor.embedded config model.editor ]
+    div [ style "width" (px <| min (maxPaneWidth + 30) (windowProportion.width * model.width + 40)) ]
+        [ Editor.embedded
+            { config
+                | width = min maxPaneWidth (windowProportion.width * model.width + 30)
+                , height = windowProportion.height * model.height + 24 - 20
+            }
+            model.editor
+        ]
+
+
+maxPaneWidth =
+    450
 
 
 renderedText model =
     div
         [ HA.style "flex" "row"
-        , HA.style "width" "400px"
-        , HA.style "height" "520px"
+        , HA.style "width" (px <| min maxPaneWidth (windowProportion.width * model.width))
+        , HA.style "height" (px <| windowProportion.height * model.height - 20)
         , HA.style "border" "solid"
         , HA.style "border-color" "#444"
         , HA.style "border-width" "0.5px"

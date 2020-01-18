@@ -3,7 +3,7 @@ module Editor exposing
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
     , getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
-    , setSelectedText
+    , setSelectedText, setHeight, setWidth
     , placeInClipboard
     , scrollToLine, scrollToString
     , smallConfig
@@ -44,7 +44,7 @@ module Editor exposing
 
 ## Setters
 
-@docs setSelectedText
+@docs setSelectedText, setHeight, setWidth
 
 
 ## Clipboard
@@ -331,6 +331,46 @@ init editorConfig text =
             , debounce = Debounce.init
             }
         }
+
+
+{-| Set width of editor in pixels
+-}
+setWidth : Float -> Editor -> Editor
+setWidth w (Editor data) =
+    let
+        oldConfig =
+            data.state.config
+
+        newConfig =
+            { oldConfig | width = w }
+
+        oldState =
+            data.state
+
+        newState =
+            { oldState | config = newConfig }
+    in
+    Editor { data | state = newState }
+
+
+{-| Set height of editor in pixels
+-}
+setHeight : Float -> Editor -> Editor
+setHeight h (Editor data) =
+    let
+        oldConfig =
+            data.state.config
+
+        newConfig =
+            { oldConfig | height = h }
+
+        oldState =
+            data.state
+
+        newState =
+            { oldState | config = newConfig }
+    in
+    Editor { data | state = newState }
 
 
 initialState editorConfig =

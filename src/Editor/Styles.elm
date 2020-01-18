@@ -86,7 +86,7 @@ body { font-size: {2}px;
   -webkit-user-select: none;
   display: flex;
   overflow-x : scroll;
-  overflow-y : hidden;
+  overflow-y : scroll;
   height: {6}px;
 }
 

@@ -1009,7 +1009,8 @@ update buffer msg state =
                 newWindow =
                     Window.shift (k - 5) state.window
             in
-            ( { state | currentLine = Buffer.lineAt state.cursor buffer, window = newWindow }, buffer, Cmd.none )
+            -- ( { state | currentLine = Buffer.lineAt state.cursor buffer, window = newWindow }, buffer, Cmd.none )
+            ( { state | currentLine = Buffer.lineAt state.cursor buffer }, buffer, Cmd.none )
 
         Undo ->
             case Editor.History.undo (stateToSnapshot state buffer) state.history of

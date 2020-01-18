@@ -239,11 +239,12 @@ type alias SmallEditorConfig =
     }
 
 
-{-| xxx
+{-| XXX: Changed
 -}
 smallConfig : EditorConfig a -> SmallEditorConfig
 smallConfig c =
-    { lines = floor <| c.height / c.lineHeight
+    { --- lines = floor <| c.height / c.lineHeight
+      lines = maxLines
     , showInfoPanel = c.showInfoPanel
     , wrapParams = c.wrapParams
     , wrapOption = c.wrapOption
@@ -252,11 +253,19 @@ smallConfig c =
     }
 
 
+{-| XXX: Added
+-}
+maxLines =
+    10000
+
+
 
 -- EMBEDDED EDITOR --
 
 
-{-| Embed the editor in the host app:
+{-| XXX: Changed
+
+Embed the editor in the host app:
 
     view : Model -> Html Msg
     view model =
@@ -283,8 +292,9 @@ embedded editorConfig editor =
         [ Editor.Styles.editorStyles styleConfig
         , view (innerStyle height_) editor
             |> Html.map editorConfig.editorMsg
-        , div [ HA.style "position" "absolute" ]
-            [ sliderView editor |> Html.map editorConfig.sliderMsg ]
+
+        --        , div [ HA.style "position" "absolute" ]
+        --            [ sliderView editor |> Html.map editorConfig.sliderMsg ]
         ]
 
 
@@ -301,7 +311,9 @@ lines editorConfig =
     floor <| editorConfig.height / editorConfig.lineHeight
 
 
-{-| Initialize the embedded editor:
+{-| XXX: Changed
+
+Initialize the embedded editor:
 
     init : () -> ( Model, Cmd Msg )
     init () =
@@ -320,7 +332,9 @@ init editorConfig text =
             { config = smallConfig editorConfig
             , scrolledLine = 0
             , cursor = Position 0 0
-            , window = { first = 0, last = lines editorConfig }
+
+            ---, window = { first = 0, last = lines editorConfig }
+            , window = { first = 0, last = maxLines }
             , selection = Nothing
             , selectedText = Nothing
             , clipboard = ""

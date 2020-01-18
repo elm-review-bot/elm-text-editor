@@ -18,6 +18,7 @@ type alias Config =
     , wrapParams : WrapParams
     , showInfoPanel : Bool
     , wrapOption : WrapOption
+    , width : Float
     , height : Float
     , lineHeight : Float
     }
@@ -44,6 +45,7 @@ default =
     , wrapParams = { maximumWidth = 50, optimalWidth = 45, stringWidth = String.length }
     , showInfoPanel = False
     , wrapOption = DoWrap
+    , width = 400
     , height = 400
     , lineHeight = 14
     }

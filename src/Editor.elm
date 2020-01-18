@@ -235,6 +235,7 @@ type alias SmallEditorConfig =
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
     , wrapOption : WrapOption
     , height : Float
+    , width : Float
     , lineHeight : Float
     }
 
@@ -249,6 +250,7 @@ smallConfig c =
     , wrapParams = c.wrapParams
     , wrapOption = c.wrapOption
     , height = c.height
+    , width = c.width
     , lineHeight = c.lineHeight
     }
 

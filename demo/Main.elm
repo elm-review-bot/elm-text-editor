@@ -39,6 +39,8 @@ type Msg
     = NoOp
     | EditorMsg EditorMsg
     | Test
+    | GotViewport (Result Dom.Error Dom.Viewport)
+    | TestFile
     | ElmLesson
     | MarkdownExample
     | ChangeLog
@@ -56,7 +58,7 @@ documentDict =
         , ( "elmLesson", ( ElmLesson, Strings.lesson ) )
         , ( "changeLog", ( ChangeLog, Strings.changeLog ) )
         , ( "markdownExample", ( MarkdownExample, Strings.markdownExample ) )
-        , ( "test", ( Test, Strings.test ) )
+        , ( "test", ( TestFile, Strings.test ) )
         ]
 
 
@@ -177,8 +179,23 @@ update msg model =
                 Err _ ->
                     ( { model | message = "sync error" }, Cmd.none )
 
-        Test ->
+        TestFile ->
             loadDocument "test" model
+
+        Test ->
+            ( model, Dom.getViewportOf "__inner_editor__" |> Task.attempt GotViewport )
+
+        GotViewport result ->
+            case result of
+                Ok vp ->
+                    --                    let
+                    --                        _ =
+                    --                            Debug.log "VP" vp
+                    --                    in
+                    ( model, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
         About ->
             loadDocument "about" model
@@ -346,7 +363,12 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ HA.style "margin" "30px", HA.class "flex-column", HA.style "width" "1200px" ]
+    div
+        [ HA.style "margin" "30px"
+        , HA.class "flex-column"
+        , HA.style "width" "1200px"
+        , HA.attribute "id" "__outer_editor__"
+        ]
         [ title
         , div
             [ HA.class "flex-row"
@@ -392,13 +414,13 @@ footer model =
     div
         [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
         [ div [ HA.style "margin-top" "20px", HA.class "flex-row-text-aligned" ]
-            [ aboutButton model, testButton model, markdownExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
+            [ aboutButton model, testFileButton model, markdownExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
             , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ]
             ]
-        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-i for info panel" ]
+        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-i for info panel", testButton model ]
         ]
 
 
@@ -414,6 +436,10 @@ messageColor str =
 
 
 -- BUTTONS
+
+
+testFileButton model =
+    rowButton model 70 TestFile "Test file" []
 
 
 testButton model =

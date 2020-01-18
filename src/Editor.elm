@@ -303,6 +303,9 @@ innerStyle h =
     , style "border" "solid"
     , style "border-width" "0.5px"
     , style "border-color" "#aaa"
+    , HA.attribute "id" "__inner_editor__"
+    , style "overflow-y" "scroll"
+    , style "height" "544px"
     ]
 
 

@@ -208,11 +208,36 @@ infoPanel_ state lines =
         , scrollPosition state
         , cursorPosition state
         , currentLineLength state lines
+        , displayLineHeight state lines
         , lineCount lines
         , wordCount lines
         , wrappingOption state
         , dismissInfoPanel
         ]
+
+
+
+-- displayLineHeight : InternalState -> List String -> Html Msg
+
+
+displayLineHeight state lines =
+    let
+        h =
+            state.config.lineHeight * toFloat state.cursor.line
+    in
+    div [ style "margin-top" "10px" ] [ text <| "Height: " ++ (String.fromFloat <| roundTo 2 h) ]
+
+
+roundTo : Int -> Float -> Float
+roundTo places x =
+    let
+        pp =
+            places |> toFloat
+
+        factor =
+            10 ^ pp
+    in
+    x * factor |> round |> (\u -> toFloat u / factor)
 
 
 currentLineLength : InternalState -> List String -> Html Msg
@@ -240,7 +265,7 @@ wrappingOption state =
 
 infoPanelStyle =
     [ style "width" "100px"
-    , style "position" "absolute"
+    , style "position" "fixed"
     , style "right" "8px"
     , style "top" "8px"
     , style "opacity" "1.0"

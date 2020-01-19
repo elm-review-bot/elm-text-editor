@@ -996,10 +996,6 @@ update buffer msg state =
             )
 
         SendLine ->
-            let
-                k =
-                    state.cursor.line
-            in
             ( { state | currentLine = Buffer.lineAt state.cursor buffer }, buffer, Cmd.none )
 
         Undo ->

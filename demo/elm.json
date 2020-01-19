@@ -18,6 +18,7 @@
             "elm-community/string-extra": "4.0.1",
             "folkertdev/elm-paragraph": "1.0.0",
             "jinjor/elm-debounce": "3.0.0",
+            "jxxcarlson/elm-markdown": "5.1.0",
             "jxxcarlson/htree": "2.0.1",
             "lovasoa/elm-rolling-list": "1.1.4",
             "lukewestby/elm-string-interpolate": "1.0.4",

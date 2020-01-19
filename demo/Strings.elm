@@ -79,26 +79,39 @@ changeLog =
 - Gutter numbers do not align with true line numbers when there are
 very long lines.
 
- - A better scrolling solution
+- Synchronized scrolling of editor and rendered text windows
+
+- Auto-wrap as text approaches right-hand margin
+
 
 See the [full list of issues](https://github.com/jxxcarlson/elm-text-editor/issues).
 I may need help on some of these.
 
- ## Fixed!
+ ## Fixed
 
  - Jump when user clicks at end of line (Fixed Jan 14, 2020).  Thanks to
  Martin Stewart and Wolfgang Schuster whose precise error reports
  helped fix this.
 
- # ChangeLog 
+ # ChangeLog
+
+ ## January 19, 2020
+
+ - Replace funky slider with real scrolling
  
- ##  January 13, 2020
+ ##  January 13, 2020 (version 5.0.0)
  
  - Change **Clear All** command (ctrl-shift-C) to (ctrl-option-C)
  
  - Add feature *Copy editor selection to system clipboard*, attach 
  to keyboard command ctrl-shift-C.
- 
+
+ ## January 12, 2020 (version 4.0.0)
+
+ - Simpler API for embedding edtior
+
+ - Configure app using height of editor window
+
     """
 
 

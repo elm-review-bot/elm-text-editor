@@ -344,8 +344,11 @@ loadDocument title_ model =
 
         editor =
             Editor.load DontWrap content model.editor
+
+        ast =
+            Parse.toMDBlockTree 0 Extended content
     in
-    ( { model | editor = editor, sourceText = content, currentDocumentTitle = title_ }, Cmd.none )
+    ( { model | editor = editor, ast = ast, sourceText = content, currentDocumentTitle = title_ }, Cmd.none )
 
 
 {-| Load text into Editor

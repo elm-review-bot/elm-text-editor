@@ -125,11 +125,16 @@ config =
     , showInfoPanel = False
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
+    , offsetFromTop = 5
     }
 
 
 
 -- UPDATE
+
+
+verticalOffset =
+    -5 * 16
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -197,7 +202,7 @@ update msg model =
         SetViewPortForElement result ->
             case result of
                 Ok ( element, viewport ) ->
-                    ( { model | message = "synced" }, setViewPortForSelectedLine element viewport )
+                    ( { model | message = "synced" }, setViewPortForSelectedLine verticalOffset element viewport )
 
                 Err _ ->
                     ( { model | message = "sync error" }, Cmd.none )
@@ -211,10 +216,10 @@ update msg model =
         GotViewport result ->
             case result of
                 Ok vp ->
-                    --                    let
-                    --                        _ =
-                    --                            Debug.log "VP" vp
-                    --                    in
+                    let
+                        _ =
+                            Debug.log "VP" vp
+                    in
                     ( model, Cmd.none )
 
                 Err _ ->
@@ -260,22 +265,27 @@ syncWithEditor model editor cmd =
     )
 
 
-
--- LR SYNC
-
-
 syncRenderedText : String -> Model -> Cmd Msg
 syncRenderedText str model =
     let
         id =
-            case Parse.searchAST str model.ast of
-                Nothing ->
-                    "???"
-
-                Just id_ ->
-                    id_ |> Parse.stringOfId
+            Debug.log "ID"
+                (getId (String.trim str) (Parse.sourceMap model.ast) |> Maybe.withDefault "__Not found__")
     in
     setViewportForElement id
+
+
+{-| Return values whose keys contain the given string
+-}
+getId : String -> Dict String String -> Maybe String
+getId str_ sourceMap =
+    let
+        str =
+            Parse.toMDBlockTree 66 ExtendedMath str_ |> Parse.getLeadingTextFromAST |> String.trim
+    in
+    List.filter (\( k, _ ) -> String.contains str k) (Dict.toList sourceMap)
+        |> List.map (\( _, id ) -> id)
+        |> List.head
 
 
 setViewportForElement : String -> Cmd Msg
@@ -291,11 +301,11 @@ getElementWithViewPort vp id =
         |> Task.map (\el -> ( el, vp ))
 
 
-setViewPortForSelectedLine : Dom.Element -> Dom.Viewport -> Cmd Msg
-setViewPortForSelectedLine element viewport =
+setViewPortForSelectedLine : Float -> Dom.Element -> Dom.Viewport -> Cmd Msg
+setViewPortForSelectedLine offset element viewport =
     let
         y =
-            viewport.viewport.y + element.element.y - element.element.height - 100
+            viewport.viewport.y + element.element.y - element.element.height + offset
     in
     Task.attempt (\_ -> NoOp) (Dom.setViewportOf "__rt_scroll__" 0 y)
 

@@ -473,19 +473,19 @@ update buffer msg state =
                             Debounce.push debounceConfig insertString state.debounce
                     in
                     let
-                        ( newCursor, scrollCmd ) =
+                        newCursor =
                             if string == "\n" then
-                                ( { line = state.cursor.line + 1, column = 0 }, setEditorViewportForLine (state.cursor.line + 1) )
+                                { line = state.cursor.line + 1, column = 0 }
 
                             else
-                                ( Position.nextColumn state.cursor, Cmd.none )
+                                Position.nextColumn state.cursor
                     in
                     ( { state
                         | debounce = debounce
                         , cursor = newCursor
                       }
                     , Buffer.insert state.cursor insertString buffer
-                    , Cmd.batch [ debounceCmd, scrollCmd ]
+                    , Cmd.batch [ debounceCmd ]
                     )
                         |> recordHistory state buffer
 

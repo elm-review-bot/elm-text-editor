@@ -6,7 +6,6 @@ module Editor exposing
     , setSelectedText, setHeight, setWidth
     , placeInClipboard
     , scrollToLine, scrollToString
-    , smallConfig
     )
 
 {-| Use this module to embed a text editor in an Elm app.
@@ -214,7 +213,6 @@ type alias EditorConfig a =
     , showInfoPanel : Bool
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
     , wrapOption : WrapOption
-    , offsetFromTop : Int
     }
 
 
@@ -229,7 +227,6 @@ smallConfig c =
     , height = c.height
     , width = c.width
     , lineHeight = c.lineHeight
-    , offsetFromTop = c.offsetFromTop
     }
 
 

@@ -997,9 +997,8 @@ update buffer msg state =
 
         SendLine ->
             let
-                _ =
-                    Debug.log "SendLine" state.cursor.line
-
+                --                _ =
+                --                    Debug.log "SendLine" state.cursor.line
                 y =
                     max 0 (16.0 * (toFloat state.cursor.line - 0))
 
@@ -1014,10 +1013,10 @@ update buffer msg state =
                         Nothing ->
                             Nothing
             in
-            -- ( { state | currentLine = Buffer.lineAt state.cursor buffer }, buffer, setEditorViewportForLine (max 0 (state.cursor.line - 5)) )
             -- ( { state | currentLine = Buffer.lineAt state.cursor buffer }, buffer, jumpToHeight y )
-            --( { state | currentLine = Buffer.lineAt state.cursor buffer }, buffer, setEditorViewportForLine state.cursor.line )
-            ( { state | cursor = newCursor, selection = selection }, buffer, setEditorViewportForLine state.cursor.line )
+            -- ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight y )
+            -- ( { state | cursor = newCursor, selection = selection }, buffer, setEditorViewportForLine state.cursor.line )
+            ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight 0 )
 
         Undo ->
             case Editor.History.undo (stateToSnapshot state buffer) state.history of
@@ -1181,12 +1180,10 @@ setEditorViewportForLine lineNumber =
         y =
             toFloat lineNumber
                 * 16.0
-
-        -- viewport.viewport.y + element.element.y - element.element.height - 100
     in
     case y >= 0 of
         True ->
-            Dom.setViewportOf "__inner_editor__" 0 (Debug.log "SVOL" y)
+            Dom.setViewportOf "__inner_editor__" 0 y
                 |> Task.attempt (\_ -> NoOp)
 
         False ->
@@ -1195,7 +1192,7 @@ setEditorViewportForLine lineNumber =
 
 jumpToHeight : Float -> Cmd Msg
 jumpToHeight y =
-    Dom.setViewportOf "__inner_editor__" 0 (Debug.log "jumpTo" y)
+    Dom.setViewportOf "__inner_editor__" 0 y
         |> Task.attempt (\_ -> NoOp)
 
 

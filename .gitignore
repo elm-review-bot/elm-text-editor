@@ -13,5 +13,4 @@ demo-simple/index-remote.html
 demo-simple/*.sh
 
 tests/VerifyExamples/
-editor/
 markdown/

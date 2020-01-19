@@ -214,6 +214,7 @@ type alias EditorConfig a =
     , showInfoPanel : Bool
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
     , wrapOption : WrapOption
+    , offsetFromTop : Int
     }
 
 
@@ -228,6 +229,7 @@ smallConfig c =
     , height = c.height
     , width = c.width
     , lineHeight = c.lineHeight
+    , offsetFromTop = c.offsetFromTop
     }
 
 

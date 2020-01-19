@@ -20,7 +20,6 @@ type alias Config =
     , width : Float
     , height : Float
     , lineHeight : Float
-    , offsetFromTop : Int
     }
 
 
@@ -47,7 +46,6 @@ default =
     , width = 400
     , height = 400
     , lineHeight = 14
-    , offsetFromTop = 5
     }
 
 

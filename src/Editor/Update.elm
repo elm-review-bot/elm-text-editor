@@ -1013,10 +1013,7 @@ update buffer msg state =
                         Nothing ->
                             Nothing
             in
-            -- ( { state | currentLine = Buffer.lineAt state.cursor buffer }, buffer, jumpToHeight y )
-            -- ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight y )
-            -- ( { state | cursor = newCursor, selection = selection }, buffer, setEditorViewportForLine state.cursor.line )
-            ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight 0 )
+            ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight y )
 
         Undo ->
             case Editor.History.undo (stateToSnapshot state buffer) state.history of

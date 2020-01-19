@@ -125,7 +125,6 @@ config =
     , showInfoPanel = False
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
-    , offsetFromTop = 5
     }
 
 
@@ -216,10 +215,10 @@ update msg model =
         GotViewport result ->
             case result of
                 Ok vp ->
-                    let
-                        _ =
-                            Debug.log "VP" vp
-                    in
+                    --                    let
+                    --                        _ =
+                    --                            Debug.log "VP" vp
+                    --                    in
                     ( model, Cmd.none )
 
                 Err _ ->
@@ -269,8 +268,8 @@ syncRenderedText : String -> Model -> Cmd Msg
 syncRenderedText str model =
     let
         id =
-            Debug.log "ID"
-                (getId (String.trim str) (Parse.sourceMap model.ast) |> Maybe.withDefault "__Not found__")
+            --            Debug.log "Rendered ID"
+            getId (String.trim str) (Parse.sourceMap model.ast) |> Maybe.withDefault "__Not found__"
     in
     setViewportForElement id
 

@@ -168,7 +168,7 @@ linesContainer =
 
 view : List (Attribute Msg) -> List String -> InternalState -> Html Msg
 view attr lines state =
-    div (attr ++ [ style "position" "absolute" ])
+    div (attr ++ [ Attribute.class "flex-column" ])
         [ goToLinePanel state
         , searchPanel state
         , infoPanel state lines
@@ -281,15 +281,15 @@ searchPanel state =
 searchPanel_ state =
     div
         [ style "width" "595px"
-        , style "padding-top" "10px"
-        , style "height" "36px"
+        , style "padding-top" "5px"
+        , style "height" "30px"
         , style "padding-left" "8px"
         , style "background-color" "#bbb"
         , style "opacity" "0.8"
         , style "font-size" "14px"
         , style "position" "absolute"
-        , style "left" "0px"
-        , style "top" "0px"
+        , style "left" "40px"
+        , style "top" "10px"
         ]
         [ searchTextButton
         , acceptSearchText
@@ -318,8 +318,8 @@ goToLinePanel_ =
         , style "padding" "ipx"
         , style "opacity" "0.8"
         , style "position" "absolute"
-        , style "left" "0px"
-        , style "top" "-10px"
+        , style "left" "40px"
+        , style "top" "10px"
         , style "background-color" "#aab"
         ]
         [ goToLineButton

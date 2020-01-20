@@ -162,7 +162,7 @@ his [Architecture Test](https://package.elm-lang.org/packages/Janiczek/architect
 A few day before the end of 2019, I came across
 wonderful work of [Sydney Nemzer](https://sidneynemzer.github.io/elm-text-editor/), who
 had also commented on the Discourse post.  [Nemzer's code](https://github.com/SidneyNemzer/elm-text-editor),
-which greatlu extends Janiczek's is the basis for what
+which greatly extends Janiczek's is the basis for what
 you see here, and with it rapid progress was possible. It is a pleasure to
 acknowledge the works on which this package is built.
 

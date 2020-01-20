@@ -1,7 +1,7 @@
 module Editor.View exposing (view)
 
 import Char
-import Editor.Config exposing (WrapOption(..))
+import Editor.Config as Config exposing (WrapOption(..))
 import Editor.Keymap
 import Editor.Model exposing (InternalState)
 import Editor.Style as Style
@@ -154,11 +154,11 @@ lineNumber number =
         [ text <| String.fromInt (number + 0) ]
 
 
-gutter : Html Msg
-gutter =
+gutter : Int -> Html Msg
+gutter maxLines_ =
     -- XXX: Todo: rationalize maxlines
     div [ class <| name ++ "-gutter" ] <|
-        List.map lineNumber (List.range 1 1000)
+        List.map lineNumber (List.range 1 maxLines_)
 
 
 linesContainer : List (Html Msg) -> Html Msg
@@ -182,7 +182,7 @@ view attr lines state =
             , onTripleClick SelectLine
             , Attribute.tabindex 0
             ]
-            [ gutter
+            [ gutter (max 100 (List.length lines + 20))
             , linesContainer <|
                 List.indexedMap (line state.cursor state.selection) lines
             ]
@@ -288,8 +288,10 @@ searchPanel_ state =
         , style "opacity" "0.8"
         , style "font-size" "14px"
         , style "position" "absolute"
-        , style "left" "40px"
-        , style "top" "10px"
+        , style "left" "0px"
+        , style "top" "0px"
+        , style "z-index" "100"
+        , Attribute.class "flex-row"
         ]
         [ searchTextButton
         , acceptSearchText
@@ -314,12 +316,12 @@ goToLinePanel state =
 goToLinePanel_ =
     div
         [ style "width" "220px"
-        , style "height" "36px"
+        , style "height" "34px"
         , style "padding" "1px"
         , style "opacity" "0.8"
         , style "position" "absolute"
-        , style "left" "40px"
-        , style "top" "10px"
+        , style "left" "0px"
+        , style "top" "0px"
         , style "background-color" "#aab"
         , Attribute.class "flex-row"
         ]
@@ -345,9 +347,11 @@ numberOfHitsDisplay state =
             state.searchResults
                 |> RollingList.toList
                 |> List.length
-                |> String.fromInt
+
+        txt =
+            String.fromInt (state.searchHitIndex + 1) ++ "/" ++ String.fromInt n
     in
-    Widget.rowButton 40 NoOp n []
+    Widget.rowButton 40 NoOp txt []
 
 
 lineCount : List String -> Html Msg
@@ -444,7 +448,7 @@ acceptLineNumber =
 
 
 acceptSearchText =
-    Widget.textField 130 AcceptSearchText "" [ style "float" "left" ] [ setHtmlId "search-box" ]
+    Widget.textField 130 AcceptSearchText "" [ style "float" "left" ] [ setHtmlId "editor-search-box" ]
 
 
 acceptReplaceText =

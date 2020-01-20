@@ -313,17 +313,28 @@ goToLinePanel state =
 
 goToLinePanel_ =
     div
-        [ style "width" "140px"
+        [ style "width" "220px"
         , style "height" "36px"
-        , style "padding" "ipx"
+        , style "padding" "1px"
         , style "opacity" "0.8"
         , style "position" "absolute"
         , style "left" "40px"
         , style "top" "10px"
         , style "background-color" "#aab"
+        , Attribute.class "flex-row"
         ]
         [ goToLineButton
         , acceptLineNumber
+        , dismissGoToLineButton
+        ]
+
+
+dismissGoToLineButton =
+    Widget.lightRowButton 25
+        ToggleGoToLinePanel
+        "X"
+        [ style "margin-left" "160px"
+        , style "margin-top" "5px"
         ]
 
 

@@ -145,6 +145,9 @@ uses [pablohirafuji/elm-syntax-highlight](https://package.elm-lang.org/packages/
 support at this time consists of Wlm,
 Javascript, Xml, Css, Python, Sql, and Json.
 
+**NOTE.** This app is generally a few steps ahead of the version in the
+published package.
+
 ## History
 
 I first learned about the possibility of a pure Elm text editor

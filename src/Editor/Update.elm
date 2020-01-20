@@ -91,6 +91,7 @@ type Msg
     | OpenReplaceField
     | DebounceMsg Debounce.Msg
     | Unload String
+    | GotViewport (Result Dom.Error Dom.Viewport)
 
 
 debounceConfig : Debounce.Config Msg
@@ -265,13 +266,20 @@ update buffer msg state =
                     in
                     Position.previousLine moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer
+
+                scrollCmd =
+                    if newCursor.line < state.topLine then
+                        setEditorViewportForLine state.config.lineHeight newCursor.line
+
+                    else
+                        Cmd.none
             in
             ( { state
                 | cursor = newCursor
                 , selection = Nothing
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeight newCursor.line
+            , scrollCmd
             )
 
         CursorDown ->
@@ -289,13 +297,21 @@ update buffer msg state =
                     in
                     Position.nextLine moveFrom
                         |> Buffer.clampPosition Buffer.Backward buffer
+
+                scrollCmd =
+                    if newCursor.line > bottomLine state then
+                        -- setEditorViewportForLine state.config.lineHeight (newCursor.line - linesInWindow state - 1)
+                        setEditorViewportForLine state.config.lineHeight newCursor.line
+
+                    else
+                        Cmd.none
             in
             ( { state
                 | cursor = newCursor
                 , selection = Nothing
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeight newCursor.line
+            , scrollCmd
             )
 
         CursorToLineEnd ->
@@ -1015,6 +1031,21 @@ update buffer msg state =
             in
             ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight y )
 
+        GotViewport result ->
+            case result of
+                Ok vp ->
+                    let
+                        y =
+                            vp.viewport.y
+
+                        lineNumber =
+                            round (y / state.config.lineHeight)
+                    in
+                    ( { state | topLine = lineNumber }, buffer, Cmd.none )
+
+                Err _ ->
+                    ( state, buffer, Cmd.none )
+
         Undo ->
             case Editor.History.undo (stateToSnapshot state buffer) state.history of
                 Just ( history, snapshot ) ->
@@ -1181,7 +1212,8 @@ setEditorViewportForLine lineHeight lineNumber =
     case y >= 0 of
         True ->
             Dom.setViewportOf "__inner_editor__" 0 y
-                |> Task.attempt (\_ -> NoOp)
+                |> Task.andThen (\_ -> Dom.getViewportOf "__inner_editor__")
+                |> Task.attempt (\info -> GotViewport info)
 
         False ->
             Cmd.none
@@ -1190,7 +1222,8 @@ setEditorViewportForLine lineHeight lineNumber =
 jumpToHeight : Float -> Cmd Msg
 jumpToHeight y =
     Dom.setViewportOf "__inner_editor__" 0 y
-        |> Task.attempt (\_ -> NoOp)
+        |> Task.andThen (\_ -> Dom.getViewportOf "__inner_editor__")
+        |> Task.attempt (\info -> GotViewport info)
 
 
 unload : String -> Cmd Msg
@@ -1334,6 +1367,16 @@ rollSearchSelectionBackward state buffer =
             )
 
 
+bottomLine : InternalState -> Int
+bottomLine state =
+    round <| toFloat state.topLine + state.config.height / state.config.lineHeight
+
+
+linesInWindow : InternalState -> Int
+linesInWindow state =
+    round <| state.config.height / state.config.lineHeight
+
+
 setMaximumWrapWidth : Int -> InternalState -> InternalState
 setMaximumWrapWidth k state =
     lift (Config.setMaximumWrapWidth k) state
@@ -1365,7 +1408,7 @@ clearState state =
         , dragging = False
         , searchTerm = ""
         , replacementText = ""
-        , scrolledLine = 0
+        , topLine = 0
         , searchResults = RollingList.fromList []
     }
 

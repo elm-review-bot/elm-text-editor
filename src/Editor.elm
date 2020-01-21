@@ -215,6 +215,7 @@ type alias EditorConfig a =
     , wrapParams : { maximumWidth : Int, optimalWidth : Int, stringWidth : String -> Int }
     , wrapOption : WrapOption
     , fontProportion : Float
+    , lineHeightFactor : Float
     }
 
 
@@ -237,6 +238,7 @@ transformConfig c =
     , width = c.width
     , lineHeight = c.lineHeight
     , fontProportion = c.fontProportion
+    , lineHeightFactor = c.lineHeightFactor
     }
 
 

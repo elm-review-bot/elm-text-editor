@@ -126,6 +126,7 @@ config =
     , wrapParams = { maximumWidth = 50, optimalWidth = 45, stringWidth = String.length }
     , wrapOption = DontWrap
     , fontProportion = 0.75
+    , lineHeightFactor = 1.0
     }
 
 

@@ -62,7 +62,8 @@ nextState : String -> ( State, Data ) -> ( State, Data )
 nextState line ( state, data ) =
     let
         ( newState, action ) =
-            nextStateAndAction line state
+            Debug.log "NS" <|
+                nextStateAndAction line state
     in
     ( newState, action line data )
 
@@ -176,10 +177,10 @@ nextStateAndAction line state =
             ( Start, op "EndBlock" )
 
         ( InBlock, Blank ) ->
-            ( InCode, op "AddToBlock" )
+            ( InBlock, op "AddToBlock" )
 
         ( InBlock, Text ) ->
-            ( InCode, op "AddToBlock" )
+            ( InBlock, op "AddToBlock" )
 
         ( _, _ ) ->
             ( Start, op "NoOp" )

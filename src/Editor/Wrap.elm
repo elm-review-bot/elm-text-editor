@@ -4,30 +4,30 @@ module Editor.Wrap exposing (paragraphs, runFSM)
 -}
 
 import Dict exposing (Dict)
-import Editor.Config exposing (Config)
+import Editor.Config exposing (WrapParams)
 import Paragraph
 
 
 {-| Wrap text preserving paragraph structure and code blocks
 -}
-paragraphs : Config -> String -> String
-paragraphs config str =
+paragraphs : WrapParams -> String -> String
+paragraphs wrapParams str =
     str
         ++ "\n"
         |> runFSM
         |> List.filter (\( t, s ) -> s /= "")
-        |> List.map (wrapParagraph config >> String.trim)
+        |> List.map (wrapParagraph wrapParams >> String.trim)
         |> String.join "\n\n"
 
 
 {-| Wrap text in paragraph if it is of ParagraphType,
 but not if it is code or block
 -}
-wrapParagraph : Config -> ( ParagraphType, String ) -> String
-wrapParagraph config ( paragraphType, str ) =
+wrapParagraph : WrapParams -> ( ParagraphType, String ) -> String
+wrapParagraph wrapParams ( paragraphType, str ) =
     case paragraphType of
         TextParagraph ->
-            Paragraph.lines config.wrapParams str |> String.join "\n"
+            Paragraph.lines wrapParams str |> String.join "\n"
 
         CodeParagraph ->
             str

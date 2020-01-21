@@ -813,7 +813,7 @@ update buffer msg state =
                         state.selection
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight cursor.line
+            , Cmd.none
             )
 
         SelectDown ->
@@ -838,7 +838,7 @@ update buffer msg state =
                         state.selection
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight cursor.line
+            , Cmd.none
             )
 
         SelectLeft ->
@@ -863,7 +863,7 @@ update buffer msg state =
                         state.selection
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight cursor.line
+            , Cmd.none
             )
 
         SelectRight ->
@@ -888,7 +888,7 @@ update buffer msg state =
                         state.selection
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight cursor.line
+            , Cmd.none
             )
 
         SelectToLineStart ->

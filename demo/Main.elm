@@ -123,7 +123,7 @@ config =
     , height = 544
     , lineHeight = 16.0
     , showInfoPanel = False
-    , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
+    , wrapParams = { maximumWidth = 50, optimalWidth = 45, stringWidth = String.length }
     , wrapOption = DontWrap
     }
 

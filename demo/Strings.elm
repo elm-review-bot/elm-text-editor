@@ -3,70 +3,9 @@ module Strings exposing (about, changeLog, lesson, markdownExample, test)
 
 test =
     """
-abc
-def
-![Hummingbird::left](http://noteimages.s3.amazonaws.com/jxxcarlson/hummingbird2.jpg)
-ghi
+This is a test.
 
-abc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
-
-bc
-def
-ghi
-jkl
+This is a long line: abc def
 
 """
 

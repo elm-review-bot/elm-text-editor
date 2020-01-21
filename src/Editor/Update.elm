@@ -216,7 +216,7 @@ update buffer msg state =
                 , selection = Nothing
               }
             , buffer
-            , setEditorViewportForLine state.config.lineHeight newCursor.line
+            , Cmd.none
             )
 
         CursorRight ->
@@ -235,20 +235,20 @@ update buffer msg state =
                     Position.nextColumn moveFrom
                         |> Buffer.clampPosition Buffer.Forward buffer
 
-                cmd =
-                    case state.cursor.line /= newCursor.line of
-                        True ->
-                            setEditorViewportForLine state.config.lineHeight newCursor.line
-
-                        False ->
-                            Cmd.none
+                --                cmd =
+                --                    case state.cursor.line /= newCursor.line of
+                --                        True ->
+                --                            setEditorViewportForLine state.config.lineHeight newCursor.line
+                --
+                --                        False ->
+                --                            Cmd.none
             in
             ( { state
                 | cursor = newCursor
                 , selection = Nothing
               }
             , buffer
-            , cmd
+            , Cmd.none
             )
 
         CursorUp ->

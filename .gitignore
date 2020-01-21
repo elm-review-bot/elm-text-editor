@@ -12,5 +12,5 @@ demo-simple/Demo.js
 demo-simple/index-remote.html
 demo-simple/*.sh
 
-tests/VerifyExamples/
+testSpares/VerifyExamples/
 markdown/

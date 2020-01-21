@@ -1,9 +1,10 @@
-module Example exposing (suite)
+module UnitTest exposing (suite)
 
 import Buffer exposing (..)
 import Debounce
 import Editor exposing (EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
+import Editor.Function as F exposing (bufferOf, stateOf)
 import Editor.History
 import Editor.Model exposing (InternalState)
 import Editor.Update exposing (Msg(..))
@@ -36,10 +37,8 @@ editorConfig =
 
 state : InternalState
 state =
-    { config = Editor.smallConfig editorConfig
-    , scrolledLine = 0
+    { config = Editor.transformConfig editorConfig
     , cursor = Position 0 0
-    , window = { first = 0, last = 10 }
     , selection = Nothing
     , selectedText = Nothing
     , clipboard = ""
@@ -54,8 +53,10 @@ state =
     , showInfoPanel = editorConfig.showInfoPanel
     , showGoToLinePanel = False
     , showSearchPanel = False
-    , savedBuffer = Buffer.fromString ""
+    , savedBuffer = Buffer.fromString "abc\ndef"
     , debounce = Debounce.init
+    , topLine = 0
+    , searchHitIndex = 0
     }
 
 
@@ -86,5 +87,44 @@ suite =
                         |> String.reverse
                         |> String.reverse
                         |> Expect.equal randomlyGeneratedString
+            , test "Cursor forward, inside line" <|
+                \_ ->
+                    let
+                        buffer =
+                            Buffer.fromString "abc\ndef"
+
+                        state1 =
+                            { state | cursor = Position 0 1 }
+
+                        state2 =
+                            F.cursorRight state1 buffer |> stateOf
+                    in
+                    Expect.equal state2.cursor (Position 0 2)
+            , test "Cursor forward, inside line, correct character" <|
+                \_ ->
+                    let
+                        buffer =
+                            Buffer.fromString "abc\ndef"
+
+                        state1 =
+                            { state | cursor = Position 0 1 }
+
+                        state2 =
+                            F.cursorRight state1 buffer |> stateOf
+                    in
+                    Expect.equal (String.slice 2 3 (Buffer.toString buffer)) "c"
+            , test "Cursor forward just before end of line" <|
+                \_ ->
+                    let
+                        buffer =
+                            Buffer.fromString "abc\ndef"
+
+                        state1 =
+                            { state | cursor = Position 0 2 }
+
+                        state2 =
+                            F.cursorRight state1 buffer |> stateOf
+                    in
+                    Expect.equal state2.cursor (Position 0 3)
             ]
         ]

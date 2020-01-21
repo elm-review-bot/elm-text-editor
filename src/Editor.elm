@@ -224,11 +224,14 @@ transformConfig : EditorConfig a -> Config
 transformConfig c =
     let
         fontWidth =
-            10
+            c.fontProportion * c.lineHeight
+
+        multiplier =
+            1.4
     in
     { --- lines = floor <| c.height / c.lineHeight
       showInfoPanel = c.showInfoPanel
-    , wrapParams = { maximumWidth = floor (c.width / fontWidth - 5), optimalWidth = floor (c.width / fontWidth - 10), stringWidth = String.length }
+    , wrapParams = { maximumWidth = floor (multiplier * c.width / fontWidth - 5), optimalWidth = floor (multiplier * c.width / fontWidth - 10), stringWidth = String.length }
     , wrapOption = c.wrapOption
     , height = c.height
     , width = c.width

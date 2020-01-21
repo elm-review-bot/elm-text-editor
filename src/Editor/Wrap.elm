@@ -62,8 +62,7 @@ nextState : String -> ( State, Data ) -> ( State, Data )
 nextState line ( state, data ) =
     let
         ( newState, action ) =
-            Debug.log "NS" <|
-                nextStateAndAction line state
+            nextStateAndAction line state
     in
     ( newState, action line data )
 

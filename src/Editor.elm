@@ -261,6 +261,7 @@ embedded editorConfig editor =
             { editorWidth = editorConfig.width
             , editorHeight = editorConfig.height
             , lineHeight = editorConfig.lineHeight
+            , fontProportion = editorConfig.fontProportion
             }
 
         height_ =

@@ -121,11 +121,11 @@ config =
     { editorMsg = EditorMsg
     , width = 450
     , height = 544
-    , lineHeight = 18.0
+    , lineHeight = 20.0
     , showInfoPanel = False
     , wrapParams = { maximumWidth = 50, optimalWidth = 45, stringWidth = String.length }
     , wrapOption = DontWrap
-    , fontProportion = 0.7
+    , fontProportion = 0.75
     }
 
 

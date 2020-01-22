@@ -11,6 +11,7 @@ import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
 import Json.Encode as E
 import Markdown.Elm
+import Markdown.ElmWithId
 import Markdown.Option exposing (..)
 import Markdown.Parse as Parse
 import Outside
@@ -41,6 +42,7 @@ type Msg
     | TestFile
     | ElmLesson
     | MarkdownExample
+    | MathExample
     | ChangeLog
     | About
     | Outside Outside.InfoForElm
@@ -55,6 +57,7 @@ documentDict =
         , ( "elmLesson", ( ElmLesson, Strings.lesson ) )
         , ( "changeLog", ( ChangeLog, Strings.changeLog ) )
         , ( "markdownExample", ( MarkdownExample, Strings.markdownExample ) )
+        , ( "mathExample", ( MathExample, Strings.mathExample ) )
         , ( "test", ( TestFile, Strings.test ) )
         ]
 
@@ -72,9 +75,11 @@ type alias Model =
     , message : String
     , sourceText : String
     , ast : Tree Parse.MDBlockWithId
+    , renderedText : Html Msg
     , currentDocumentTitle : String
     , width : Float
     , height : Float
+    , counter : Int
     }
 
 
@@ -97,6 +102,10 @@ px k =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
+    let
+        initialText =
+            Strings.about
+    in
     ( { editor =
             Editor.init
                 { config
@@ -105,12 +114,14 @@ init flags =
                 }
                 Strings.about
       , clipboard = ""
-      , sourceText = Strings.about
-      , ast = Parse.toMDBlockTree 0 Extended Strings.about
+      , sourceText = initialText
+      , ast = Parse.toMDBlockTree -1 ExtendedMath initialText
+      , renderedText = Markdown.ElmWithId.toHtml -1 ExtendedMath initialText
       , message = "Starting up"
       , currentDocumentTitle = "about"
       , width = flags.width
       , height = flags.height
+      , counter = 0
       }
     , Cmd.none
     )
@@ -217,10 +228,6 @@ update msg model =
         GotViewport result ->
             case result of
                 Ok vp ->
-                    --                    let
-                    --                        _ =
-                    --                            Debug.log "VP" vp
-                    --                    in
                     ( model, Cmd.none )
 
                 Err _ ->
@@ -234,6 +241,9 @@ update msg model =
 
         MarkdownExample ->
             loadDocument "markdownExample" model
+
+        MathExample ->
+            loadDocument "mathExample" model
 
         ChangeLog ->
             loadDocument "changeLog" model
@@ -259,8 +269,10 @@ syncWithEditor model editor cmd =
     in
     ( { model
         | editor = editor
+        , counter = model.counter + 2
         , sourceText = newSource
-        , ast = Parse.toMDBlockTree 0 Extended newSource
+        , ast = Parse.toMDBlockTree model.counter ExtendedMath newSource
+        , renderedText = Markdown.ElmWithId.toHtml model.counter ExtendedMath newSource
       }
     , Cmd.map EditorMsg cmd
     )
@@ -270,7 +282,6 @@ syncRenderedText : String -> Model -> Cmd Msg
 syncRenderedText str model =
     let
         id =
-            --            Debug.log "Rendered ID"
             getId (String.trim str) (Parse.sourceMap model.ast) |> Maybe.withDefault "__Not found__"
     in
     setViewportForElement id
@@ -347,9 +358,21 @@ loadDocument title_ model =
             Editor.load DontWrap content model.editor
 
         ast =
-            Parse.toMDBlockTree 0 Extended content
+            Parse.toMDBlockTree model.counter ExtendedMath content
+
+        renderedText =
+            Markdown.ElmWithId.toHtml model.counter ExtendedMath content
     in
-    ( { model | editor = editor, ast = ast, sourceText = content, currentDocumentTitle = title_ }, Cmd.none )
+    ( { model
+        | counter = model.counter + 1
+        , editor = editor
+        , sourceText = content
+        , ast = ast
+        , renderedText = renderedText
+        , currentDocumentTitle = title_
+      }
+    , Cmd.none
+    )
 
 
 {-| Load text into Editor
@@ -403,7 +426,7 @@ view model =
             , HA.style "width" (px model.width)
             , HA.style "align-items" "stretch"
             ]
-            [ embeddedEditor model, renderedText model ]
+            [ embeddedEditor model, viewRenderedText model ]
         , footer model
         ]
 
@@ -424,7 +447,7 @@ maxPaneWidth =
     450
 
 
-renderedText model =
+viewRenderedText model =
     div
         [ HA.style "flex" "row"
         , HA.style "width" (px <| min maxPaneWidth (windowProportion.width * model.width))
@@ -438,7 +461,7 @@ renderedText model =
         , HA.style "padding" "12px"
         , HA.attribute "id" "__rt_scroll__"
         ]
-        [ Markdown.Elm.toHtml Extended model.sourceText ]
+        [ model.renderedText ]
 
 
 title : Html Msg
@@ -452,7 +475,7 @@ footer model =
     div
         [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
         [ div [ HA.style "margin-top" "20px", HA.class "flex-row-text-aligned" ]
-            [ aboutButton model, testFileButton model, markdownExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
+            [ aboutButton model, testFileButton model, markdownExampleButton model, mathExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
@@ -481,15 +504,19 @@ testFileButton model =
 
 
 testButton model =
-    rowButton model 40 Test "Test" []
+    rowButton model 50 Test "Test" []
 
 
 elmLessonButton model =
-    rowButton model 120 ElmLesson "Elm Lesson" []
+    rowButton model 50 ElmLesson "Elm" []
 
 
 markdownExampleButton model =
-    rowButton model 120 MarkdownExample "markdownExample" []
+    rowButton model 70 MarkdownExample "Markdown" []
+
+
+mathExampleButton model =
+    rowButton model 70 MathExample "Math" []
 
 
 changeLogButton model =

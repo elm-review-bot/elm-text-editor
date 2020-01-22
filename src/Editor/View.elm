@@ -284,11 +284,11 @@ headerPanel state lines =
 
 
 headerPanelStyle =
-    [ style "width" "450px"
-    , style "padding-top" "5px"
-    , style "height" "30px"
+    [ style "width" "470px"
+    , style "padding-top" "10px"
+    , style "height" "27px"
     , style "padding-left" "40px"
-    , style "background-color" "lightBlue"
+    , style "background-color" "#c3c6f7"
     , style "opacity" "0.8"
     , style "font-size" "14px"
     , style "position" "absolute"

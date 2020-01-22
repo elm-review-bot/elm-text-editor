@@ -392,7 +392,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div
-        [ HA.style "margin" "30px"
+        [ HA.style "margin" "0px"
         , HA.class "flex-column"
         , HA.style "width" "1200px"
         , HA.attribute "id" "__outer_editor__"
@@ -444,7 +444,7 @@ renderedText model =
 title : Html Msg
 title =
     div [ HA.style "font-size" "16px", HA.style "font-style" "bold", HA.style "margin-bottom" "10px" ]
-        [ text "A Pure Elm Text Editor" ]
+        [ text "-" ]
 
 
 footer : Model -> Html Msg

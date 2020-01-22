@@ -386,7 +386,14 @@ update buffer msg state =
                     ( state, buffer, Cmd.none )
 
                 Just text ->
-                    ( state, Buffer.insert state.cursor text buffer, Cmd.none )
+                    let
+                        oldCursor =
+                            state.cursor
+
+                        newCursor =
+                            { oldCursor | column = oldCursor.column + String.length text }
+                    in
+                    ( { state | cursor = newCursor }, Buffer.insert state.cursor text buffer, Cmd.none )
 
         PasteFromClipboard ->
             ( state, Buffer.insert state.cursor state.clipboard buffer, Cmd.none )
@@ -1072,7 +1079,7 @@ update buffer msg state =
                         , history = history
                       }
                     , snapshot.buffer
-                    , setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight snapshot.cursor.line
+                    , Cmd.none
                     )
 
                 Nothing ->
@@ -1087,7 +1094,7 @@ update buffer msg state =
                         , history = history
                       }
                     , snapshot.buffer
-                    , setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight snapshot.cursor.line
+                    , Cmd.none
                     )
 
                 Nothing ->

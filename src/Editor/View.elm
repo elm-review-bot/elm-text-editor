@@ -168,12 +168,21 @@ linesContainer =
 
 view : List (Attribute Msg) -> List String -> InternalState -> Html Msg
 view attr lines state =
+    div []
+        [ div []
+            [ goToLinePanel state
+            , searchPanel state
+            , infoPanel state lines
+            , headerPanel state lines
+            ]
+        , innerView attr lines state
+        ]
+
+
+innerView : List (Attribute Msg) -> List String -> InternalState -> Html Msg
+innerView attr lines state =
     div (attr ++ [ Attribute.class "flex-column" ])
-        [ goToLinePanel state
-        , searchPanel state
-        , infoPanel state lines
-        , headerPanel state lines
-        , div
+        [ div
             [ class <| name ++ "-container"
             , Event.preventDefaultOn
                 "keydown"
@@ -291,10 +300,11 @@ headerPanelStyle =
     , style "background-color" "#c3c6f7"
     , style "opacity" "0.8"
     , style "font-size" "14px"
-    , style "position" "absolute"
-    , style "left" "0px"
-    , style "top" "0px"
-    , style "z-index" "0"
+
+    --, style "position" "absolute"
+    -- , style "left" "0px"
+    --, style "top" "0px"
+    -- , style "z-index" "0"
     , Attribute.class "flex-row"
     ]
 
@@ -308,10 +318,11 @@ searchPanel_ state =
         , style "background-color" "#bbb"
         , style "opacity" "0.9"
         , style "font-size" "14px"
-        , style "position" "absolute"
-        , style "left" "0px"
-        , style "top" "0px"
-        , style "z-index" "100"
+
+        --, style "position" "absolute"
+        --        , style "left" "0px"
+        --        , style "top" "0px"
+        --        , style "z-index" "100"
         , Attribute.class "flex-row"
         ]
         [ searchTextButton
@@ -340,11 +351,13 @@ goToLinePanel_ =
         , style "height" "34px"
         , style "padding" "1px"
         , style "opacity" "0.9"
-        , style "position" "absolute"
-        , style "left" "0px"
-        , style "top" "0px"
+
+        -- , style "position" "absolute"
+        --        , style "left" "0px"
+        --        , style "top" "0px"
         , style "background-color" "#aab"
-        , style "z-index" "100"
+
+        --        , style "z-index" "100"
         , Attribute.class "flex-row"
         ]
         [ goToLineButton

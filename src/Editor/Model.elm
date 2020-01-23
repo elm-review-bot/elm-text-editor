@@ -1,4 +1,4 @@
-module Editor.Model exposing (InternalState, Snapshot)
+module Editor.Model exposing (InternalState, PanelState(..), Snapshot)
 
 import Buffer exposing (Buffer)
 import Debounce exposing (Debounce)
@@ -13,6 +13,13 @@ type alias Snapshot =
     , selection : Maybe Position
     , buffer : Buffer
     }
+
+
+type PanelState
+    = HeaderPanel
+    | SearchPane
+    | ReplacePanel
+    | GoToLinePane
 
 
 type alias InternalState =
@@ -36,4 +43,5 @@ type alias InternalState =
     , showSearchPanel : Bool
     , savedBuffer : Buffer
     , debounce : Debounce String
+    , panelState : PanelState
     }

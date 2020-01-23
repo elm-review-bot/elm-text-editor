@@ -62,7 +62,7 @@ import Buffer exposing (Buffer)
 import Debounce exposing (Debounce)
 import Editor.Config exposing (Config, WrapOption(..), WrapParams)
 import Editor.History
-import Editor.Model exposing (InternalState)
+import Editor.Model exposing (InternalState, PanelState(..))
 import Editor.Styles
 import Editor.Update
 import Editor.View
@@ -331,6 +331,7 @@ init editorConfig text =
             , showSearchPanel = False
             , savedBuffer = Buffer.fromString ""
             , debounce = Debounce.init
+            , panelState = HeaderPanel
             }
         }
 

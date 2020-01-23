@@ -268,7 +268,7 @@ embedded editorConfig editor =
             }
 
         height_ =
-            editorConfig.height
+            editorConfig.height - 40
     in
     div []
         [ Editor.Styles.editorStyles styleConfig

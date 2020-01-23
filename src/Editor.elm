@@ -246,9 +246,7 @@ transformConfig c =
 -- EMBEDDED EDITOR --
 
 
-{-| XXX: Changed
-
-Embed the editor in the host app:
+{-| Embed the editor in the host app:
 
     view : Model -> Html Msg
     view model =
@@ -276,9 +274,6 @@ embedded editorConfig editor =
         [ Editor.Styles.editorStyles styleConfig
         , view (innerStyle height_) editor
             |> Html.map editorConfig.editorMsg
-
-        --        , div [ HA.style "position" "absolute" ]
-        --            [ sliderView editor |> Html.map editorConfig.sliderMsg ]
         ]
 
 

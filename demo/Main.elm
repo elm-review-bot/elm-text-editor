@@ -6,7 +6,7 @@ import Dict exposing (Dict)
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
 import Editor.Update as E
-import Html exposing (Html, button, div, span, text)
+import Html exposing (Attribute, Html, button, div, span, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
 import Json.Encode as E
@@ -585,3 +585,28 @@ rowButton model width msg str attr =
     in
     div (rowButtonStyle ++ attr)
         [ button ([ onClick msg ] ++ style_) [ text str ] ]
+
+
+
+-- From Simon H:
+
+
+noAttr : Attribute msg
+noAttr =
+    HA.classList []
+
+
+{-| If the condition is true, add the attribute to the element
+-}
+attrIf : Bool -> Attribute msg -> Attribute msg
+attrIf bool attribute =
+    if bool then
+        attribute
+
+    else
+        noAttr
+
+
+
+-- ToDo: Use the below
+-- div [attrIf condition (style "background" "yellow")] []

@@ -278,7 +278,7 @@ infoPanelStyle =
     , style "top" "8px"
     , style "opacity" "1.0"
     , style "border" "solid 0.5px #444"
-    , style "background-color" Style.lightBlue
+    , style "background-color" Style.lightGray
     , style "padding" "8px"
     , style "z-index" "100"
     ]
@@ -301,7 +301,7 @@ headerPanelStyle width =
     [ style "width" (px (width - 40))
     , style "padding-top" "10px"
     , style "height" "27px"
-    , style "background-color" "#c3c6f7"
+    , style "background-color" Style.lightGray
     , style "opacity" "0.8"
     , style "font-size" "14px"
     , style "padding-left" "40px"
@@ -315,7 +315,7 @@ searchPanel_ state =
         , style "padding-top" "5px"
         , style "height" "30px"
         , style "padding-left" "8px"
-        , style "background-color" "#bbb"
+        , style "background-color" Style.lightGray
         , style "opacity" "0.9"
         , style "font-size" "14px"
 
@@ -351,7 +351,7 @@ goToLinePanel_ width =
         , style "height" "34px"
         , style "padding" "1px"
         , style "opacity" "0.9"
-        , style "background-color" "#aab"
+        , style "background-color" Style.lightGray
         , Attribute.class "flex-row"
         ]
         [ goToLineButton

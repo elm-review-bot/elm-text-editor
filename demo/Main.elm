@@ -114,15 +114,15 @@ init flags =
                 Strings.test
       , clipboard = ""
       , sourceText = initialText
-      , ast = Parse.toMDBlockTree -1 ExtendedMath initialText
+      , ast = Parse.toMDBlockTree 0 ExtendedMath initialText
       , renderedText = Markdown.ElmWithId.toHtml -1 ExtendedMath initialText
       , message = "ctrl-h to toggle help"
       , currentDocumentTitle = "start"
       , width = flags.width
       , height = flags.height
-      , counter = 0
+      , counter = 1
       }
-    , Cmd.none
+    , Cmd.batch [ scrollEditorToTop, scrollRendredTextToTop ]
     )
 
 
@@ -205,7 +205,11 @@ update msg model =
                     syncWithEditor model newEditor editorCmd
 
                 E.SendLine ->
-                    ( { model | editor = newEditor }, syncRenderedText (Editor.lineAtCursor newEditor) model )
+                    let
+                        newModel =
+                            { model | editor = newEditor }
+                    in
+                    syncRenderedText (Editor.lineAtCursor newEditor) newModel
 
                 _ ->
                     ( { model | editor = newEditor }, Cmd.map EditorMsg editorCmd )
@@ -277,26 +281,35 @@ syncWithEditor model editor cmd =
     )
 
 
-syncRenderedText : String -> Model -> Cmd Msg
-syncRenderedText str model =
+syncRenderedText : String -> Model -> ( Model, Cmd Msg )
+syncRenderedText str_ model =
     let
-        id =
-            getId (String.trim str) (Parse.sourceMap model.ast) |> Maybe.withDefault "__Not found__"
+        ( str, id_ ) =
+            getId (String.trim str_) (Parse.sourceMap model.ast)
     in
-    setViewportForElement id
+    case id_ of
+        Nothing ->
+            ( model, Cmd.none )
+
+        Just id ->
+            -- ( model, Cmd.batch [ setViewportForElement id, Outside.sendInfo (Outside.Highlight id) ] )
+            ( model, Cmd.batch [ Outside.sendInfo (Outside.Highlight id), setViewportForElement id ] )
 
 
 {-| Return values whose keys contain the given string
 -}
-getId : String -> Dict String String -> Maybe String
+getId : String -> Dict String String -> ( String, Maybe String )
 getId str_ sourceMap =
     let
         str =
             Parse.toMDBlockTree 66 ExtendedMath str_ |> Parse.getLeadingTextFromAST |> String.trim
+
+        id =
+            List.filter (\( k, _ ) -> String.contains str k) (Dict.toList sourceMap)
+                |> List.map (\( _, id_ ) -> id_)
+                |> List.head
     in
-    List.filter (\( k, _ ) -> String.contains str k) (Dict.toList sourceMap)
-        |> List.map (\( _, id ) -> id)
-        |> List.head
+    ( str, id )
 
 
 setViewportForElement : String -> Cmd Msg

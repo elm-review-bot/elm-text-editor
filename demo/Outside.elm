@@ -30,6 +30,7 @@ type InfoForElm
 type InfoForOutside
     = AskForClipBoard E.Value
     | WriteToClipBoard String
+    | Highlight String
 
 
 getInfo : (InfoForElm -> msg) -> (String -> msg) -> Sub msg
@@ -58,6 +59,9 @@ sendInfo info =
 
         WriteToClipBoard str ->
             infoForOutside { tag = "WriteToClipboard", data = E.string str }
+
+        Highlight str ->
+            infoForOutside { tag = "Highlight", data = E.string str }
 
 
 

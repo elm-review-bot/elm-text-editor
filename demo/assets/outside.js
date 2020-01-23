@@ -32,6 +32,24 @@ app.ports.infoForOutside.subscribe(msg => {
 
              break;
 
+         case "Highlight":
+           console.log("Highlight", msg.data)
+           var id = "#".concat(msg.data)
+           console.log("Highlight (2)", id)
+           var element = document.querySelector(id)
+           if (element != null) {
+                 element.classList.add("highlight")
+           } else {
+                 console.log("Could not find", id)
+           }
+
+             // document.querySelector(id).classList.add("highlight") // (2)
+             // document.getElementById(id).classList.add("highlight")  // (1)
+             // document.querySelector("__rt_scroll__").getElementById(id).classList.add("highlight")
+
+
+           break;
+
     }
 
     function updateClipboard(newClip) {

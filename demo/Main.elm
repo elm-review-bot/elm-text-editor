@@ -432,7 +432,8 @@ view model =
 
 embeddedEditor : Model -> Html Msg
 embeddedEditor model =
-    div [ style "width" (px <| min (maxPaneWidth + 30) (windowProportion.width * model.width + 40)) ]
+    -- div [ style "width" (px <| min (maxPaneWidth + 30) (windowProportion.width * model.width + 40)) ]
+    div [ style "width" (px <| Editor.getWidth model.editor) ]
         [ Editor.embedded
             { config
                 | width = min maxPaneWidth (windowProportion.width * model.width + 30)

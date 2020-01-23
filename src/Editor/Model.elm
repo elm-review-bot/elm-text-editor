@@ -17,9 +17,9 @@ type alias Snapshot =
 
 type PanelState
     = HeaderPanel
-    | SearchPane
+    | SearchPanel
     | ReplacePanel
-    | GoToLinePane
+    | GoToLinePanel
 
 
 type alias InternalState =
@@ -43,5 +43,4 @@ type alias InternalState =
     , showSearchPanel : Bool
     , savedBuffer : Buffer
     , debounce : Debounce String
-    , panelState : PanelState
     }

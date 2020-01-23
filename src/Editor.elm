@@ -6,7 +6,7 @@ module Editor exposing
     , setSelectedText, setHeight, setWidth
     , placeInClipboard
     , scrollToLine, scrollToString
-    , transformConfig
+    , getWidth, transformConfig
     )
 
 {-| Use this module to embed a text editor in an Elm app.
@@ -331,9 +331,13 @@ init editorConfig text =
             , showSearchPanel = False
             , savedBuffer = Buffer.fromString ""
             , debounce = Debounce.init
-            , panelState = HeaderPanel
             }
         }
+
+
+getWidth : Editor -> Float
+getWidth (Editor data) =
+    data.state.config.width
 
 
 {-| Set width of editor in pixels

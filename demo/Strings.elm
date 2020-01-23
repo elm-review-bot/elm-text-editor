@@ -3,9 +3,38 @@ module Strings exposing (about, changeLog, lesson, markdownExample, mathExample,
 
 test =
     """
+## Scratch
+
+You are looking at an experimental text
+editor written in pure Elm.  In this
+demo, you can enter and edit text
+in Markdown + Math: normal Markdown,
+with mathematical text between dollar
+signs and double dollar signs.  Thus we
+can write the Pythagorean formula,
+$a^2 + b^2  = c^2$, and a familiar
+integral:
+
 $$
 \\int_0^1 x^n dx \\frac{1}{n+1}
 $$
+
+Click on other tabs below for info
+about the editor and for more
+examples.
+
+**Editor commands.**   For
+a list of these, use
+ctrl-h.  Typing ctrl-h again
+hides the list and restores
+the original text.  Some commands:
+ctrl-z to undo, ctrl-y to redo,
+ctrl-z to search, ctrl-r for
+search/replace.
+
+**Note.** All this is work in progress:
+Ready for experimentation but not production
+
 
 """
 

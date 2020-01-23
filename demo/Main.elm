@@ -10,7 +10,6 @@ import Html exposing (Html, button, div, span, text)
 import Html.Attributes as HA exposing (style)
 import Html.Events exposing (onClick)
 import Json.Encode as E
-import Markdown.Elm
 import Markdown.ElmWithId
 import Markdown.Option exposing (..)
 import Markdown.Parse as Parse
@@ -39,7 +38,7 @@ type Msg
     | EditorMsg EditorMsg
     | Test
     | GotViewport (Result Dom.Error Dom.Viewport)
-    | TestFile
+    | Start
     | ElmLesson
     | MarkdownExample
     | MathExample
@@ -58,14 +57,14 @@ documentDict =
         , ( "changeLog", ( ChangeLog, Strings.changeLog ) )
         , ( "markdownExample", ( MarkdownExample, Strings.markdownExample ) )
         , ( "mathExample", ( MathExample, Strings.mathExample ) )
-        , ( "test", ( TestFile, Strings.test ) )
+        , ( "start", ( Start, Strings.test ) )
         ]
 
 
 getMsgFromTitle : String -> Msg
 getMsgFromTitle title_ =
     Dict.get title_ documentDict
-        |> Maybe.withDefault ( About, Strings.about )
+        |> Maybe.withDefault ( Start, Strings.test )
         |> Tuple.first
 
 
@@ -104,7 +103,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
         initialText =
-            Strings.about
+            Strings.test
     in
     ( { editor =
             Editor.init
@@ -112,13 +111,13 @@ init flags =
                     | width = windowProportion.width * flags.width
                     , height = windowProportion.height * flags.height
                 }
-                Strings.about
+                Strings.test
       , clipboard = ""
       , sourceText = initialText
       , ast = Parse.toMDBlockTree -1 ExtendedMath initialText
       , renderedText = Markdown.ElmWithId.toHtml -1 ExtendedMath initialText
-      , message = "Starting up"
-      , currentDocumentTitle = "about"
+      , message = "ctrl-h to toggle help"
+      , currentDocumentTitle = "start"
       , width = flags.width
       , height = flags.height
       , counter = 0
@@ -219,8 +218,8 @@ update msg model =
                 Err _ ->
                     ( { model | message = "sync error" }, Cmd.none )
 
-        TestFile ->
-            loadDocument "test" model
+        Start ->
+            loadDocument "start" model
 
         Test ->
             ( model, Dom.getViewportOf "__inner_editor__" |> Task.attempt GotViewport )
@@ -415,7 +414,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div
-        [ HA.style "margin" "0px"
+        [ HA.style "margin-left" "30px"
         , HA.class "flex-column"
         , HA.style "width" "1200px"
         , HA.attribute "id" "__outer_editor__"
@@ -475,13 +474,12 @@ footer model =
     div
         [ HA.style "font-size" "14px", HA.style "margin-top" "16px", HA.class "flex-column" ]
         [ div [ HA.style "margin-top" "20px", HA.class "flex-row-text-aligned" ]
-            [ aboutButton model, testFileButton model, markdownExampleButton model, mathExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
+            [ startButton model, aboutButton model, markdownExampleButton model, mathExampleButton model, elmLessonButton model, changeLogButton model, div [ style "width" "200px", messageColor model.message ] [ text model.message ] ]
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
             , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ]
             ]
-        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-i for info panel", testButton model ]
         ]
 
 
@@ -499,8 +497,8 @@ messageColor str =
 -- BUTTONS
 
 
-testFileButton model =
-    rowButton model 70 TestFile "Test file" []
+startButton model =
+    rowButton model 70 Start "Start" []
 
 
 testButton model =
@@ -512,7 +510,7 @@ elmLessonButton model =
 
 
 markdownExampleButton model =
-    rowButton model 70 MarkdownExample "Markdown" []
+    rowButton model 80 MarkdownExample "Markdown" []
 
 
 mathExampleButton model =

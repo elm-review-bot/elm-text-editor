@@ -3,7 +3,7 @@ module Strings exposing (about, changeLog, lesson, markdownExample, mathExample,
 
 test =
     """
-## Scratch
+## A Pure Elm Text Editor
 
 You are looking at an experimental text
 editor written in pure Elm.  In this
@@ -32,8 +32,13 @@ ctrl-z to undo, ctrl-y to redo,
 ctrl-z to search, ctrl-r for
 search/replace.
 
-**Note.** All this is work in progress:
-Ready for experimentation but not production
+**Notes**
+
+- All this is work in progress:
+Ready for experimentation but not production.
+
+- The app you see here is in general
+ahead of the published package (jxxcarlson/elm-text-editor).
 
 
 """

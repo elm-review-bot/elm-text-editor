@@ -306,6 +306,19 @@ setViewportForElement id =
         |> Task.attempt SetViewPortForElement
 
 
+scrollEditorToTop =
+    scrollToTopForElement "__inner_editor__"
+
+
+scrollRendredTextToTop =
+    scrollToTopForElement "__rt_scroll__"
+
+
+scrollToTopForElement : String -> Cmd Msg
+scrollToTopForElement id =
+    Task.attempt (\_ -> NoOp) (Dom.setViewportOf id 0 0)
+
+
 getElementWithViewPort : Dom.Viewport -> String -> Task Dom.Error ( Dom.Element, Dom.Viewport )
 getElementWithViewPort vp id =
     Dom.getElement id
@@ -370,7 +383,7 @@ loadDocument title_ model =
         , renderedText = renderedText
         , currentDocumentTitle = title_
       }
-    , Cmd.none
+    , Cmd.batch [ scrollEditorToTop, scrollRendredTextToTop ]
     )
 
 

@@ -1047,17 +1047,13 @@ update buffer msg state =
                 newCursor =
                     Position.setColumn 0 state.cursor
 
-                _ =
-                    Debug.log "(cursor, newCursor, lineEnd)" ( state.cursor, newCursor, Buffer.lineEnd newCursor.line buffer )
-
                 selection =
-                    Debug.log "SEL" <|
-                        case Buffer.lineEnd newCursor.line buffer of
-                            Just n ->
-                                Just (Position newCursor.line n)
+                    case Buffer.lineEnd newCursor.line buffer of
+                        Just n ->
+                            Just (Position newCursor.line n)
 
-                            Nothing ->
-                                Nothing
+                        Nothing ->
+                            Nothing
             in
             ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeightForSync newCursor selection y )
 
@@ -1067,9 +1063,6 @@ update buffer msg state =
                     let
                         y =
                             vp.viewport.y
-
-                        _ =
-                            Debug.log "SEL (2)" state.selection
 
                         lineNumber =
                             round (y / state.config.lineHeight)
@@ -1085,9 +1078,6 @@ update buffer msg state =
                     let
                         y =
                             vp.viewport.y
-
-                        _ =
-                            Debug.log "SEL (2)" state.selection
 
                         lineNumber =
                             round (y / state.config.lineHeight)

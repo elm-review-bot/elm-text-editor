@@ -1,7 +1,7 @@
 module Strings exposing (about, changeLog, lesson, markdownExample, mathExample, test)
 
 
-test =
+test2 =
     """
 Test
 
@@ -13,7 +13,7 @@ Comments
 """
 
 
-test2 =
+test =
     """
 ## A Pure Elm Text Editor
 

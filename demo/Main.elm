@@ -214,6 +214,9 @@ update msg model =
                 E.SendLine ->
                     syncAndHighlightRenderedText (Editor.lineAtCursor newEditor) (Cmd.map EditorMsg editorCmd) { model | editor = newEditor }
 
+                E.SyncToSearchHit ->
+                    syncAndHighlightRenderedText (Editor.lineAtCursor newEditor) (Cmd.map EditorMsg editorCmd) { model | editor = newEditor }
+
                 _ ->
                     ( { model | editor = newEditor }, Cmd.map EditorMsg editorCmd )
 

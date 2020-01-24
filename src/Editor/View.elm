@@ -318,16 +318,12 @@ searchPanel_ state =
         , style "background-color" Style.lightGray
         , style "opacity" "0.9"
         , style "font-size" "14px"
-
-        --, style "position" "absolute"
-        --        , style "left" "0px"
-        --        , style "top" "0px"
-        --        , style "z-index" "100"
         , Attribute.class "flex-row"
         ]
         [ searchTextButton
         , acceptSearchText
         , numberOfHitsDisplay state
+        , syncButton
         , showIf (not state.canReplace) openReplaceField
         , showIf state.canReplace replaceTextButton
         , showIf state.canReplace acceptReplaceText
@@ -443,6 +439,10 @@ openReplaceField =
         OpenReplaceField
         "R"
         []
+
+
+syncButton =
+    Widget.rowButton 25 SyncToSearchHit "S" [ style "float" "left" ]
 
 
 searchForwardButton =

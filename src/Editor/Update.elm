@@ -83,6 +83,7 @@ type Msg
     | ScrollToSelection ( Position, Position )
     | RollSearchSelectionForward
     | RollSearchSelectionBackward
+    | SyncToSearchHit
     | Clear
     | WrapSelection
     | WrapAll
@@ -1042,24 +1043,11 @@ update buffer msg state =
             , Cmd.none
             )
 
+        SyncToSearchHit ->
+            sendLine state buffer
+
         SendLine ->
-            let
-                y =
-                    -- max 0 (adjustedLineHeight state.config.lineHeightFactor state.config.lineHeight * toFloat state.cursor.line - 50)
-                    max 0 (state.config.lineHeight * toFloat state.cursor.line - verticalOffsetInSourceText)
-
-                newCursor =
-                    Position.setColumn 0 state.cursor
-
-                selection =
-                    case Buffer.lineEnd newCursor.line buffer of
-                        Just n ->
-                            Just (Position newCursor.line n)
-
-                        Nothing ->
-                            Nothing
-            in
-            ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeightForSync newCursor selection y )
+            sendLine state buffer
 
         GotViewport result ->
             case result of
@@ -1232,6 +1220,26 @@ update buffer msg state =
 
 
 -- HELPERS --
+
+
+sendLine state buffer =
+    let
+        y =
+            -- max 0 (adjustedLineHeight state.config.lineHeightFactor state.config.lineHeight * toFloat state.cursor.line - 50)
+            max 0 (state.config.lineHeight * toFloat state.cursor.line - verticalOffsetInSourceText)
+
+        newCursor =
+            Position.setColumn 0 state.cursor
+
+        selection =
+            case Buffer.lineEnd newCursor.line buffer of
+                Just n ->
+                    Just (Position newCursor.line n)
+
+                Nothing ->
+                    Nothing
+    in
+    ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeightForSync newCursor selection y )
 
 
 setViewportForElement : (Result Dom.Error ( Dom.Element, Dom.Viewport ) -> msg) -> String -> String -> Cmd msg

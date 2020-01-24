@@ -92,6 +92,7 @@ type Msg
     | DebounceMsg Debounce.Msg
     | Unload String
     | GotViewport (Result Dom.Error Dom.Viewport)
+    | GotViewportForSync Position (Maybe Position) (Result Dom.Error Dom.Viewport)
 
 
 debounceConfig : Debounce.Config Msg
@@ -1040,20 +1041,25 @@ update buffer msg state =
         SendLine ->
             let
                 y =
-                    max 0 (adjustedLineHeight state.config.lineHeightFactor state.config.lineHeight * (toFloat state.cursor.line - 10))
+                    -- max 0 (adjustedLineHeight state.config.lineHeightFactor state.config.lineHeight * toFloat state.cursor.line - 50)
+                    max 0 (state.config.lineHeight * toFloat state.cursor.line)
 
                 newCursor =
                     Position.setColumn 0 state.cursor
 
-                selection =
-                    case Buffer.lineEnd newCursor.line buffer of
-                        Just n ->
-                            Just (Position newCursor.line n)
+                _ =
+                    Debug.log "(cursor, newCursor, lineEnd)" ( state.cursor, newCursor, Buffer.lineEnd newCursor.line buffer )
 
-                        Nothing ->
-                            Nothing
+                selection =
+                    Debug.log "SEL" <|
+                        case Buffer.lineEnd newCursor.line buffer of
+                            Just n ->
+                                Just (Position newCursor.line n)
+
+                            Nothing ->
+                                Nothing
             in
-            ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeight y )
+            ( { state | cursor = newCursor, selection = selection }, buffer, jumpToHeightForSync newCursor selection y )
 
         GotViewport result ->
             case result of
@@ -1062,10 +1068,31 @@ update buffer msg state =
                         y =
                             vp.viewport.y
 
+                        _ =
+                            Debug.log "SEL (2)" state.selection
+
                         lineNumber =
                             round (y / state.config.lineHeight)
                     in
                     ( { state | topLine = lineNumber }, buffer, Cmd.none )
+
+                Err _ ->
+                    ( state, buffer, Cmd.none )
+
+        GotViewportForSync cursor selection result ->
+            case result of
+                Ok vp ->
+                    let
+                        y =
+                            vp.viewport.y
+
+                        _ =
+                            Debug.log "SEL (2)" state.selection
+
+                        lineNumber =
+                            round (y / state.config.lineHeight)
+                    in
+                    ( { state | topLine = lineNumber, cursor = cursor, selection = selection }, buffer, Cmd.none )
 
                 Err _ ->
                     ( state, buffer, Cmd.none )
@@ -1243,11 +1270,11 @@ setEditorViewportForLine lineHeightFactor lineHeight lineNumber =
             Cmd.none
 
 
-jumpToHeight : Float -> Cmd Msg
-jumpToHeight y =
+jumpToHeightForSync : Position -> Maybe Position -> Float -> Cmd Msg
+jumpToHeightForSync cursor selection y =
     Dom.setViewportOf "__inner_editor__" 0 y
         |> Task.andThen (\_ -> Dom.getViewportOf "__inner_editor__")
-        |> Task.attempt (\info -> GotViewport info)
+        |> Task.attempt (\info -> GotViewportForSync cursor selection info)
 
 
 unload : String -> Cmd Msg

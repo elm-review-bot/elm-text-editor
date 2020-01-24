@@ -62,7 +62,8 @@ ctrl-z to search, ctrl-r for
 search/replace. To sync the
 source and rendered texts,
 click somewhere in the editor
-and type ctrl-shift-s.
+and type ctrl-shift-s.  This
+feature still needs some work.
 
 **Notes**
 

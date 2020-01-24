@@ -22,6 +22,10 @@ import Task exposing (Task)
 import Window
 
 
+verticalOffsetInSourceText =
+    60
+
+
 
 -- MSG
 
@@ -1042,7 +1046,7 @@ update buffer msg state =
             let
                 y =
                     -- max 0 (adjustedLineHeight state.config.lineHeightFactor state.config.lineHeight * toFloat state.cursor.line - 50)
-                    max 0 (state.config.lineHeight * toFloat state.cursor.line)
+                    max 0 (state.config.lineHeight * toFloat state.cursor.line - verticalOffsetInSourceText)
 
                 newCursor =
                     Position.setColumn 0 state.cursor

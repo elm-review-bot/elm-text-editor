@@ -13,6 +13,23 @@ Comments
 """
 
 
+testxx =
+    """Test
+
+$$
+a^2 = 1
+$$
+
+Note also that there is an automatically
+generated active table of contents.
+It can be placed inside the document
+at the top, to one side, as it is
+here, or it can be absent.
+
+Comments   
+"""
+
+
 test =
     """
 ## A Pure Elm Text Editor

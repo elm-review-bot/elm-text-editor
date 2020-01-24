@@ -151,8 +151,8 @@ config =
 -- UPDATE
 
 
-verticalOffset =
-    -5 * 16
+verticalOffsetInRenderedText =
+    160
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -212,20 +212,15 @@ update msg model =
                     syncWithEditor model newEditor editorCmd
 
                 E.SendLine ->
-                    let
-                        newModel =
-                            { model | editor = newEditor }
-                    in
-                    syncAndHighlightRenderedText (Editor.lineAtCursor newEditor) (Cmd.map EditorMsg editorCmd) model
+                    syncAndHighlightRenderedText (Editor.lineAtCursor newEditor) (Cmd.map EditorMsg editorCmd) { model | editor = newEditor }
 
-                -- syncRenderedText (Editor.lineAtCursor newEditor) newModel
                 _ ->
                     ( { model | editor = newEditor }, Cmd.map EditorMsg editorCmd )
 
         SetViewPortForElement result ->
             case result of
                 Ok ( element, viewport ) ->
-                    ( { model | message = "synced" }, setViewPortForSelectedLine verticalOffset element viewport )
+                    ( { model | message = "synced" }, setViewPortForSelectedLineInRenderedText verticalOffsetInRenderedText element viewport )
 
                 Err _ ->
                     ( { model | message = "sync error" }, Cmd.none )
@@ -289,20 +284,22 @@ syncWithEditor model editor cmd =
     )
 
 
+type alias IdRecord =
+    { id : Int, version : Int }
+
+
 syncAndHighlightRenderedText : String -> Cmd Msg -> Model -> ( Model, Cmd Msg )
 syncAndHighlightRenderedText str cmd model =
     let
-        id =
-            --            Debug.log "SYNC ID" <|
-            case Parse.searchAST str model.ast of
-                Nothing ->
-                    ( 0, 0 )
+        ( _, id_ ) =
+            Parse.getId (String.trim str) (Parse.sourceMap model.ast)
+                |> (\( s, i ) -> ( s, i |> Maybe.withDefault "i0v0" ))
 
-                Just id_ ->
-                    id_ |> (\( a, b ) -> ( a, b + 1 ))
+        id =
+            Parse.idFromString id_ |> (\( id__, version ) -> ( id__, version + 1 ))
     in
     ( processContentForHighlighting model.sourceText { model | selectedId = id }
-    , Cmd.batch [ cmd, setViewportForElement (Parse.stringOfId id) ]
+    , Cmd.batch [ cmd, setViewportForElement (Parse.stringFromId id) ]
     )
 
 
@@ -329,7 +326,7 @@ syncRenderedText : String -> Model -> ( Model, Cmd Msg )
 syncRenderedText str_ model =
     let
         ( str, id_ ) =
-            getId (String.trim str_) (Parse.sourceMap model.ast)
+            Parse.getId (String.trim str_) (Parse.sourceMap model.ast)
     in
     case id_ of
         Nothing ->
@@ -337,22 +334,6 @@ syncRenderedText str_ model =
 
         Just id ->
             ( model, setViewportForElement id )
-
-
-{-| Return values whose keys contain the given string
--}
-getId : String -> Dict String String -> ( String, Maybe String )
-getId str_ sourceMap =
-    let
-        str =
-            Parse.toMDBlockTree 66 ExtendedMath str_ |> Parse.getLeadingTextFromAST |> String.trim
-
-        id =
-            List.filter (\( k, _ ) -> String.contains str k) (Dict.toList sourceMap)
-                |> List.map (\( _, id_ ) -> id_)
-                |> List.head
-    in
-    ( str, id )
 
 
 setViewportForElement : String -> Cmd Msg
@@ -381,11 +362,11 @@ getElementWithViewPort vp id =
         |> Task.map (\el -> ( el, vp ))
 
 
-setViewPortForSelectedLine : Float -> Dom.Element -> Dom.Viewport -> Cmd Msg
-setViewPortForSelectedLine offset element viewport =
+setViewPortForSelectedLineInRenderedText : Float -> Dom.Element -> Dom.Viewport -> Cmd Msg
+setViewPortForSelectedLineInRenderedText offset element viewport =
     let
         y =
-            viewport.viewport.y + element.element.y - element.element.height + offset
+            viewport.viewport.y + element.element.y - verticalOffsetInRenderedText
     in
     Task.attempt (\_ -> NoOp) (Dom.setViewportOf "__rt_scroll__" 0 y)
 

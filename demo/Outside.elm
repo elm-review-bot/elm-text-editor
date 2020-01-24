@@ -30,7 +30,7 @@ type InfoForElm
 type InfoForOutside
     = AskForClipBoard E.Value
     | WriteToClipBoard String
-    | Highlight String
+    | Highlight ( Maybe String, String )
 
 
 getInfo : (InfoForElm -> msg) -> (String -> msg) -> Sub msg
@@ -60,8 +60,16 @@ sendInfo info =
         WriteToClipBoard str ->
             infoForOutside { tag = "WriteToClipboard", data = E.string str }
 
-        Highlight str ->
-            infoForOutside { tag = "Highlight", data = E.string str }
+        Highlight idPair ->
+            infoForOutside { tag = "Highlight", data = encodeSelectedIdData idPair }
+
+
+encodeSelectedIdData : ( Maybe String, String ) -> E.Value
+encodeSelectedIdData ( maybeLastId, id ) =
+    E.object
+        [ ( "lastId", E.string (maybeLastId |> Maybe.withDefault "nonexistent") )
+        , ( "id", E.string id )
+        ]
 
 
 

@@ -33,20 +33,25 @@ app.ports.infoForOutside.subscribe(msg => {
              break;
 
          case "Highlight":
+
            console.log("Highlight", msg.data)
-           var id = "#".concat(msg.data)
-           console.log("Highlight (2)", id)
+           var id = "#".concat(msg.data.id)
+           var lastId = msg.data.lastId
+           console.log("Highlight (id, lastId)", id, lastId)
+
            var element = document.querySelector(id)
            if (element != null) {
                  element.classList.add("highlight")
            } else {
-                 console.log("Could not find", id)
+                 console.log("Add: could not find id", id)
            }
 
-             // document.querySelector(id).classList.add("highlight") // (2)
-             // document.getElementById(id).classList.add("highlight")  // (1)
-             // document.querySelector("__rt_scroll__").getElementById(id).classList.add("highlight")
-
+           var lastElement = document.querySelector(lastId)
+           if (lastElement != null) {
+                 lastElement.classList.remove("highlight")
+           } else {
+                 console.log("Remove: could not find last id",lastId)
+           }
 
            break;
 

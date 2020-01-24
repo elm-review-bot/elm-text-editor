@@ -3,6 +3,18 @@ module Strings exposing (about, changeLog, lesson, markdownExample, mathExample,
 
 test =
     """
+Test
+
+$$
+a^2 = 1
+$$
+
+Comments
+"""
+
+
+test2 =
+    """
 ## A Pure Elm Text Editor
 
 You are looking at an experimental text

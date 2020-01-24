@@ -12,11 +12,12 @@ import Html.Events exposing (onClick)
 import Json.Encode as E
 import Markdown.ElmWithId
 import Markdown.Option exposing (..)
-import Markdown.Parse as Parse
+import Markdown.Parse as Parse exposing (Id)
 import Outside
 import Strings
 import Task exposing (Task)
 import Tree exposing (Tree)
+import Tree.Diff as Diff
 
 
 main : Program Flags Model Msg
@@ -68,6 +69,10 @@ getMsgFromTitle title_ =
         |> Tuple.first
 
 
+
+-- MODEL
+
+
 type alias Model =
     { editor : Editor
     , clipboard : String
@@ -79,6 +84,7 @@ type alias Model =
     , width : Float
     , height : Float
     , counter : Int
+    , selectedId : Id
     }
 
 
@@ -115,12 +121,13 @@ init flags =
       , clipboard = ""
       , sourceText = initialText
       , ast = Parse.toMDBlockTree 0 ExtendedMath initialText
-      , renderedText = Markdown.ElmWithId.toHtml 0 ExtendedMath initialText
+      , renderedText = Markdown.ElmWithId.toHtml ( 0, 0 ) 0 ExtendedMath initialText
       , message = "ctrl-h to toggle help"
       , currentDocumentTitle = "start"
       , width = flags.width
       , height = flags.height
       , counter = 1
+      , selectedId = ( 0, 0 )
       }
     , Cmd.batch [ scrollEditorToTop, scrollRendredTextToTop ]
     )
@@ -209,8 +216,9 @@ update msg model =
                         newModel =
                             { model | editor = newEditor }
                     in
-                    syncRenderedText (Editor.lineAtCursor newEditor) newModel
+                    syncAndHighlightRenderedText (Editor.lineAtCursor newEditor) (Cmd.map EditorMsg editorCmd) model
 
+                -- syncRenderedText (Editor.lineAtCursor newEditor) newModel
                 _ ->
                     ( { model | editor = newEditor }, Cmd.map EditorMsg editorCmd )
 
@@ -275,10 +283,46 @@ syncWithEditor model editor cmd =
         , counter = model.counter + 2
         , sourceText = newSource
         , ast = Parse.toMDBlockTree model.counter ExtendedMath newSource
-        , renderedText = Markdown.ElmWithId.toHtml model.counter ExtendedMath newSource
+        , renderedText = Markdown.ElmWithId.toHtml model.selectedId model.counter ExtendedMath newSource
       }
     , Cmd.map EditorMsg cmd
     )
+
+
+syncAndHighlightRenderedText : String -> Cmd Msg -> Model -> ( Model, Cmd Msg )
+syncAndHighlightRenderedText str cmd model =
+    let
+        id =
+            --            Debug.log "SYNC ID" <|
+            case Parse.searchAST str model.ast of
+                Nothing ->
+                    ( 0, 0 )
+
+                Just id_ ->
+                    id_ |> (\( a, b ) -> ( a, b + 1 ))
+    in
+    ( processContentForHighlighting model.sourceText { model | selectedId = id }
+    , Cmd.batch [ cmd, setViewportForElement (Parse.stringOfId id) ]
+    )
+
+
+processContentForHighlighting : String -> Model -> Model
+processContentForHighlighting str model =
+    let
+        newAst_ =
+            Parse.toMDBlockTree model.counter ExtendedMath str
+
+        newAst =
+            Diff.mergeWith Parse.equalIds model.ast newAst_
+    in
+    { model
+        | sourceText = str
+
+        -- rendering
+        , ast = newAst
+        , renderedText = Markdown.ElmWithId.renderHtmlWithTOC model.selectedId "Contents" newAst
+        , counter = model.counter + 1
+    }
 
 
 syncRenderedText : String -> Model -> ( Model, Cmd Msg )
@@ -292,8 +336,7 @@ syncRenderedText str_ model =
             ( model, Cmd.none )
 
         Just id ->
-            -- ( model, Cmd.batch [ setViewportForElement id, Outside.sendInfo (Outside.Highlight id) ] )
-            ( model, Cmd.batch [ Outside.sendInfo (Outside.Highlight id), setViewportForElement id ] )
+            ( model, setViewportForElement id )
 
 
 {-| Return values whose keys contain the given string
@@ -386,7 +429,7 @@ loadDocument title_ model =
             Parse.toMDBlockTree model.counter ExtendedMath content
 
         renderedText =
-            Markdown.ElmWithId.toHtml model.counter ExtendedMath content
+            Markdown.ElmWithId.toHtml model.selectedId model.counter ExtendedMath content
     in
     ( { model
         | counter = model.counter + 1

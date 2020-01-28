@@ -144,7 +144,7 @@ config =
     , lineHeight = 20.0
     , showInfoPanel = False
     , wrapParams = { maximumWidth = 50, optimalWidth = 45, stringWidth = String.length }
-    , wrapOption = DontWrap
+    , wrapOption = DoWrap
     , fontProportion = 0.75
     , lineHeightFactor = 1.0
     }
@@ -424,7 +424,8 @@ pasteToEditorClipboard model str =
             Editor.getCursor model.editor
 
         wrapOption =
-            Editor.getWrapOption model.editor
+            Debug.log "WO" <|
+                Editor.getWrapOption model.editor
 
         editor2 =
             Editor.placeInClipboard str model.editor
@@ -445,7 +446,7 @@ loadDocument title_ model =
             Dict.get title_ documentDict |> Maybe.withDefault ( About, Strings.about )
 
         editor =
-            Editor.load DontWrap content model.editor
+            Editor.load DoWrap content model.editor
 
         ast =
             Parse.toMDBlockTree model.counter ExtendedMath content

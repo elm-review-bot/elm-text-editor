@@ -228,7 +228,7 @@ transformConfig c =
             c.fontProportion * c.lineHeight
 
         multiplier =
-            1.4
+            1.64
     in
     { --- lines = floor <| c.height / c.lineHeight
       showInfoPanel = c.showInfoPanel

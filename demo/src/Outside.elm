@@ -35,12 +35,20 @@ type InfoForOutside
 
 getInfo : (InfoForElm -> msg) -> (String -> msg) -> Sub msg
 getInfo tagger onError =
+    let
+        _ =
+            Debug.log "getInfo" 1
+    in
     infoForElm
         (\outsideInfo ->
             case outsideInfo.tag of
                 "GotClipboard" ->
                     case D.decodeValue clipboardDecoder outsideInfo.data of
                         Ok result ->
+                            let
+                                _ =
+                                    Debug.log "GotClipboard (1)" result
+                            in
                             tagger <| GotClipboard result
 
                         Err e ->
@@ -53,6 +61,10 @@ getInfo tagger onError =
 
 sendInfo : InfoForOutside -> Cmd msg
 sendInfo info =
+    let
+        _ =
+            Debug.log "sendInfo" 0
+    in
     case info of
         AskForClipBoard value ->
             infoForOutside { tag = "AskForClipBoard", data = E.null }

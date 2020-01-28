@@ -2,6 +2,7 @@ module Demo exposing (Msg(..), main)
 
 import Browser
 import Browser.Dom as Dom
+import Cmd.Extra exposing (withCmd, withCmds, withNoCmd)
 import Dict exposing (Dict)
 import Editor exposing (Editor, EditorConfig, EditorMsg)
 import Editor.Config exposing (WrapOption(..))
@@ -159,7 +160,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
-            ( model, Cmd.none )
+            model |> withNoCmd
 
         EditorMsg editorMsg ->
             let
@@ -176,7 +177,9 @@ update msg model =
                             else
                                 Cmd.none
                     in
-                    ( { model | editor = newEditor, sourceText = Editor.getSource newEditor }, Cmd.batch [ clipBoardCmd, Cmd.map EditorMsg editorCmd ] )
+                    model
+                        |> syncModelWithEditor newEditor
+                        |> withCmds [ clipBoardCmd, Cmd.map EditorMsg editorCmd ]
 
                 E.WriteToSystemClipBoard ->
                     ( { model | editor = newEditor }, Outside.sendInfo (Outside.WriteToClipBoard (Editor.getSelectedText newEditor |> Maybe.withDefault "Nothing!!")) )
@@ -268,6 +271,21 @@ update msg model =
 
 
 -- HELPER FUNCTIONS FOR UPDATE
+
+
+syncModelWithEditor : Editor -> Model -> Model
+syncModelWithEditor editor model =
+    let
+        newSource =
+            Editor.getSource editor
+    in
+    { model
+        | editor = editor
+        , counter = model.counter + 2
+        , sourceText = newSource
+        , ast = Parse.toMDBlockTree model.counter ExtendedMath newSource
+        , renderedText = Markdown.ElmWithId.toHtml model.selectedId model.counter ExtendedMath newSource
+    }
 
 
 syncWithEditor : Model -> Editor -> Cmd EditorMsg -> ( Model, Cmd Msg )
@@ -388,6 +406,9 @@ pasteToClipboard model str =
 pasteToEditorClipboard : Model -> String -> ( Model, Cmd msg )
 pasteToEditorClipboard model str =
     let
+        _ =
+            Debug.log "PASTE" str
+
         cursor =
             Editor.getCursor model.editor
 

@@ -28,14 +28,22 @@ left-to-right sync:  doing ctrl-shift-S in the editor window
 (Left) synchronizes the source text with the rendered text (Right).
 Still to do: right-to-left sync.  And much more.
 
+## Running the examples
+
+```bash
+npm install
+
+npm start
+```
+
 
 ## Embedding the Editor
 
-- See the notes in `Embedding.md`
-- Use the `demo-simple` and `demo` apps of this repo as models, or consult
+-  Use the `demo-simple` and `demo` apps of this repo as models, or consult
 the [Markdown Example Code](https://github.com/jxxcarlson/elm-markdown/tree/master/app-demo-fancy)
 - In order to implement external copy-paste (ctrl-shift V), 
-the second two apps import a module `Outside` into `Main`.  This module
+the [Demo](https://jxxcarlson.github.io/app/editor/index.html) and 
+[Markdown Example](https://markdown.minilatex.app/) apps import a module `Outside` into `Main`.  This module
 uses ports and references `outside.js` in `index.html`
 
 

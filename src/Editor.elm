@@ -2,11 +2,10 @@ module Editor exposing
     ( embedded, init
     , load, update, insert
     , Editor, EditorConfig, EditorMsg
-    , getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
+    , getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, getWidth, transformConfig, lineAt, lineAtCursor
     , setSelectedText, setHeight, setWidth
     , placeInClipboard
     , scrollToLine, scrollToString
-    , getWidth, transformConfig
     )
 
 {-| Use this module to embed a text editor in an Elm app.
@@ -39,7 +38,7 @@ module Editor exposing
 
 ## Getters
 
-@docs getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, lineAt, lineAtCursor
+@docs getBuffer, getState, getSource, getCursor, getWrapOption, getSelectedText, getFontSize, getWidth, transformConfig, lineAt, lineAtCursor
 
 
 ## Setters
@@ -335,6 +334,8 @@ init editorConfig text =
         }
 
 
+{-| Get width in pixels of editor
+-}
 getWidth : Editor -> Float
 getWidth (Editor data) =
     data.state.config.width

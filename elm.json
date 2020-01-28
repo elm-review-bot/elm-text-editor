@@ -1,24 +1,31 @@
 {
-    "type": "application",
-    "source-directories": [
-        "src"
+    "type": "package",
+    "name": "jxxcarlson/elm-text-editor",
+    "summary": "Pure Elm text editor forked from Sydney Nemzer",
+    "license": "BSD-3-Clause",
+    "version": "6.0.1",
+    "exposed-modules": [
+        "Editor",
+        "Editor.Strings",
+        "Editor.Config",
+        "Editor.Update"
     ],
-    "elm-version": "0.19.0",
+    "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
-        "direct": {
-            "elm/browser": "1.0.1",
-            "elm/core": "1.0.2",
-            "elm/html": "1.0.0"
-        },
-        "indirect": {
-            "elm/json": "1.1.3",
-            "elm/time": "1.0.0",
-            "elm/url": "1.0.0",
-            "elm/virtual-dom": "1.0.2"
-        }
+        "Janiczek/architecture-test": "2.1.0 <= v < 3.0.0",
+        "carwow/elm-slider": "10.0.0 <= v < 11.0.0",
+        "elm/browser": "1.0.0 <= v < 2.0.0",
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0",
+        "elm/json": "1.0.0 <= v < 2.0.0",
+        "elm-community/list-extra": "8.1.0 <= v < 9.0.0",
+        "elm-community/maybe-extra": "5.0.0 <= v < 6.0.0",
+        "elm-community/string-extra": "4.0.0 <= v < 5.0.0",
+        "elm-explorations/test": "1.2.2 <= v < 2.0.0",
+        "folkertdev/elm-paragraph": "1.0.0 <= v < 2.0.0",
+        "jinjor/elm-debounce": "3.0.0 <= v < 4.0.0",
+        "lovasoa/elm-rolling-list": "1.1.4 <= v < 2.0.0",
+        "lukewestby/elm-string-interpolate": "1.0.4 <= v < 2.0.0"
     },
-    "test-dependencies": {
-        "direct": {},
-        "indirect": {}
-    }
+    "test-dependencies": {}
 }

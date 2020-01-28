@@ -176,6 +176,9 @@ keyToMsg event =
                     |> Maybe.withDefault
                         (Decode.fail "This key does nothing")
                 ]
+
+        _ =
+            Debug.log "EV" event
     in
     case event.modifier of
         None ->

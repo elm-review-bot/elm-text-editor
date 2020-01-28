@@ -98,6 +98,7 @@ line cursor selection index content =
     in
     div
         [ class <| name ++ "-line"
+        , style "white-space" "pre-wrap"
         , captureOnMouseDown (MouseDown endPosition)
         , captureOnMouseOver (MouseOver endPosition)
         ]

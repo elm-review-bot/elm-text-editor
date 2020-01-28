@@ -7,10 +7,10 @@ demo/publish.sh
 demo/public/Demo.min.js
 demo/public/index-remote.html
 
-demo-simple/Demo.min.js
-demo-simple/Demo.js
 demo-simple/public/index-remote.html
 demo-simple/*.sh
+demo-simple/public/DemoSimple.js
 
 testSpares/VerifyExamples/
 markdown/
+

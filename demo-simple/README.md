@@ -1,1 +1,9 @@
-Compile with elm make --optimize Main.elm --output=Demo.js
+# To Run
+
+````bash
+
+npm install
+
+npm start
+
+````

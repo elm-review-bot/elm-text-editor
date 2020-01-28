@@ -9,7 +9,7 @@
             "elm/browser": "1.0.2",
             "elm/core": "1.0.4",
             "elm/html": "1.0.0",
-            "jxxcarlson/elm-text-editor": "6.0.1"
+            "jxxcarlson/elm-text-editor": "7.0.0"
         },
         "indirect": {
             "Janiczek/architecture-test": "2.1.0",

@@ -66,15 +66,12 @@ config =
     , showInfoPanel = True
     , wrapParams = { maximumWidth = 55, optimalWidth = 50, stringWidth = String.length }
     , wrapOption = DontWrap
+    , fontProportion = 0.75
+    , lineHeightFactor = 1.0
     }
 
 
 
---editorStyle : List (Html.Attribute msg)
---editorStyle =
---    [ HA.style "background-color" "#dddddd"
---    , HA.style "border" "solid 0.5px"
---    ]
 -- UPDATE
 
 
@@ -179,16 +176,28 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ HA.style "margin" "60px" ]
+    div
+        [ HA.style "margin" "60px"
+        , HA.style "width" (px <| Editor.getWidth model.editor)
+        ]
         [ title
         , Editor.embedded config model.editor
         , footer model
         ]
 
 
+px : Float -> String
+px p =
+    String.fromFloat p ++ "px"
+
+
 title : Html Msg
 title =
-    div [ HA.style "font-size" "16px", HA.style "font-style" "bold", HA.style "margin-bottom" "10px" ]
+    div
+        [ HA.style "font-size" "16px"
+        , HA.style "font-style" "bold"
+        , HA.style "margin-bottom" "10px"
+        ]
         [ text "A Pure Elm Text Editor (Simple)" ]
 
 

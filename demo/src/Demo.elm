@@ -17,6 +17,7 @@ import Markdown.Parse as Parse exposing (Id)
 import Outside
 import Strings
 import Task exposing (Task)
+import Time
 import Tree exposing (Tree)
 import Tree.Diff as Diff
 
@@ -32,7 +33,7 @@ main =
 
 
 
--- INIT
+-- MSG
 
 
 type Msg
@@ -49,6 +50,7 @@ type Msg
     | Outside Outside.InfoForElm
     | LogErr String
     | SetViewPortForElement (Result Dom.Error ( Dom.Element, Dom.Viewport ))
+    | Rerender Time.Posix
 
 
 documentDict : Dict String ( Msg, String )
@@ -268,6 +270,18 @@ update msg model =
         LogErr _ ->
             ( model, Cmd.none )
 
+        Rerender _ ->
+            let
+                newSource =
+                    Editor.getSource model.editor
+            in
+            { model
+                | sourceText = newSource
+                , ast = Parse.toMDBlockTree model.counter ExtendedMath newSource
+                , renderedText = Markdown.ElmWithId.toHtml model.selectedId model.counter ExtendedMath newSource
+            }
+                |> withNoCmd
+
 
 
 -- HELPER FUNCTIONS FOR UPDATE
@@ -403,12 +417,9 @@ pasteToClipboard model str =
     ( { model | editor = Editor.insert (Editor.getWrapOption model.editor) (Editor.getCursor model.editor) str model.editor }, Cmd.none )
 
 
-pasteToEditorClipboard : Model -> String -> ( Model, Cmd msg )
+pasteToEditorClipboard : Model -> String -> ( Model, Cmd Msg )
 pasteToEditorClipboard model str =
     let
-        _ =
-            Debug.log "PASTE" str
-
         cursor =
             Editor.getCursor model.editor
 
@@ -418,7 +429,13 @@ pasteToEditorClipboard model str =
         editor2 =
             Editor.placeInClipboard str model.editor
     in
-    ( { model | editor = Editor.insert wrapOption cursor str editor2 }, Cmd.none )
+    { model | editor = Editor.insert wrapOption cursor str editor2 }
+        |> withCmd rerender
+
+
+rerender : Cmd Msg
+rerender =
+    Task.perform Rerender Time.now
 
 
 loadDocument : String -> Model -> ( Model, Cmd Msg )

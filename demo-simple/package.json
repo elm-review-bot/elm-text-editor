@@ -1,0 +1,13 @@
+{
+  "name": "demo-simple",
+  "version": "1.0.0",
+  "description": "Compile with elm make --optimize Main.elm --output=Demo.js",
+  "main": "Demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "elm-live -d public/ src/DemoSimple.elm -- --output public/DemoSimple.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -424,8 +424,7 @@ pasteToEditorClipboard model str =
             Editor.getCursor model.editor
 
         wrapOption =
-            Debug.log "WO" <|
-                Editor.getWrapOption model.editor
+            Editor.getWrapOption model.editor
 
         editor2 =
             Editor.placeInClipboard str model.editor

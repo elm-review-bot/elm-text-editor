@@ -1,4 +1,4 @@
-module Main exposing (Msg(..), main)
+module Demo exposing (Msg(..), main)
 
 import Browser
 import Browser.Dom as Dom

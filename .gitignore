@@ -2,10 +2,10 @@ node_modules
 elm-stuff/
 .idea/
 
-demo/Demo.js
+demo/public/Demo.js
 demo/publish.sh
-demo/Demo.min.js
-demo/index-remote.html
+demo/public/Demo.min.js
+demo/public/index-remote.html
 
 demo-simple/Demo.min.js
 demo-simple/Demo.js

@@ -1,4 +1,4 @@
-module Main exposing (Msg(..), main)
+module DemoSimple exposing (Msg(..), main)
 
 import AppText
 import Browser

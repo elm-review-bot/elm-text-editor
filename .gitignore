@@ -9,7 +9,7 @@ demo/public/index-remote.html
 
 demo-simple/Demo.min.js
 demo-simple/Demo.js
-demo-simple/index-remote.html
+demo-simple/public/index-remote.html
 demo-simple/*.sh
 
 testSpares/VerifyExamples/

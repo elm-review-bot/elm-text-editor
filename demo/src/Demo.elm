@@ -570,7 +570,10 @@ footer model =
         , div [ HA.style "margin-top" "10px" ]
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)." ]
             , text "The editor in this app is based on  "
-            , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ]
+            , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ]
+                [ text "work of Sydney Nemzer" ]
+            , Html.span [] [ text " and is inspired by previous work of " ]
+            , Html.a [ HA.href "https://discourse.elm-lang.org/t/text-editor-done-in-pure-elm/1365" ] [ text "Martin Janiczek" ]
             ]
         ]
 

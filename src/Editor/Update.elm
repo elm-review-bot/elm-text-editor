@@ -1172,7 +1172,7 @@ update buffer msg state =
             if state.showHelp == True then
                 let
                     ( newState, newBuffer ) =
-                        load state.config.wrapOption Editor.Strings.help state
+                        load DontWrap Editor.Strings.help state
                 in
                 ( { newState | showHelp = False, savedBuffer = buffer }, newBuffer, Cmd.none )
 

@@ -29,8 +29,13 @@ type Msg
     | Test
     | FindTreasure
     | GetSpeech
-    | GetLongLongLines
-    | Reset
+    | Get500
+    | Get1000
+    | Get1500
+    | Get3000
+    | Jabberwocky
+    | Code
+    | About
     | LogErr String
 
 
@@ -42,16 +47,22 @@ type alias Model =
 
 
 type Document
-    = Jabberwock
-    | Gettysburg
-    | LongLines
+    = DocJabberWock
+    | DocGettysburg
+    | DocLongLines
+    | Doc500
+    | Doc1000
+    | Doc1500
+    | Doc3000
+    | DocAbout
+    | DocCode
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { editor = Editor.init config AppText.jabberwocky
+    ( { editor = Editor.init config AppText.about
       , clipboard = ""
-      , document = Jabberwock
+      , document = DocAbout
       }
     , Cmd.none
     )
@@ -89,13 +100,28 @@ update msg model =
             load DontWrap Editor.Strings.info model
 
         GetSpeech ->
-            load DoWrap AppText.gettysburgAddress { model | document = Gettysburg }
+            load DoWrap AppText.gettysburgAddress { model | document = DocGettysburg }
 
-        GetLongLongLines ->
-            load DontWrap AppText.longLines { model | document = LongLines }
+        Get500 ->
+            load DontWrap AppText.words500 { model | document = Doc500 }
 
-        Reset ->
-            load DontWrap AppText.jabberwocky { model | document = Jabberwock }
+        Get1000 ->
+            load DontWrap AppText.words1000 { model | document = Doc1000 }
+
+        Get1500 ->
+            load DontWrap AppText.words1500 { model | document = Doc1500 }
+
+        Get3000 ->
+            load DontWrap AppText.words3000 { model | document = Doc3000 }
+
+        Jabberwocky ->
+            load DontWrap AppText.jabberwocky { model | document = DocJabberWock }
+
+        About ->
+            load DontWrap AppText.about { model | document = DocAbout }
+
+        Code ->
+            load DontWrap AppText.code { model | document = DocCode }
 
         FindTreasure ->
             highlightText "treasure" model
@@ -178,10 +204,9 @@ view : Model -> Html Msg
 view model =
     div
         [ HA.style "margin" "60px"
-        , HA.style "width" (px <| Editor.getWidth model.editor)
         ]
         [ title
-        , Editor.embedded config model.editor
+        , div [ HA.style "width" (px <| Editor.getWidth model.editor) ] [ Editor.embedded config model.editor ]
         , footer model
         ]
 
@@ -208,10 +233,24 @@ footer model =
         [ div []
             [ Html.a [ HA.href "https://github.com/jxxcarlson/elm-text-editor" ] [ text "Source code (Work in Progress)" ]
             ]
-        , div [ HA.style "margin-top" "10px" ] [ text "This app is based on  ", Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ] [ text "work of Sydney Nemzer" ] ]
-        , div [ HA.style "margin-top" "10px" ] [ text "Press the 'Help' button upper-right for a list of key commands, or use ctrl-h to toggle" ]
-        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-shift i to toggle info panel." ]
-        , div [ HA.style "margin-top" "10px" ] [ resetButton, treasureButton model, speechTextButton, longLinesTextButton ]
+        , div [ HA.style "margin-top" "10px" ]
+            [ text "This editor is based on  "
+            , Html.a [ HA.href "https://sidneynemzer.github.io/elm-text-editor/" ]
+                [ text "work of Sydney Nemzer" ]
+            , Html.span [] [ text " and is inspired by previous work of " ]
+            , Html.a [ HA.href "https://discourse.elm-lang.org/t/text-editor-done-in-pure-elm/1365" ] [ text "Martin Janiczek" ]
+            ]
+        , div [ HA.style "margin-top" "10px" ] [ text "ctrl-h to toggle help, ctrl-shift-w to wrap all text" ]
+        , div [ HA.style "margin-top" "10px" ]
+            [ aboutButton model
+            , codeButton model
+            , jabberWockyButton model
+            , speechTextButton model
+            , textButton500 model
+            , textButton1000 model
+            , textButton1500 model
+            , textButton3000 model
+            ]
         ]
 
 
@@ -219,29 +258,46 @@ footer model =
 -- BUTTONS
 
 
-testButton =
-    rowButton 80 Test "Info" []
+speechTextButton model =
+    rowButton model 160 GetSpeech DocGettysburg "Gettysburg Address" []
 
 
-treasureButton model =
-    case model.document of
-        Jabberwock ->
-            rowButton 120 FindTreasure "Find treasure" []
-
-        _ ->
-            Html.span [] []
+textButton500 model =
+    rowButton model 100 Get500 Doc500 "500 words" []
 
 
-speechTextButton =
-    rowButton 160 GetSpeech "Gettysburg Address" []
+textButton1000 model =
+    rowButton model 100 Get1000 Doc1000 "1000 words" []
 
 
-longLinesTextButton =
-    rowButton 160 GetLongLongLines "Long lines" []
+textButton1500 model =
+    rowButton model 100 Get1500 Doc1500 "1500 words" []
 
 
-resetButton =
-    rowButton 80 Reset "Reset" []
+textButton3000 model =
+    rowButton model 100 Get3000 Doc3000 "3000 words" []
+
+
+jabberWockyButton model =
+    rowButton model 100 Jabberwocky DocJabberWock "Jabberwocky" []
+
+
+aboutButton model =
+    rowButton model 80 About DocAbout "About" []
+
+
+codeButton model =
+    rowButton model 80 Code DocCode "Code" []
+
+
+highlight : b -> b -> List (Html.Attribute msg)
+highlight source target =
+    case source == target of
+        True ->
+            [ style "background-color" "#900" ]
+
+        False ->
+            [ style "background-color" "#666" ]
 
 
 
@@ -258,7 +314,6 @@ rowButtonStyle =
 
 rowButtonLabelStyle width =
     [ style "font-size" "12px"
-    , style "background-color" "#666"
     , style "color" "#eee"
     , style "width" (String.fromInt width ++ "px")
     , style "height" "24px"
@@ -266,6 +321,10 @@ rowButtonLabelStyle width =
     ]
 
 
-rowButton width msg str attr =
+
+-- rowButton : Model -> Int -> b -> Document -> String -> List (Html.Attribute msg) -> Html Msg
+
+
+rowButton model width msg doc str attr =
     div (rowButtonStyle ++ attr)
-        [ button ([ onClick msg ] ++ rowButtonLabelStyle width) [ text str ] ]
+        [ button ([ onClick msg ] ++ rowButtonLabelStyle width ++ highlight doc model.document) [ text str ] ]

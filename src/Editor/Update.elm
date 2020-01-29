@@ -102,7 +102,7 @@ type Msg
 
 debounceConfig : Debounce.Config Msg
 debounceConfig =
-    { strategy = Debounce.later 100
+    { strategy = Debounce.later 300
     , transform = DebounceMsg
     }
 
@@ -1124,7 +1124,8 @@ update buffer msg state =
             ( { state | cursor = newCursor, selection = Nothing }, buffer, setEditorViewportForLine state.config.lineHeightFactor state.config.lineHeight newCursor.line )
 
         Clear ->
-            ( clearState state, Buffer.init "", Cmd.none )
+            ( state, Buffer.init "", Cmd.none )
+                |> recordHistory state buffer
 
         WrapAll ->
             ( state, Buffer.init (Editor.Wrap.paragraphs state.config.wrapParams (Buffer.toString buffer)), Cmd.none )

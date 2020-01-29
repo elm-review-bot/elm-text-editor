@@ -25,6 +25,7 @@ columnButtonStyle =
 headingStyle =
     [ style "font-size" "14px"
     , style "margin-right" "12px"
+    , style "float" "left"
     ]
 
 

@@ -118,21 +118,22 @@ keymaps =
         Dict.fromList
             [ ( "ArrowUp", ScrollUp 20 )
             , ( "ArrowDown", ScrollDown 20 )
+            , ( "ArrowLeft", CursorToLineStart )
+            , ( "ArrowRight", CursorToLineEnd )
             ]
     , controlAndOption =
         Dict.fromList
             [ ( "ArrowUp", FirstLine )
             , ( "ArrowDown", LastLine )
-            , ( "w", ToggleWrapping )
-            , ( "c", Clear )
+            , ( "ArrowRight", CursorToGroupEnd )
+            , ( "ArrowLeft", CursorToGroupStart )
+            , ( "∑", ToggleWrapping )
+            , ( "ç", Clear )
             ]
     , control =
         Dict.fromList
-            [ ( "ArrowRight", CursorToGroupEnd )
-            , ( "ArrowLeft", CursorToGroupStart )
-            , ( "Backspace", RemoveGroupBefore )
+            [ ( "Backspace", RemoveGroupBefore )
             , ( "Delete", RemoveGroupAfter )
-            , ( "a", SelectAll )
             , ( "d", SelectGroup )
             , ( "c", Copy )
             , ( "g", ToggleGoToLinePanel )
@@ -156,6 +157,7 @@ keymaps =
             , ( "V", CopyPasteClipboard )
             , ( "W", WrapAll )
             , ( "S", SendLine )
+            , ( "A", SelectAll )
             ]
     }
 
@@ -177,8 +179,8 @@ keyToMsg event =
                         (Decode.fail "This key does nothing")
                 ]
 
-        --_ =
-        --    Debug.log "EV" event
+        _ =
+            Debug.log "EV" event
     in
     case event.modifier of
         None ->

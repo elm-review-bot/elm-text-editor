@@ -1135,12 +1135,8 @@ update buffer msg state =
                 Nothing ->
                     -- Wrap paragrah preceding cursor
                     let
-                        _ =
-                            Debug.log "WRS (1)"
-
                         selection =
-                            Debug.log "SEL (X)" <|
-                                Buffer.selectPreviousParagraph buffer state.cursor
+                            Buffer.selectPreviousParagraph buffer state.cursor
                     in
                     case selection of
                         Nothing ->
@@ -1152,9 +1148,6 @@ update buffer msg state =
 
                 Just sel ->
                     let
-                        _ =
-                            Debug.log "WRS (2)"
-
                         ( start, end ) =
                             Position.order sel state.cursor
                     in

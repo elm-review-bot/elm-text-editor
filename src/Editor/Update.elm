@@ -16,10 +16,10 @@ import Editor.Model exposing (InternalState, Snapshot)
 import Editor.Search
 import Editor.Strings
 import Editor.Wrap
+import List.Extra
 import Position exposing (Position)
 import RollingList
 import Task exposing (Task)
-import Window
 
 
 verticalOffsetInSourceText =
@@ -1230,8 +1230,23 @@ wrapBetween state buffer start end =
         wrappedText =
             Editor.Wrap.paragraphs state.config.wrapParams selectedText
 
+        linesOfWrappedText =
+            String.lines wrappedText
+
+        lastLine =
+            List.Extra.last linesOfWrappedText
+
+        column =
+            Maybe.map String.length lastLine |> Maybe.withDefault 0
+
+        linesOfText =
+            List.length linesOfWrappedText
+
+        newCursor =
+            { start | line = start.line + linesOfText - 1, column = column }
+
         newState =
-            { state | selectedText = Just selectedText }
+            { state | selectedText = Just selectedText, cursor = newCursor }
 
         newBuffer =
             Buffer.replace start end wrappedText buffer

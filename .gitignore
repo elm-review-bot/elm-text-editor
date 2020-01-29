@@ -11,9 +11,9 @@ demo-simple/public/index-remote.html
 demo-simple/*.sh
 demo-simple/public/DemoSimple.js
 
-testSpares/VerifyExamples/
+tests/VerifyExamples/
 markdown/
 
-NOTES.md
+docs/NOTES.md
 
 

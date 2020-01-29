@@ -134,9 +134,9 @@ nearWordChar position (Buffer buffer) =
 {-| Insert a string into the buffer.
 -}
 insert : Position -> String -> Buffer -> Buffer
-insert position string (Buffer buffer) =
+insert position str (Buffer buffer) =
     indexFromPosition buffer position
-        |> Maybe.map (\index -> String.Extra.insertAt string index buffer)
+        |> Maybe.map (\index -> String.Extra.insertAt str index buffer)
         |> Maybe.withDefault buffer
         |> Buffer
 
@@ -144,7 +144,7 @@ insert position string (Buffer buffer) =
 {-| Replace the string between two positions with a different string.
 -}
 replace : Position -> Position -> String -> Buffer -> Buffer
-replace pos1 pos2 string (Buffer buffer) =
+replace pos1 pos2 str (Buffer buffer) =
     let
         ( start, end ) =
             Position.order pos1 pos2
@@ -152,7 +152,7 @@ replace pos1 pos2 string (Buffer buffer) =
     Maybe.map2
         (\startIndex endIndex ->
             String.slice 0 startIndex buffer
-                ++ string
+                ++ str
                 ++ String.dropLeft endIndex buffer
         )
         (indexFromPosition buffer start)
@@ -181,11 +181,15 @@ removeBefore position (Buffer buffer) =
 -- EXTRACTING CONTENT FROM BUFFERS
 
 
+{-| :LIST:
+-}
 lines : Buffer -> List String
 lines (Buffer content) =
     String.split "\n" content
 
 
+{-| :LIST:
+-}
 lineAt : Position -> Buffer -> Maybe String
 lineAt position buffer =
     List.Extra.getAt position.line (lines buffer)
@@ -392,15 +396,15 @@ type Direction
 
 -}
 groupHelp : Direction -> Bool -> String -> Position -> Group -> Position
-groupHelp direction consumedNewline string position group =
+groupHelp direction consumedNewline str position group =
     let
         parts =
             case direction of
                 Forward ->
-                    String.uncons string
+                    String.uncons str
 
                 Backward ->
-                    String.uncons (String.reverse string)
+                    String.uncons (String.reverse str)
                         |> Maybe.map (Tuple.mapSecond String.reverse)
     in
     case parts of
@@ -587,11 +591,15 @@ groupRange position (Buffer buffer) =
             )
 
 
+{-| :LIST:
+-}
 lineEnd : Int -> Buffer -> Maybe Int
 lineEnd line =
     lines >> List.Extra.getAt line >> Maybe.map String.length
 
 
+{-| :LIST:
+-}
 clampPosition : Direction -> Buffer -> Position -> Position
 clampPosition direction buffer position =
     let
@@ -744,6 +752,8 @@ clampPosition2 direction buffer position =
                         Position 0 0
 
 
+{-| :LIST:
+-}
 lastPosition : Buffer -> Position
 lastPosition buffer =
     lines buffer

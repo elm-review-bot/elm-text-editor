@@ -22,6 +22,7 @@ module Buffer exposing
     , nearWordChar
     , removeBefore
     , replace
+    , selectPreviousParagraph
     , toString
     )
 
@@ -52,6 +53,47 @@ indentSize =
 init : String -> Buffer
 init content =
     Buffer content
+
+
+{-| Function to find the index of the first blank line before the index of a given line
+-}
+selectIndexOfPrecedingParagraph : String -> Int -> Maybe Int
+selectIndexOfPrecedingParagraph str end =
+    let
+        blankLines_ =
+            indexedFilterMap (\str_ -> str_ == "") (String.lines str)
+
+        indexOfStart =
+            List.filter (\i -> i < end) blankLines_ |> List.Extra.last
+    in
+    case indexOfStart of
+        Nothing ->
+            Nothing
+
+        Just i ->
+            Just (i + 1)
+
+
+{-| Function to select the paragraph before the given position
+-}
+selectPreviousParagraph : Buffer -> Position -> Maybe Position
+selectPreviousParagraph (Buffer str) end =
+    selectIndexOfPrecedingParagraph str end.line
+        |> Maybe.map (\line_ -> Position line_ 0)
+
+
+{-|
+
+     indexedFilterMap (\i x -> i >= 1 && i <= 3) [0,1,2,3,4,5,6]
+     --> [1,2,3] : List number
+
+-}
+indexedFilterMap : (a -> Bool) -> List a -> List Int
+indexedFilterMap filter list =
+    list
+        |> List.indexedMap (\k item -> ( k, item ))
+        |> List.filter (\( k, item ) -> filter item)
+        |> List.map Tuple.first
 
 
 {-| Internal function for getting the index of the position in a string

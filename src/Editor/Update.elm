@@ -1133,26 +1133,32 @@ update buffer msg state =
         WrapSelection ->
             case state.selection of
                 Nothing ->
-                    ( state, buffer, Cmd.none )
+                    -- Wrap paragrah preceding cursor
+                    let
+                        _ =
+                            Debug.log "WRS (1)"
+
+                        selection =
+                            Debug.log "SEL (X)" <|
+                                Buffer.selectPreviousParagraph buffer state.cursor
+                    in
+                    case selection of
+                        Nothing ->
+                            ( state, buffer, Cmd.none )
+
+                        Just start ->
+                            wrapBetween state buffer start state.cursor
+                                |> recordHistory state buffer
 
                 Just sel ->
                     let
+                        _ =
+                            Debug.log "WRS (2)"
+
                         ( start, end ) =
                             Position.order sel state.cursor
-
-                        selectedText =
-                            Buffer.between start end buffer
-
-                        wrappedText =
-                            Editor.Wrap.paragraphs state.config.wrapParams selectedText
-
-                        newState =
-                            { state | selectedText = Just selectedText }
-
-                        newBuffer =
-                            Buffer.replace start end wrappedText buffer
                     in
-                    ( newState, newBuffer, Cmd.none )
+                    wrapBetween state buffer start end
                         |> recordHistory state buffer
 
         ToggleWrapping ->
@@ -1220,6 +1226,24 @@ update buffer msg state =
 
 
 -- HELPERS --
+
+
+wrapBetween : InternalState -> Buffer -> Position -> Position -> ( InternalState, Buffer, Cmd msg )
+wrapBetween state buffer start end =
+    let
+        selectedText =
+            Buffer.between start end buffer
+
+        wrappedText =
+            Editor.Wrap.paragraphs state.config.wrapParams selectedText
+
+        newState =
+            { state | selectedText = Just selectedText }
+
+        newBuffer =
+            Buffer.replace start end wrappedText buffer
+    in
+    ( newState, newBuffer, Cmd.none )
 
 
 sendLine state buffer =

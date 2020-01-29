@@ -296,7 +296,20 @@ searchPanel state =
 
 headerPanel state lines =
     div (headerPanelStyle state.config.width)
-        [ wordCount lines, lineCount lines ]
+        [ wordCount lines, lineCount lines, wrappingOptionDisplay state ]
+
+
+wrappingOptionDisplay : InternalState -> Html Msg
+wrappingOptionDisplay state =
+    let
+        message =
+            if state.config.wrapOption == DoWrap then
+                "Wrap: ON"
+
+            else
+                "Wrap: OFF"
+    in
+    div Widget.headingStyle [ text message ]
 
 
 headerPanelStyle width =
@@ -320,12 +333,13 @@ searchPanel_ state =
         , style "background-color" Style.lightGray
         , style "opacity" "0.9"
         , style "font-size" "14px"
-        , Attribute.class "flex-row"
+        , style "float" "left"
         ]
         [ searchTextButton
         , acceptSearchText
         , numberOfHitsDisplay state
-        , syncButton
+
+        -- , syncButton
         , showIf (not state.canReplace) openReplaceField
         , showIf state.canReplace replaceTextButton
         , showIf state.canReplace acceptReplaceText
@@ -350,7 +364,7 @@ goToLinePanel_ width =
         , style "padding" "1px"
         , style "opacity" "0.9"
         , style "background-color" Style.lightGray
-        , Attribute.class "flex-row"
+        , style "float" "left"
         ]
         [ goToLineButton
         , acceptLineNumber
@@ -363,6 +377,7 @@ dismissGoToLineButton =
         ToggleGoToLinePanel
         "X"
         [ style "margin-top" "5px"
+        , style "float" "left"
         ]
 
 
@@ -377,7 +392,7 @@ numberOfHitsDisplay state =
         txt =
             String.fromInt (state.searchHitIndex + 1) ++ "/" ++ String.fromInt n
     in
-    Widget.rowButton 40 NoOp txt []
+    Widget.rowButton 40 NoOp txt [ style "float" "left" ]
 
 
 lineCount : List String -> Html Msg
@@ -419,7 +434,7 @@ goToLineButton =
     Widget.rowButton 80
         NoOp
         "Go to line"
-        [ style "margin-top" "5px", style "margin-left" "5px" ]
+        [ style "margin-top" "5px", style "margin-left" "5px", style "float" "left" ]
 
 
 dismissInfoPanel =
@@ -433,7 +448,7 @@ dismissSearchPanel =
     Widget.lightRowButton 25
         ToggleSearchPanel
         "X"
-        []
+        [ style "float" "left", style "float" "left" ]
 
 
 openReplaceField =
@@ -467,7 +482,7 @@ acceptLineNumber =
     Widget.textField 30
         AcceptLineNumber
         ""
-        [ style "margin-top" "5px" ]
+        [ style "margin-top" "5px", style "float" "left" ]
         [ setHtmlId "line-number-input" ]
 
 

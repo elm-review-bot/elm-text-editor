@@ -118,19 +118,21 @@ keymaps =
         Dict.fromList
             [ ( "ArrowUp", ScrollUp 20 )
             , ( "ArrowDown", ScrollDown 20 )
+            , ( "ArrowLeft", CursorToLineStart )
+            , ( "ArrowRight", CursorToLineEnd )
             ]
     , controlAndOption =
         Dict.fromList
             [ ( "ArrowUp", FirstLine )
             , ( "ArrowDown", LastLine )
-            , ( "w", ToggleWrapping )
-            , ( "c", Clear )
+            , ( "ArrowRight", CursorToGroupEnd )
+            , ( "ArrowLeft", CursorToGroupStart )
+            , ( "∑", ToggleWrapping )
+            , ( "ç", Clear )
             ]
     , control =
         Dict.fromList
-            [ ( "ArrowRight", CursorToGroupEnd )
-            , ( "ArrowLeft", CursorToGroupStart )
-            , ( "Backspace", RemoveGroupBefore )
+            [ ( "Backspace", RemoveGroupBefore )
             , ( "Delete", RemoveGroupAfter )
             , ( "d", SelectGroup )
             , ( "c", Copy )
@@ -145,8 +147,6 @@ keymaps =
             , ( "z", Undo )
             , ( "w", WrapSelection )
             , ( "y", Redo )
-            , ( "a", CursorToLineStart )
-            , ( "e", CursorToLineEnd )
             ]
     , controlAndShift =
         Dict.fromList

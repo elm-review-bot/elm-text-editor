@@ -26,24 +26,25 @@ to the editor.  For now, Chrome only.
 Show help         ctrl-h         (Toggle)
 Show info panel   ctrl-shift-i   (Toggle)
 
-Lines
------
+Cursor
+------
 
-Start of line     Home or ctrl-a
-End of line       End or ctrl-e
+Forward           right-arrow
+Backwards         left-arrow
+Start of line     option-left-arrow or Home
+End of line       option-right-arrow or End
 
 Line Up           up-arrow
 Line Down         down-arrow
+
+Up many lines     option up-arrow
+Down many lines   option down-arrow
 
 First line        ctrl-option up-arrow
 Last line         ctrl-option down-arrow
 
 Go to line        ctrl-g         (Toggle)
 
-Moves
------
-Page Up           option up-arrow
-Page Down         option down-arrow
 
 Selection
 ---------
@@ -63,7 +64,7 @@ External copy-paste
 -------------------
 
 - ctrl-shift-C copies selected text to the
-system clipboard.
+  system clipboard.
 
 - ctrl-shift-V copies text from the system
   clipboard and pastes the content to the
@@ -86,6 +87,10 @@ De-indent         shift-Tab
 
 Wrap selection    ctrl-w
 Wrap all          ctrl-shift-w
+Toggle wrapping   ctrl-option-w
+
+Typing ctrl-shift-w at the end
+of a paragraph will wrap it.
 
 Clear all         ctrl-option c
 

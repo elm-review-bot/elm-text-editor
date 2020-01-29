@@ -3,7 +3,7 @@
     "name": "jxxcarlson/elm-text-editor",
     "summary": "Pure Elm text editor forked from Sydney Nemzer",
     "license": "BSD-3-Clause",
-    "version": "7.0.5",
+    "version": "7.0.4",
     "exposed-modules": [
         "Editor",
         "Editor.Strings",

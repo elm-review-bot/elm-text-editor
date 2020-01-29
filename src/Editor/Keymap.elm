@@ -177,8 +177,8 @@ keyToMsg event =
                         (Decode.fail "This key does nothing")
                 ]
 
-        _ =
-            Debug.log "EV" event
+        --_ =
+        --    Debug.log "EV" event
     in
     case event.modifier of
         None ->

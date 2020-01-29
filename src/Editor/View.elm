@@ -174,7 +174,8 @@ view attr lines state =
         [ div []
             [ showIf state.showGoToLinePanel (goToLinePanel state)
             , showIf state.showSearchPanel (searchPanel state)
-            , infoPanel state lines
+
+            -- , infoPanel state lines
             , showIf (not (state.showSearchPanel || state.showGoToLinePanel)) (headerPanel state lines)
             ]
         , Html.Lazy.lazy3 innerView attr lines state
@@ -296,7 +297,19 @@ searchPanel state =
 
 headerPanel state lines =
     div (headerPanelStyle state.config.width)
-        [ wordCount lines, lineCount lines, wrappingOptionDisplay state ]
+        [ toggleHelpButtonHeader state, wordCount lines, lineCount lines, wrappingOptionDisplay state ]
+
+
+toggleHelpButtonHeader state =
+    let
+        label =
+            if state.showHelp == True then
+                "Help"
+
+            else
+                "Back"
+    in
+    Widget.rowButton 60 ToggleHelp label [ style "height" "25px", style "margin-top" "-3px", style "margin-left" "-30px" ]
 
 
 wrappingOptionDisplay : InternalState -> Html Msg
@@ -309,7 +322,7 @@ wrappingOptionDisplay state =
             else
                 "Wrap: OFF"
     in
-    div Widget.headingStyle [ text message ]
+    div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text message ]
 
 
 headerPanelStyle width =
@@ -397,7 +410,7 @@ numberOfHitsDisplay state =
 
 lineCount : List String -> Html Msg
 lineCount lines =
-    div Widget.headingStyle [ text ("Lines: " ++ String.fromInt (List.length lines)) ]
+    div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text ("Lines: " ++ String.fromInt (List.length lines)) ]
 
 
 wordCount : List String -> Html Msg
@@ -406,7 +419,7 @@ wordCount lines =
         words =
             List.map String.words lines |> List.concat
     in
-    div Widget.headingStyle [ text ("Words: " ++ String.fromInt (List.length words)) ]
+    div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text ("Words: " ++ String.fromInt (List.length words)) ]
 
 
 cursorPosition : InternalState -> Html Msg

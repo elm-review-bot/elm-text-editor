@@ -396,8 +396,25 @@ update buffer msg state =
                         oldCursor =
                             state.cursor
 
+                        lines_ =
+                            String.lines text
+
+                        linesOfText =
+                            lines_ |> List.length
+
+                        newColumn =
+                            case List.Extra.last lines_ of
+                                Just str ->
+                                    String.length str
+
+                                Nothing ->
+                                    0
+
+                        newLine =
+                            oldCursor.line + linesOfText - 1
+
                         newCursor =
-                            { oldCursor | column = oldCursor.column + String.length text }
+                            Position newLine newColumn
                     in
                     ( { state | cursor = newCursor }, Buffer.insert state.cursor text buffer, Cmd.none )
 

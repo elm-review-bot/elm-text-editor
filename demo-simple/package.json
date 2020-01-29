@@ -5,7 +5,9 @@
   "main": "Demo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "elm-live -d public/ src/DemoSimple.elm -- --output public/DemoSimple.js"
+    "start": "elm-live -d public/ src/DemoSimple.elm -- --output public/DemoSimple.js",
+    "set-dev": "cp elm-dev.json elm.json",
+    "set-pub": "cp elm-pub.json elm.json"
   },
   "keywords": [],
   "author": "",

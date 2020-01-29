@@ -10,6 +10,7 @@ import Editor.Widget as Widget
 import Html exposing (Attribute, Html, div, span, text)
 import Html.Attributes as Attribute exposing (class, classList, style)
 import Html.Events as Event
+import Html.Lazy
 import Json.Decode as Decode
 import List.Extra
 import Position exposing (Position)
@@ -176,7 +177,7 @@ view attr lines state =
             , infoPanel state lines
             , showIf (not (state.showSearchPanel || state.showGoToLinePanel)) (headerPanel state lines)
             ]
-        , innerView attr lines state
+        , Html.Lazy.lazy3 innerView attr lines state
         ]
 
 

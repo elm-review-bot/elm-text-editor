@@ -29,8 +29,8 @@ Show info panel   ctrl-shift-i   (Toggle)
 Lines
 -----
 
-Start of line     Home
-End of line       End
+Start of line     Home or ctrl-a
+End of line       End or ctrl-e
 
 Line Up           up-arrow
 Line Down         down-arrow
@@ -50,6 +50,7 @@ Selection
 Select word       Double-click
 Select line       Triple-click
 Select group      ctrl-d
+Select all        ctrl-shift-a
 
 Extend selection  shift-arrow
 (up | down | left | right)

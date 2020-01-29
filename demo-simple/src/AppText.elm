@@ -1,4 +1,145 @@
-module AppText exposing (gettysburgAddress, jabberwocky, long, longLines, tolstoy)
+module AppText exposing (about, code, gettysburgAddress, jabberwocky, long, longLines, tolstoy, words1000, words1500, words3000, words500)
+
+
+about =
+    """
+A bunch of test files here.
+
+**Main Problems:**
+
+- Performance: laggy over 1500 words
+
+"""
+
+
+code =
+    """
+{-|
+
+     indexedFilterMap (\\s -> s == "")
+       ["red" ,"green", "", "", "blue", "", "purple"]
+     --> [2,3,5] : List Int
+
+ -}
+indexedFilterMap : (a -> Bool) -> List a -> List Int
+indexedFilterMap filter list =
+    list
+        |> List.indexedMap (\\k item -> ( k, item ))
+        |> List.filter (\\( k, item ) -> filter item)
+        |> List.map Tuple.first
+
+{-| Function to find the index of the first
+blank line before the index of a given line
+-}
+selectIndexOfPrecedingParagraph : String -> Int -> Maybe Int
+selectIndexOfPrecedingParagraph str end =
+    let
+        blankLines_ =
+            indexedFilterMap
+              (\\str_ -> str_ == "")
+              (String.lines str)
+
+        indexOfStart =
+            List.filter
+              (\\i -> i < end)
+              blankLines_ |> List.Extra.last
+    in
+    case indexOfStart of
+        Nothing ->
+            Nothing
+
+        Just i ->
+            Just (i + 1)
+
+
+{-| Function to select the paragraph
+before the given position
+-}
+selectPreviousParagraph : Buffer -> Position -> Maybe Position
+selectPreviousParagraph (Buffer str) end =
+    selectIndexOfPrecedingParagraph str end.line
+        |> Maybe.map (\\line_ -> Position line_ 0)
+
+"""
+
+
+indexedFilterMap : (a -> Bool) -> List a -> List Int
+indexedFilterMap filter list =
+    list
+        |> List.indexedMap (\k item -> ( k, item ))
+        |> List.filter (\( k, item ) -> filter item)
+        |> List.map Tuple.first
+
+
+words500 =
+    """
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sed turpis est.
+Proin vestibulum, nunc ornare auctor vulputate, quam metus porta dolor, a
+hendrerit ante ipsum sed ligula. Morbi metus mauris, fermentum dictum blandit
+et, malesuada vitae sem. In ante erat, pulvinar nec volutpat ac, volutpat non
+risus. Cras elit ligula, volutpat a semper sit amet, ullamcorper fringilla
+velit. Vestibulum at nisl vehicula risus egestas faucibus non id elit. Nulla
+pharetra vestibulum placerat. Cras ante odio, ullamcorper cursus ante vel,
+bibendum suscipit risus. Mauris commodo libero vitae leo cursus, quis hendrerit
+orci lobortis.
+
+In mattis pretium dapibus. Vestibulum ante ipsum primis in faucibus orci luctus
+et ultrices posuere cubilia Curae; Suspendisse porta justo a magna dictum
+ullamcorper. Donec congue ornare risus sit amet dictum. Phasellus pulvinar vitae
+erat et elementum. Pellentesque eget accumsan dui, sed porta diam. Suspendisse
+molestie est quis ante vestibulum, et imperdiet odio laoreet. Cras vehicula
+risus vel rhoncus laoreet. Nullam laoreet cursus consectetur.
+
+Proin non mauris in nisi tempor euismod in in mauris. Morbi eu accumsan lacus.
+Morbi tincidunt ipsum sit amet lacus vestibulum, non sollicitudin erat
+fringilla. Mauris mauris leo, efficitur eu nunc sed, eleifend suscipit nisi.
+Cras at augue quis eros mollis fermentum vitae accumsan elit. Aenean interdum
+varius elit, scelerisque varius magna consectetur in. In non ex pretium, lacinia
+ipsum vel, ullamcorper dolor. Nulla fringilla sagittis venenatis. Suspendisse
+aliquam lectus nec leo rutrum laoreet.
+
+Curabitur ut efficitur erat. Duis ac leo vel massa porttitor sodales. Fusce
+interdum leo quis tempus faucibus. Aliquam erat volutpat. Maecenas iaculis
+libero lorem. Praesent neque odio, blandit et lobortis eu, ullamcorper a risus.
+Fusce pellentesque ligula eget risus maximus laoreet.
+
+Curabitur tellus neque, malesuada vitae nisi et, volutpat tincidunt mi. Duis
+posuere, lacus nec dapibus laoreet, urna odio volutpat enim, et facilisis sem
+elit quis diam. Nam orci eros, laoreet eu sagittis et, malesuada et diam.
+Suspendisse malesuada nulla in finibus porttitor. Donec consequat felis eu leo
+gravida, quis cursus leo auctor. Maecenas libero neque, aliquam ac consequat ut,
+ullamcorper id nibh. Fusce semper lobortis tortor, a ornare sapien bibendum vel.
+Quisque quis rhoncus justo. Nam vitae feugiat est, eu vehicula turpis. Quisque
+bibendum ante quis diam semper, eget tincidunt lacus sagittis. In et justo
+lorem. Cras ultrices nisl porttitor placerat efficitur. Suspendisse potenti.
+
+Aliquam mauris leo, egestas sit amet condimentum ac, imperdiet eu justo. Nulla
+quis semper elit. Aenean gravida elementum lectus eget pellentesque. Mauris at
+tortor eu nisi porttitor feugiat. Pellentesque vulputate lorem sit amet mattis
+iaculis. Curabitur viverra imperdiet odio. Cras ut turpis ut velit hendrerit
+congue. Curabitur fringilla, dui et auctor condimentum, tellus nulla varius est,
+at finibus tellus magna et dolor. Sed porta suscipit ornare. Praesent
+pellentesque ex a porta aliquam. Nunc auctor ullamcorper urna.
+
+Aliquam erat volutpat. Curabitur auctor sed sem non venenatis. Fusce iaculis
+ante a nisi vehicula mattis. Proin facilisis quis sapien eget sodales. Maecenas
+pulvinar mauris ut massa pulvinar venenatis. In dignissim lorem ut viverra
+scelerisque. Morbi turpis enim, efficitur non pharetra consequat, gravida vitae
+neque. Proin lacus augue.   
+    
+"""
+
+
+words1000 =
+    words500 ++ words500
+
+
+words1500 =
+    words1000 ++ words500
+
+
+words3000 =
+    words1500 ++ words1500
 
 
 gettysburgAddress =

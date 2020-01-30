@@ -1,20 +1,32 @@
 module Buffer2 exposing
     ( Buffer(..)
-    , indexFromPosition
     , init
     , insert
-    , insertInArray
     , nearWordChar
+    , replace
+    , valid
     )
 
 import Array exposing (Array)
+import Array.Util
+import BufferHelper as BH
 import List.Extra
 import Maybe.Extra
 import Position exposing (Position)
 import String.Extra
-import Util.Array
 
 
+{-| Returns True iff the buffer is valid
+
+    valid (init "One\ntwo\nthree\nfour")
+    --> True
+
+    bb2 = Buffer { content = "One\ntwo\nthree\nfour", lines = Array.fromList ["One","two!","three","four"] }
+
+    valid bb2
+    --> False
+
+-}
 type Buffer
     = Buffer { content : String, lines : Array String }
 
@@ -30,6 +42,11 @@ init content =
     Buffer { content = content, lines = Array.fromList (String.lines content) }
 
 
+valid : Buffer -> Bool
+valid (Buffer data) =
+    (data.lines |> Array.toList |> String.join "\n") == data.content
+
+
 {-| Returns true if the Position is at or after a word character. See isWordChar.
 
     import Position exposing(..)
@@ -43,19 +60,19 @@ init content =
 -}
 nearWordChar : Position -> Buffer -> Bool
 nearWordChar position (Buffer data) =
-    indexFromPosition data.content position
+    BH.indexFromPosition data.content position
         |> Maybe.andThen
             (\index ->
                 let
                     previousChar =
-                        stringCharAt (index - 1) data.content
+                        BH.stringCharAt (index - 1) data.content
 
                     currentChar =
-                        stringCharAt index data.content
+                        BH.stringCharAt index data.content
                 in
-                Maybe.map isWordChar previousChar
+                Maybe.map BH.isWordChar previousChar
                     |> Maybe.Extra.orElseLazy
-                        (\() -> Maybe.map isWordChar currentChar)
+                        (\() -> Maybe.map BH.isWordChar currentChar)
             )
         |> Maybe.withDefault False
 
@@ -74,117 +91,51 @@ insert : Position -> String -> Buffer -> Buffer
 insert position str (Buffer data) =
     let
         content =
-            indexFromPosition data.content position
+            BH.indexFromPosition data.content position
                 |> Maybe.map (\index -> String.Extra.insertAt str index data.content)
                 |> Maybe.withDefault data.content
 
         lines =
-            insertInArray position str data.lines
+            Array.Util.insert position str data.lines
     in
     Buffer { content = content, lines = lines }
 
 
-{-|
+{-| Replace the string between two positions with a different string.
 
-    insertInArray (Position 0 1) "X" arrL
-    --> Array.fromList ["aXaa","bbb"]
+    str =
+        "One\ntwo\nthree\nfour"
 
-    insertInArray (Position 1 1) "X" arrL
-    --> Array.fromList ["aaa","bXbb"]
+    bb =
+        init str
+
+
+    replace (Position 1 0) (Position 1 3) "TWO" bb
+    -->   Buffer { content = "One\nTWO\nthree\nfour", lines = Array.fromList ["One","TWO","three","four"] }
+
+    replace (Position 1 0) (Position 2 3) "TWO\nTHREE" bb
 
 -}
-insertInArray : Position -> String -> Array String -> Array String
-insertInArray position str array =
-    case Array.get position.line array of
-        Nothing ->
-            array
+replace : Position -> Position -> String -> Buffer -> Buffer
+replace pos1 pos2 str (Buffer data) =
+    let
+        ( start, end ) =
+            Position.order pos1 pos2
 
-        Just line ->
-            let
-                newLine =
-                    String.Extra.insertAt str position.column line
-            in
-            Array.set position.line newLine array
+        content : String
+        content =
+            Maybe.map2
+                (\startIndex endIndex ->
+                    String.slice 0 startIndex data.content
+                        ++ str
+                        ++ String.dropLeft endIndex data.content
+                )
+                (BH.indexFromPosition data.content start)
+                (BH.indexFromPosition data.content end)
+                |> Maybe.withDefault data.content
+    in
+    Buffer { content = content, lines = Array.Util.replace start end str data.lines }
 
 
 
 -- HELPER FUNCTIONS THAT DO NOT REFERENCE BUFFER --
-
-
-stringCharAt : Int -> String -> Maybe Char
-stringCharAt index string =
-    String.slice index (index + 1) string
-        |> String.uncons
-        |> Maybe.map Tuple.first
-
-
-charsAround : Int -> String -> ( Maybe Char, Maybe Char, Maybe Char )
-charsAround index string =
-    ( stringCharAt (index - 1) string
-    , stringCharAt index string
-    , stringCharAt (index + 1) string
-    )
-
-
-tuple3MapAll : (a -> b) -> ( a, a, a ) -> ( b, b, b )
-tuple3MapAll fn ( a1, a2, a3 ) =
-    ( fn a1, fn a2, fn a3 )
-
-
-tuple3CharsPred :
-    (Char -> Bool)
-    -> ( Maybe Char, Maybe Char, Maybe Char )
-    -> ( Bool, Bool, Bool )
-tuple3CharsPred pred =
-    tuple3MapAll (Maybe.map pred >> Maybe.withDefault False)
-
-
-{-| Internal function for getting the index of the position in a string
-
-    indexFromPosition "reddish\ngreen" (Position 0 2)
-    --> Just 2
-
-    indexFromPosition "reddish\ngreen" (Position 1 2)
-    --> Just 10
-
--}
-indexFromPosition : String -> Position -> Maybe Int
-indexFromPosition buffer position =
-    -- Doesn't validate columns, only lines
-    if position.line == 0 then
-        Just position.column
-
-    else
-        String.indexes "\n" buffer
-            |> List.Extra.getAt (position.line - 1)
-            |> Maybe.map (\line -> line + position.column + 1)
-
-
-
--- GROUPING
-
-
-isWhitespace : Char -> Bool
-isWhitespace =
-    String.fromChar >> String.trim >> (==) ""
-
-
-isNonWordChar : Char -> Bool
-isNonWordChar =
-    String.fromChar >> (\a -> String.contains a "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-…")
-
-
-isWordChar : Char -> Bool
-isWordChar char =
-    not (isNonWordChar char) && not (isWhitespace char)
-
-
-type Group
-    = None
-    | Word
-    | NonWord
-
-
-type Direction
-    = Forward
-    | Backward

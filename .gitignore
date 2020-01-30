@@ -3,7 +3,7 @@ elm-stuff/
 .idea/
 
 demo/public/Demo.js
-demo/publish.sh
+demo/scripts/publish.sh
 demo/public/Demo.min.js
 demo/public/index-remote.html
 

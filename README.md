@@ -55,6 +55,9 @@ uses ports and references `outside.js` in `index.html`
 - I may post a Road Map later, but [Sydney Nemzer's README](https://github.com/SidneyNemzer/elm-text-editor/blob/master/README.md) is an excellent place to begin.
 
 
- 
+## Credits
+
+I would like to thank Folkert de Vries for help
+improving the performance of the editor.
 
 

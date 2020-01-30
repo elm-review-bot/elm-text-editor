@@ -37,13 +37,34 @@ nonBreakingSpace =
     Char.fromCode 160
 
 
+
+{-
+
+   The original code.  It incurs a HUGE
+   performance penalty, resulting in laggy
+   performance by the editor.
+
+   ensureNonBreakingSpace : Char -> Char
+   ensureNonBreakingSpace char =
+       if char == ' ' then
+           nonBreakingSpace
+
+       else
+           char
+
+-}
+
+
+{-| This is Folkert's much better version.
+-}
 ensureNonBreakingSpace : Char -> Char
 ensureNonBreakingSpace char =
-    if char == ' ' then
-        nonBreakingSpace
+    case char of
+        ' ' ->
+            nonBreakingSpace
 
-    else
-        char
+        _ ->
+            char
 
 
 withTrue : a -> ( a, Bool )

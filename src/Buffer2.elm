@@ -4,6 +4,7 @@ module Buffer2 exposing
     , insert
     , nearWordChar
     , replace
+    , toString
     , valid
     )
 
@@ -48,6 +49,11 @@ init content =
 valid : Buffer -> Bool
 valid (Buffer data) =
     (data.lines |> Array.toList |> String.join "\n") == data.content
+
+
+toString : Buffer -> String
+toString (Buffer data) =
+    data.content
 
 
 {-| Returns true if the Position is at or after a word character. See isWordChar.

@@ -21,6 +21,7 @@ import String.Extra
     valid (init "One\ntwo\nthree\nfour")
     --> True
 
+    bb2 : Buffer
     bb2 = Buffer { content = "One\ntwo\nthree\nfour", lines = Array.fromList ["One","two!","three","four"] }
 
     valid bb2
@@ -32,6 +33,8 @@ type Buffer
 
 
 {-| Create a new buffer from a string
+
+    import Array
 
     init "one\ntwo"
     --> Buffer { content = "one\ntwo", lines = Array.fromList ["one","two"] }
@@ -79,12 +82,19 @@ nearWordChar position (Buffer data) =
 
 {-| Insert a string into the buffer.
 
+    import Array
+
+    import Position
+
     bb: Buffer
     bb = init "aaa\nbbb"
     --> Buffer { content = "aaa\nbbb", lines = Array.fromList ["aaa","bbb"] }
 
     insert (Position 0 1) "X" bb
     --> Buffer { content = "aXaa\nbbb", lines = Array.fromList ["aXaa","bbb"] }
+
+    valid bb2
+    --> True
 
 -}
 insert : Position -> String -> Buffer -> Buffer
@@ -103,11 +113,14 @@ insert position str (Buffer data) =
 
 {-| Replace the string between two positions with a different string.
 
-    str =
-        "One\ntwo\nthree\nfour"
+    import Array
 
+    import Position
+
+
+    bb : Buffer
     bb =
-        init str
+        init "One\ntwo\nthree\nfour"
 
 
     replace (Position 1 0) (Position 1 3) "TWO" bb

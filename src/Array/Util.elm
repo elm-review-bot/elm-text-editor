@@ -18,6 +18,8 @@ type alias StringZipper =
 
 {-|
 
+    arrL = Array.fromList ["aaa", "bbb"]
+
     insert (Position 0 1) "X" arrL
     --> Array.fromList ["aXaa","bbb"]
 

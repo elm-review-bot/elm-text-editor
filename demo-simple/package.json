@@ -12,7 +12,9 @@
     "chrome": "open -a /Applications/GoogleChrome.app/ public/index.html",
     "set-dev": "cp elm-dev.json elm.json",
     "set-pub": "cp elm-pub.json elm.json",
-    "update-pub": "cp elm.json elm-pub.json"
+    "update-pub": "cp elm.json elm-pub.json",
+    "gogh" : "open -a /Applications/GoogleChrome.app https://jxxcarlson.github.io/app/editor-simple/index.html",
+    "publish": "sh scripts/publish.sh"
   },
   "keywords": [],
   "author": "",

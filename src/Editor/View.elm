@@ -288,14 +288,6 @@ headerPanel state lines =
         [ toggleHelpButtonHeader state, wordCount lines, lineCount lines, wrappingOptionDisplay state, cursorPosition state lines ]
 
 
-positionDisplay state =
-    let
-        message =
-            "Cursor (" ++ String.fromInt (state.cursor.line + 1) ++ ", " ++ String.fromInt state.cursor.column ++ ")"
-    in
-    div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text message ]
-
-
 toggleHelpButtonHeader state =
     let
         label =

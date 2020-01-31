@@ -172,6 +172,7 @@ lineNumber number =
     span
         [ class <| name ++ "-line-number"
         , captureOnMouseDown (MouseDown { line = number, column = 0 })
+        , captureOnMouseDown SelectLine
         , captureOnMouseOver (MouseOver { line = number, column = 0 })
         ]
         [ text <| String.fromInt (number + 0) ]
@@ -318,7 +319,15 @@ searchPanel state =
 
 headerPanel state lines =
     div (headerPanelStyle state.config.width)
-        [ toggleHelpButtonHeader state, wordCount lines, lineCount lines, wrappingOptionDisplay state ]
+        [ toggleHelpButtonHeader state, wordCount lines, lineCount lines, wrappingOptionDisplay state, postitionDisplay state ]
+
+
+postitionDisplay state =
+    let
+        message =
+            "Cursor (" ++ String.fromInt (state.cursor.line + 1) ++ ", " ++ String.fromInt state.cursor.column ++ ")"
+    in
+    div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text message ]
 
 
 toggleHelpButtonHeader state =

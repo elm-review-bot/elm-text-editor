@@ -14,7 +14,7 @@
     "set-pub": "cp elm-pub.json elm.json",
     "update-pub": "cp elm.json elm-pub.json",
     "publish": "sh scripts/publish.sh",
-    "gogh" : "open -a /Applications/Firefox.app https://jxxcarlson.github.io/app/editor/index.html"
+    "go" : "open -a /Applications/Firefox.app https://jxxcarlson.github.io/app/editor/index.html"
   },
   "keywords": [],
   "author": "",

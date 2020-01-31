@@ -45,7 +45,7 @@ $a^2 + b^2  = c^2$, and a familiar
 integral:
 
 $$
-\\int_0^1 x^n dx \\frac{1}{n+1}
+\\int_0^1 x^n dx = \\frac{1}{n+1}
 $$
 
 Click on other tabs below for info

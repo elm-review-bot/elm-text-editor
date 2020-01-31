@@ -285,10 +285,10 @@ searchPanel state =
 
 headerPanel state lines =
     div (headerPanelStyle state.config.width)
-        [ toggleHelpButtonHeader state, wordCount lines, lineCount lines, wrappingOptionDisplay state, postitionDisplay state ]
+        [ toggleHelpButtonHeader state, wordCount lines, lineCount lines, wrappingOptionDisplay state, cursorPosition state lines ]
 
 
-postitionDisplay state =
+positionDisplay state =
     let
         message =
             "Cursor (" ++ String.fromInt (state.cursor.line + 1) ++ ", " ++ String.fromInt state.cursor.column ++ ")"
@@ -418,9 +418,21 @@ wordCount lines =
     div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text ("Words: " ++ String.fromInt (List.length words)) ]
 
 
-cursorPosition : InternalState -> Html Msg
-cursorPosition state =
-    div Widget.columnButtonStyle [ text ("Cursor = (" ++ String.fromInt (state.cursor.line + 1) ++ ", " ++ String.fromInt state.cursor.column ++ ")") ]
+cursorPosition : InternalState -> List String -> Html Msg
+cursorPosition state lines =
+    let
+        ll =
+            List.Extra.getAt state.cursor.line lines
+                |> Maybe.map (String.length >> String.fromInt)
+                |> Maybe.withDefault "-1"
+
+        r =
+            String.fromInt (state.cursor.line + 1)
+
+        c =
+            String.fromInt state.cursor.column
+    in
+    div (Widget.headingStyle ++ [ style "margin-top" "2px" ]) [ text ("Cursor = (" ++ r ++ ", " ++ c ++ ", " ++ ll ++ ")") ]
 
 
 

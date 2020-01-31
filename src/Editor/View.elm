@@ -196,8 +196,6 @@ view attr lines state =
         [ div []
             [ showIf state.showGoToLinePanel (goToLinePanel state)
             , showIf state.showSearchPanel (searchPanel state)
-
-            -- , infoPanel state lines
             , showIf (not (state.showSearchPanel || state.showGoToLinePanel)) (headerPanel state lines)
             ]
         , Html.Lazy.lazy3 innerView attr lines state
@@ -227,38 +225,6 @@ innerView attr lines state =
                 List.indexedMap (line state.cursor state.selection) lines
             ]
         ]
-
-
-infoPanel state lines =
-    if state.showInfoPanel then
-        infoPanel_ state lines
-
-    else
-        div [] []
-
-
-infoPanel_ : InternalState -> List String -> Html Msg
-infoPanel_ state lines =
-    div infoPanelStyle
-        [ toggleHelpButton state
-        , cursorPosition state
-        , currentLineLength state lines
-        , displayLineHeight state lines
-        , wrappingOption state
-        , dismissInfoPanel
-        ]
-
-
-
--- displayLineHeight : InternalState -> List String -> Html Msg
-
-
-displayLineHeight state lines =
-    let
-        h =
-            state.config.lineHeight * toFloat state.cursor.line
-    in
-    div [ style "margin-top" "10px" ] [ text <| "Height: " ++ (String.fromFloat <| roundTo 2 h) ]
 
 
 roundTo : Int -> Float -> Float
